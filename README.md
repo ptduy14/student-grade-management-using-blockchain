@@ -1,3 +1,5 @@
+This intruction using geth 1.13.14-stable for PoA consensus
+
 ## Run bootnode:
 `bootnode -nodekey boot.key -verbosity 9 -addr :30305`
 
