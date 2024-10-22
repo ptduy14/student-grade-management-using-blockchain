@@ -6,7 +6,6 @@ import { LoginDto } from './dtos/login.dto';
 import { LocalTeacherAuthGuard } from './guards/local-teacher-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Auth } from 'common/decorators/auth.decorator';
-import { TeacherDto } from 'src/teachers/dto/teacher.dto';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @ApiBearerAuth()
