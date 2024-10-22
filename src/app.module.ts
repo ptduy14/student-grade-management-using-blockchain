@@ -6,9 +6,11 @@ import { ConfigModule } from '@nestjs/config';
 import { TeachersModule } from './teachers/teachers.module';
 import { AuthModule } from './auth/auth.module';
 import { CoursesModule } from './courses/courses.module';
+import { SemestersModule } from './semesters/semesters.module';
+import { AcademicYearsModule } from './academic-years/academic-years.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }) ,DatabaseModule, TeachersModule, AuthModule, CoursesModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }) ,DatabaseModule, TeachersModule, AuthModule, CoursesModule, SemestersModule, AcademicYearsModule],
   controllers: [AppController],
   providers: [AppService],
 })
