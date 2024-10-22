@@ -2,18 +2,18 @@ import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
 import { Exclude, Expose } from 'class-transformer';
 
 export class TeacherDto {
-  @Expose()
-  teacher_id: number;
+  @Expose({ name: 'teacher_id' }) 
+  id: number;
+  
+  @Expose({ name: 'teacher_name' })
+  name: string;
 
-  @Expose()
-  teacher_name: string;
-
-  @Expose()
-  teacher_email: string;
+  @Expose({ name: 'teacher_email' })
+  email: string;
 
   @Exclude()
   teacher_password: string;
 
-  @Expose()
-  teacher_role: TeacherRoleEnum;
+  @Expose({ name: 'teacher_role' })
+  role: TeacherRoleEnum;
 }

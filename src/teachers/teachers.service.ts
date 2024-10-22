@@ -36,7 +36,7 @@ export class TeachersService {
   }
 
   async findByEmail(email: string) {
-    return await this.teacherRepository.findBy({teacher_email: email});
+    return await this.teacherRepository.findOne({where: {teacher_email: email}});
   }
 
   update(id: number, updateTeacherDto: UpdateTeacherDto) {
