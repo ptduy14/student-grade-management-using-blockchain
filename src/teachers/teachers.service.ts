@@ -1,4 +1,4 @@
-import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,11 +6,14 @@ import { Teacher } from './entities/teacher.entity';
 import { Repository } from 'typeorm';
 import { TeacherDto } from './dto/teacher.dto';
 import { plainToClass } from 'class-transformer';
-import * as bcrypt from "bcrypt";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class TeachersService {
-  constructor(@InjectRepository(Teacher) private readonly teacherRepository: Repository<Teacher>){}
+  constructor(
+    @InjectRepository(Teacher)
+    private readonly teacherRepository: Repository<Teacher>,
+  ) {}
 
   async create(createTeacherDto: CreateTeacherDto): Promise<TeacherDto> {
     const teacherFound = await this.findByEmail(createTeacherDto.teacher_email);
@@ -19,7 +22,10 @@ export class TeachersService {
       throw new HttpException('Email đã được sử dụng', HttpStatus.BAD_REQUEST);
     }
 
-    const hashedPassword = await bcrypt.hash(createTeacherDto.teacher_password, 10);
+    const hashedPassword = await bcrypt.hash(
+      createTeacherDto.teacher_password,
+      10,
+    );
     createTeacherDto.teacher_password = hashedPassword;
 
     const teacherCreated = await this.teacherRepository.save(createTeacherDto);
@@ -36,7 +42,13 @@ export class TeachersService {
   }
 
   async findByEmail(email: string) {
-    return await this.teacherRepository.findOne({where: {teacher_email: email}});
+    return await this.teacherRepository.findOne({
+      where: { teacher_email: email },
+    });
+  }
+
+  async updatePassword(teacher: any) {
+    return await this.teacherRepository.save(teacher);
   }
 
   update(id: number, updateTeacherDto: UpdateTeacherDto) {
