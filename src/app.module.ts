@@ -5,9 +5,10 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { TeachersModule } from './teachers/teachers.module';
 import { AuthModule } from './auth/auth.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }) ,DatabaseModule, TeachersModule, AuthModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }) ,DatabaseModule, TeachersModule, AuthModule, CoursesModule],
   controllers: [AppController],
   providers: [AppService],
 })
