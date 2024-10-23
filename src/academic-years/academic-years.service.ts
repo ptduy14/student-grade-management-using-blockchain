@@ -4,39 +4,33 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AcademicYear } from './entities/academic-year.entity';
 import { SemesterNameEnum } from 'common/enums/semester-name.enum';
+import { Cohort } from 'src/cohorts/entities/cohort.entity';
 
 @Injectable()
 export class AcademicYearsService {
   constructor(
     @InjectRepository(AcademicYear)
-    private readonly academicYearService: Repository<AcademicYear>,
+    private readonly academicYearRepository: Repository<AcademicYear>,
+
+    @InjectRepository(Cohort)
+    private readonly cohortRepository: Repository<Cohort>,
   ) {}
 
   async create(createAcademicYearDto: CreateAcademicYearDto) {
-    const latestAcademicYear = await this.academicYearService.findOne({
+    const latestAcademicYear = await this.academicYearRepository.findOne({
       where: {},
-      order: {
-        createdAt: 'DESC',
-      },
+      order: { createdAt: 'DESC' },
     });
 
-    if (!latestAcademicYear) {
-      const academic_year_start = 2020;
-      const academic_year_end = academic_year_start + 1;
+    const academicYearStart = latestAcademicYear
+      ? latestAcademicYear.academic_year_start + 1
+      : await this.getFirstCohortStartYear();
 
-      const academicYear = await this.academicYearService.save({
-        academic_year_start,
-        academic_year_end,
-      });
-      return academicYear;
-    }
+    createAcademicYearDto.academic_year_start = academicYearStart;
+    createAcademicYearDto.academic_year_end = academicYearStart + 1;
 
-    const academic_year_start = latestAcademicYear.academic_year_start + 1;
-    const academic_year_end = academic_year_start + 1;
-
-    const academicYear = await this.academicYearService.save({
-      academic_year_start,
-      academic_year_end,
+    const academicYearCreated = await this.academicYearRepository.save({
+      ...createAcademicYearDto,
       semesters: [
         { semester_name: SemesterNameEnum.FIRST_TERM },
         { semester_name: SemesterNameEnum.SECOND_TERM },
@@ -44,18 +38,18 @@ export class AcademicYearsService {
       ],
     });
 
-    return academicYear;
+    return academicYearCreated;
   }
 
   async findAll() {
-    const academicYears = await this.academicYearService.find({
+    const academicYears = await this.academicYearRepository.find({
       relations: { semesters: true },
     });
     return academicYears;
   }
 
   async findOne(id: number) {
-    const academicYear = await this.academicYearService.findOne({
+    const academicYear = await this.academicYearRepository.findOne({
       where: { academic_year_id: id },
       relations: { semesters: true },
     });
@@ -64,5 +58,22 @@ export class AcademicYearsService {
     }
 
     return academicYear;
+  }
+
+  // Hàm lấy năm bắt đầu từ cohort đầu tiên
+  private async getFirstCohortStartYear(): Promise<number> {
+    const firstCohort = await this.cohortRepository.findOne({
+      where: {},
+      order: { createdAt: 'ASC' },
+    });
+
+    if (!firstCohort) {
+      throw new HttpException(
+        'Không thể tạo niên khóa mới, vui lòng xem lại cohort module',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return firstCohort.enrollment_year;
   }
 }

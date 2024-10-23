@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsString, IsNumber, IsPositive, Min, Max } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
 
-export class CreateAcademicYearDto {}
+export class CreateAcademicYearDto {
+    @IsInt()
+    @IsPositive()
+    @IsNotEmpty()
+    academic_year_start: number;
+
+    @IsInt()
+    @IsPositive()
+    @IsNotEmpty()
+    academic_year_end: number;
+}

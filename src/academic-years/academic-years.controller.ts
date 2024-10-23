@@ -26,7 +26,7 @@ export class AcademicYearsController {
   @Roles(TeacherRoleEnum.ADMIN)
   @Post('/create')
   @ApiOperation({ summary: 'Create academic year' })
-  create(@Body(ValidationPipe) createAcademicYearDto: CreateAcademicYearDto) {
+  create(@Body() createAcademicYearDto: CreateAcademicYearDto) {
     return this.academicYearsService.create(createAcademicYearDto);
   }
 
