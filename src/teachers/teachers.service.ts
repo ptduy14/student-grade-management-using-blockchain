@@ -1,11 +1,11 @@
-import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from './entities/teacher.entity';
 import { Repository } from 'typeorm';
 import { TeacherDto } from './dto/teacher.dto';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -34,7 +34,7 @@ export class TeachersService {
 
   async findAll() {
     const teachers = await this.teacherRepository.find({
-      select: ['teacher_id', 'teacher_name', 'teacher_email', 'teacher_role'], // Chỉ lấy các trường cần thiết
+      select: ['teacher_id', 'teacher_name', 'teacher_email', 'teacher_role'],
     });
 
     return teachers;

@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAcademicYearDto } from './dto/create-academic-year.dto';
-import { UpdateAcademicYearDto } from './dto/update-academic-year.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AcademicYear } from './entities/academic-year.entity';
+import { SemesterNameEnum } from 'common/enums/semester-name.enum';
 
 @Injectable()
 export class AcademicYearsService {
@@ -37,29 +37,32 @@ export class AcademicYearsService {
     const academicYear = await this.academicYearService.save({
       academic_year_start,
       academic_year_end,
+      semesters: [
+        { semester_name: SemesterNameEnum.FIRST_TERM },
+        { semester_name: SemesterNameEnum.SECOND_TERM },
+        { semester_name: SemesterNameEnum.SUPPLEMENTARY_TERM },
+      ],
     });
+
     return academicYear;
   }
 
   async findAll() {
-    const academicYears = await this.academicYearService.find();
-    return academicYears
+    const academicYears = await this.academicYearService.find({
+      relations: { semesters: true },
+    });
+    return academicYears;
   }
 
   async findOne(id: number) {
-    const academicYear = await this.academicYearService.findOne({where: {academic_year_id: id}});
+    const academicYear = await this.academicYearService.findOne({
+      where: { academic_year_id: id },
+      relations: { semesters: true },
+    });
     if (!academicYear) {
-      throw new HttpException("Không tìm thấy năm học", HttpStatus.NOT_FOUND);
+      throw new HttpException('Không tìm thấy năm học', HttpStatus.NOT_FOUND);
     }
-    
+
     return academicYear;
   }
-
-  // update(id: number, updateAcademicYearDto: UpdateAcademicYearDto) {
-  //   return `This action updates a #${id} academicYear`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} academicYear`;
-  // }
 }

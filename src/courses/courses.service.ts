@@ -17,6 +17,7 @@ export class CoursesService {
     const isCourseExisted = await this.courseRepository.findOne({
       where: { course_name: createCourseDto.course_name },
     });
+
     if (isCourseExisted) {
       throw new HttpException('Tên môn học đã tồn tại', HttpStatus.BAD_REQUEST);
     }
@@ -24,6 +25,7 @@ export class CoursesService {
     const course_display_name_id = generateCourseDisplayNameId(
       createCourseDto.course_name,
     );
+
     const courseCreated = await this.courseRepository.save({
       course_display_name_id,
       ...createCourseDto,
@@ -78,7 +80,7 @@ export class CoursesService {
     const courseUpdated = await this.courseRepository.save({
       course_display_name_id,
       ...updateCourseDto,
-    }); // Lưu bản cập nhật vào DB
+    });
 
     return courseUpdated;
   }

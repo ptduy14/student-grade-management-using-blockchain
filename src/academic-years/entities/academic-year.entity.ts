@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Semester } from "src/semesters/entities/semester.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class AcademicYear {
@@ -13,4 +14,7 @@ export class AcademicYear {
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date; // Thêm trường createdAt để lưu thời gian tạo
+
+    @OneToMany(() => Semester, (semester) => semester.academic_year, {cascade: true})
+    semesters: Semester[]
 }

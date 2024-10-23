@@ -1,34 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { SemestersService } from './semesters.service';
-import { CreateSemesterDto } from './dto/create-semester.dto';
-import { UpdateSemesterDto } from './dto/update-semester.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'common/decorators/roles.decorator';
 
+@ApiBearerAuth()
+@ApiTags('SEMESTER')
 @Controller('semesters')
 export class SemestersController {
   constructor(private readonly semestersService: SemestersService) {}
 
-  @Post()
-  create(@Body() createSemesterDto: CreateSemesterDto) {
-    return this.semestersService.create(createSemesterDto);
-  }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
   @Get()
-  findAll() {
-    return this.semestersService.findAll();
+  async findAll() {
+    return await this.semestersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.semestersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSemesterDto: UpdateSemesterDto) {
-    return this.semestersService.update(+id, updateSemesterDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.semestersService.remove(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.semestersService.findOne(id);
   }
 }
