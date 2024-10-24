@@ -1,5 +1,6 @@
 import { Cohort } from "src/cohorts/entities/cohort.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Student } from "src/students/entities/student.entity";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Class {
@@ -17,4 +18,7 @@ export class Class {
 
     @ManyToOne(() => Cohort, (cohort) => cohort.classes)
     cohort: Cohort
+
+    @OneToMany(() => Student, (student) => student.class, {cascade: true})
+    students: Student[]
 }

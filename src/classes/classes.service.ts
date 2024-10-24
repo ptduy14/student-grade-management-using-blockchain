@@ -48,13 +48,13 @@ export class ClassesService {
   }
 
   async findAll() {
-    return await this.classRepository.find({ relations: { cohort: true } });
+    return await this.classRepository.find({ relations: { cohort: true, students: true } });
   }
 
   async findOne(id: number) {
     const classFounded = await this.classRepository.find({
       where: { class_id: id },
-      relations: { cohort: true },
+      relations: { cohort: true, students: true },
     });
     if (!classFounded) {
       throw new HttpException('Không tìm thấy lớp học', HttpStatus.NOT_FOUND);
