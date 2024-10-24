@@ -28,11 +28,11 @@ export class CohortsService {
   }
 
   async findAll() {
-    return this.cohortRepository.find();
+    return this.cohortRepository.find({relations: {classes: true}});
   }
 
   async findOne(id: number) {
-    const cohort = await this.cohortRepository.findOne({where: {cohort_id: id}});
+    const cohort = await this.cohortRepository.findOne({where: {cohort_id: id}, relations: {classes: true}});
 
     if (!cohort) {
       throw new HttpException("Không tìm thấy dữ liệu", HttpStatus.NOT_FOUND);

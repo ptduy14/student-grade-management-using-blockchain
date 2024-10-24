@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Class } from "src/classes/entities/class.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Cohort {
@@ -16,4 +17,7 @@ export class Cohort {
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date; // Thêm trường createdAt để lưu thời gian tạo
+
+    @OneToMany(() => Class, (cls) => cls.cohort, {cascade: true})
+    classes: Class[]
 }

@@ -1,23 +1,94 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Not, Repository } from 'typeorm';
+import { Class } from './entities/class.entity';
+import { Cohort } from 'src/cohorts/entities/cohort.entity';
+import { generateDisplayNameId } from 'common/utils/generate-display-name-id.util';
 
 @Injectable()
 export class ClassesService {
-  create(createClassDto: CreateClassDto) {
-    return 'This action adds a new class';
+  constructor(
+    @InjectRepository(Class)
+    private readonly classRepository: Repository<Class>,
+    @InjectRepository(Cohort)
+    private readonly cohortRepository: Repository<Cohort>,
+  ) {}
+
+  async create(createClassDto: CreateClassDto) {
+    const cohort = await this.cohortRepository.findOne({
+      where: { cohort_id: createClassDto.cohort_id },
+      relations: { classes: true },
+    });
+
+    if (!cohort) {
+      throw new HttpException('Không tìm thấy cohort', HttpStatus.NOT_FOUND);
+    }
+
+    const isClassNameExistedInCohort = cohort.classes.some(
+      (cls) => cls.class_name === createClassDto.class_name,
+    );
+    if (isClassNameExistedInCohort) {
+      throw new HttpException(
+        'Tên lớp học đã tồn tại trong cohort',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const classDisplayName = generateDisplayNameId(createClassDto.class_name);
+    const classCreated = this.classRepository.save({
+      ...createClassDto,
+      total_total_student: 0,
+      cohort: cohort,
+      class_display_name_id: classDisplayName,
+    });
+
+    return classCreated;
   }
 
-  findAll() {
-    return `This action returns all classes`;
+  async findAll() {
+    return await this.classRepository.find({ relations: { cohort: true } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} class`;
+  async findOne(id: number) {
+    const classFounded = await this.classRepository.find({
+      where: { class_id: id },
+      relations: { cohort: true },
+    });
+    if (!classFounded) {
+      throw new HttpException('Không tìm thấy lớp học', HttpStatus.NOT_FOUND);
+    }
+
+    return classFounded;
   }
 
-  update(id: number, updateClassDto: UpdateClassDto) {
-    return `This action updates a #${id} class`;
+  async update(id: number, updateClassDto: UpdateClassDto) {
+    const isClassExisted = await this.classRepository.findOne({
+      where: { class_id: id },
+    });
+    if (!isClassExisted) {
+      throw new HttpException('Không tìm thấy lớp học', HttpStatus.NOT_FOUND);
+    }
+
+    const isClassNameExisted = await this.classRepository.findOne({
+      where: { class_name: updateClassDto.class_name, class_id: Not(id) },
+    });
+
+    if (isClassNameExisted) {
+      throw new HttpException('Tên lớp học đã tồn tại', HttpStatus.BAD_REQUEST);
+    }
+
+    const class_display_name_id = generateDisplayNameId(
+      updateClassDto.class_name,
+    );
+    const classUpdated = await this.classRepository.save({
+      ...isClassExisted,
+      class_name: updateClassDto.class_name,
+      class_display_name_id: class_display_name_id,
+    });
+
+    return classUpdated;
   }
 
   remove(id: number) {

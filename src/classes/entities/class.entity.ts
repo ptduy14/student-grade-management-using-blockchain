@@ -1,5 +1,7 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Cohort } from "src/cohorts/entities/cohort.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity()
 export class Class {
     @PrimaryGeneratedColumn()
     class_id: number
@@ -9,4 +11,10 @@ export class Class {
 
     @Column()
     class_name: string
+
+    @Column({default: 0})
+    total_student: number
+
+    @ManyToOne(() => Cohort, (cohort) => cohort.classes)
+    cohort: Cohort
 }
