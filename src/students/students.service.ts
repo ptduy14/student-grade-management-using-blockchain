@@ -8,6 +8,8 @@ import { Class } from 'src/classes/entities/class.entity';
 import { Cohort } from 'src/cohorts/entities/cohort.entity';
 import { StudentUtil } from 'common/utils/student.util';
 import * as bcrypt from 'bcrypt';
+import { plainToClass } from 'class-transformer';
+import { StudentDto } from './dto/student.dto';
 
 @Injectable()
 export class StudentsService {
@@ -66,7 +68,7 @@ export class StudentsService {
       total_student: classStudentToAdded.total_student + 1,
     });
 
-    const hashedPassword = await bcrypt.hash(createStudentDto, 10);
+    const hashedPassword = await bcrypt.hash(createStudentDto.student_password, 10);
 
     const studentCreated = await this.studentRepository.save({
       ...createStudentDto,
@@ -76,7 +78,19 @@ export class StudentsService {
       student_password: hashedPassword,
     });
 
-    return studentCreated;
+    return plainToClass(StudentDto, studentCreated);
+  }
+
+  async findByEmail(email: string) {
+    const student = await this.studentRepository.findOne({
+      where: { student_email: email },
+    });
+
+    if (!student) {
+      throw new HttpException('Không tìm thấy tài khoản', HttpStatus.NOT_FOUND);
+    }
+
+    return student; 
   }
 
   async findAll() {

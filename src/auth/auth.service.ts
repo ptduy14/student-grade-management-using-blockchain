@@ -7,20 +7,19 @@ import { plainToClass } from 'class-transformer';
 import { TeacherDto } from 'src/teachers/dto/teacher.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordDto } from './dtos/change-password.dto';
+import { StudentsService } from 'src/students/students.service';
+import { StudentDto } from 'src/students/dto/student.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly teacherService: TeachersService,
+    private readonly studentService: StudentsService,
     private readonly jwtService: JwtService,
   ) {}
 
   async teacherCredentialByPassword(loginDto: LoginDto) {
     const teacherFound = await this.teacherService.findByEmail(loginDto.email);
-
-    if (!teacherFound) {
-      throw new HttpException('Không tìm thấy tài khoản', HttpStatus.NOT_FOUND);
-    }
 
     const isMatched = await bcrypt.compare(
       loginDto.password,
@@ -33,8 +32,26 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    console.log(plainToClass(TeacherDto, teacherFound));
+
     return plainToClass(TeacherDto, teacherFound);
+  }
+
+  async studentCredentialByPassword(loginDto: LoginDto) {
+    const studentFound = await this.studentService.findByEmail(loginDto.email);
+
+    const isMatched = await bcrypt.compare(
+      loginDto.password,
+      studentFound.student_password,
+    );
+
+    if (!isMatched) {
+      throw new HttpException(
+        'Mật khẩu không chính xác',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    return plainToClass(StudentDto, studentFound);
   }
 
   async generateToken(user: any) {
@@ -54,15 +71,15 @@ export class AuthService {
   async getTeacherProfile(auth: any) {
     const teacher = this.teacherService.findByEmail(auth.email);
 
-    if (!teacher) {
-      throw new HttpException(
-        'Không tìm thấy thông tin giảng viên',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     return plainToClass(TeacherDto, teacher);
   }
+
+  async getStudentProfile(auth: any) {
+    const student = this.studentService.findByEmail(auth.email);
+
+    return plainToClass(StudentDto, student);
+  }
+
 
   async changeTeacherPassword(auth: any, changePasswordDto: ChangePasswordDto) {
     if (changePasswordDto.newPassword !== changePasswordDto.confirmPassword) {

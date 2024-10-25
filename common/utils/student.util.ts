@@ -4,11 +4,13 @@ export const StudentUtil = {
   },
 
   generateStudentEmail: (student_name: string, student_code: string) => {
-    const stringNameConvert = student_name
-      .split(' ')
-      .map((item: string) => item.charAt(0).toLowerCase())
-      .join('');
+    const nameParts = student_name.split(' ');
 
-    return stringNameConvert + student_code;
+    const stringNameConvert = nameParts
+    .slice(0, -1)
+    .map((item: string) => item.charAt(0).toLowerCase()) 
+    .join('') + nameParts[nameParts.length - 1].toLowerCase();
+
+    return stringNameConvert + student_code + '@student.ctuet.edu.vn';
   },
 };

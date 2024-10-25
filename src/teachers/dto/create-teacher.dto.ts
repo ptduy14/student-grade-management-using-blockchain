@@ -10,11 +10,6 @@ export class CreateTeacherDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    @IsString()
-    teacher_email: string
-
-    @ApiProperty()
-    @IsNotEmpty()
     @MinLength(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
     @MaxLength(20, { message: 'Mật khẩu không được quá 20 ký tự' })
     @IsString()
