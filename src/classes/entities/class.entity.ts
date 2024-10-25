@@ -8,7 +8,7 @@ export class Class {
     class_id: number
 
     @Column()
-    class_display_name_id: string
+    class_code: string
 
     @Column()
     class_name: string

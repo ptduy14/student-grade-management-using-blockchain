@@ -1,6 +1,8 @@
 import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
 
 export class CreateAcademicYearDto {
+    
+
     @IsInt()
     @IsPositive()
     @IsNotEmpty()

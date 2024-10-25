@@ -10,6 +10,8 @@ export class CohortsService {
   constructor(@InjectRepository(Cohort) private readonly cohortRepository: Repository<Cohort>) {}
 
   async create(createCohortDto: CreateCohortDto) {
+    const existedCohort = await this.cohortRepository.count()
+    if (existedCohort) throw new HttpException("Không cho phép thêm mới niên khóa vào lúc này", HttpStatus.FORBIDDEN);
     const latestCohort = await this.cohortRepository.findOne({where: {}, order: {createdAt: 'DESC'}});
 
     if (latestCohort) {

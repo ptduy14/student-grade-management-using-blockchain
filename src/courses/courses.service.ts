@@ -3,7 +3,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Not, Repository } from 'typeorm';
 import { Course } from './entities/course.entity';
-import { generateDisplayNameId } from 'common/utils/generate-display-name-id.util';
+import { generateCode } from 'common/utils/generate-code.util';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class CoursesService {
       throw new HttpException('Tên môn học đã tồn tại', HttpStatus.BAD_REQUEST);
     }
 
-    const course_display_name_id = generateDisplayNameId(
+    const course_display_name_id = generateCode(
       createCourseDto.course_name,
     );
 
@@ -75,7 +75,7 @@ export class CoursesService {
     const course_display_name_id =
       isCourseExisted.course_name === updateCourseDto.course_name
         ? isCourseExisted.course_display_name_id
-        : generateDisplayNameId(updateCourseDto.course_name);
+        : generateCode(updateCourseDto.course_name);
 
     const courseUpdated = await this.courseRepository.save({
       ...isCourseExisted,

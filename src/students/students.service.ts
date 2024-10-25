@@ -150,4 +150,8 @@ export class StudentsService {
 
     return studentUpdated;
   }
+
+  async updatePassword(teacher: any) {
+    return await this.studentRepository.save(teacher);
+  }
 }

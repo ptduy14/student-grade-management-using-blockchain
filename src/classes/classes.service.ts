@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { Class } from './entities/class.entity';
 import { Cohort } from 'src/cohorts/entities/cohort.entity';
-import { generateDisplayNameId } from 'common/utils/generate-display-name-id.util';
+import { generateCode } from 'common/utils/generate-code.util';
 
 @Injectable()
 export class ClassesService {
@@ -36,7 +36,7 @@ export class ClassesService {
       );
     }
 
-    const classDisplayName = generateDisplayNameId(createClassDto.class_name);
+    const classDisplayName = generateCode(createClassDto.class_name);
     const classCreated = this.classRepository.save({
       ...createClassDto,
       total_total_student: 0,
@@ -79,7 +79,7 @@ export class ClassesService {
       throw new HttpException('Tên lớp học đã tồn tại', HttpStatus.BAD_REQUEST);
     }
 
-    const class_display_name_id = generateDisplayNameId(
+    const class_display_name_id = generateCode(
       updateClassDto.class_name,
     );
     const classUpdated = await this.classRepository.save({
