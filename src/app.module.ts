@@ -26,7 +26,6 @@ import { StudentSemesterModule } from './student-semester/student-semester.modul
     CohortsModule,
     StudentsModule,
     StudentSemesterModule,
-    CourseSectionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
