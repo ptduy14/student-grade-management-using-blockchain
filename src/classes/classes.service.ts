@@ -41,7 +41,7 @@ export class ClassesService {
       ...createClassDto,
       total_total_student: 0,
       cohort: cohort,
-      class_display_name_id: classDisplayName,
+      class_code: classDisplayName,
     });
 
     return classCreated;

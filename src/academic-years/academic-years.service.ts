@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { AcademicYear } from './entities/academic-year.entity';
 import { SemesterNameEnum } from 'common/enums/semester-name.enum';
 import { Cohort } from 'src/cohorts/entities/cohort.entity';
+import { Semester } from 'src/semesters/entities/semester.entity';
+import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
 
 @Injectable()
 export class AcademicYearsService {
@@ -14,9 +16,21 @@ export class AcademicYearsService {
 
     @InjectRepository(Cohort)
     private readonly cohortRepository: Repository<Cohort>,
+
+    @InjectRepository(Semester)
+    private readonly semesterRepository: Repository<Semester>,
   ) {}
 
   async create(createAcademicYearDto: CreateAcademicYearDto) {
+    const academicYearCount = await this.semesterRepository.count();
+
+    if (academicYearCount >= 12) {
+      throw new HttpException(
+        'Không thể tạo thêm năm học mới ngay lúc này',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     const latestAcademicYear = await this.academicYearRepository.findOne({
       where: {},
       order: { createdAt: 'DESC' },
@@ -32,9 +46,18 @@ export class AcademicYearsService {
     const academicYearCreated = await this.academicYearRepository.save({
       ...createAcademicYearDto,
       semesters: [
-        { semester_name: SemesterNameEnum.FIRST_TERM },
-        { semester_name: SemesterNameEnum.SECOND_TERM },
-        { semester_name: SemesterNameEnum.SUPPLEMENTARY_TERM },
+        {
+          semester_name: SemesterNameEnum.FIRST_TERM,
+          semester_status: SemesterStatusEnum.NOT_STARTED,
+        },
+        {
+          semester_name: SemesterNameEnum.SECOND_TERM,
+          semester_status: SemesterStatusEnum.NOT_STARTED,
+        },
+        {
+          semester_name: SemesterNameEnum.SUPPLEMENTARY_TERM,
+          semester_status: SemesterStatusEnum.NOT_STARTED,
+        },
       ],
     });
 

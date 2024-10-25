@@ -11,6 +11,7 @@ import { AcademicYearsModule } from './academic-years/academic-years.module';
 import { ClassesModule } from './classes/classes.module';
 import { CohortsModule } from './cohorts/cohorts.module';
 import { StudentsModule } from './students/students.module';
+import { StudentSemesterModule } from './student-semester/student-semester.module';
 
 @Module({
   imports: [
@@ -24,6 +25,8 @@ import { StudentsModule } from './students/students.module';
     ClassesModule,
     CohortsModule,
     StudentsModule,
+    StudentSemesterModule,
+    CourseSectionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

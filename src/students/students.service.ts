@@ -10,6 +10,8 @@ import { StudentUtil } from 'common/utils/student.util';
 import * as bcrypt from 'bcrypt';
 import { plainToClass } from 'class-transformer';
 import { StudentDto } from './dto/student.dto';
+import { StudentSemester } from 'src/student-semester/entities/student-semester.entity';
+import { AcademicYearsService } from 'src/academic-years/academic-years.service';
 
 @Injectable()
 export class StudentsService {
@@ -20,6 +22,9 @@ export class StudentsService {
     private readonly classRepository: Repository<Class>,
     @InjectRepository(Cohort)
     private readonly cohortRepository: Repository<Cohort>,
+    @InjectRepository(StudentSemester)
+    private readonly studentSemesterRepository: Repository<StudentSemester>,
+    private readonly academicYearsService: AcademicYearsService,
   ) {}
 
   async create(createStudentDto: CreateStudentDto) {
@@ -39,6 +44,7 @@ export class StudentsService {
     const isExistedClassInCohort = cohort.classes.some(
       (cls) => cls.class_id === createStudentDto.class_id,
     );
+
     if (!isExistedClassInCohort) {
       throw new HttpException(
         'Không tìm thấy thông tin lớp học',
@@ -68,7 +74,10 @@ export class StudentsService {
       total_student: classStudentToAdded.total_student + 1,
     });
 
-    const hashedPassword = await bcrypt.hash(createStudentDto.student_password, 10);
+    const hashedPassword = await bcrypt.hash(
+      createStudentDto.student_password,
+      10,
+    );
 
     const studentCreated = await this.studentRepository.save({
       ...createStudentDto,
@@ -78,6 +87,23 @@ export class StudentsService {
       student_password: hashedPassword,
     });
 
+    const academicYears = await this.academicYearsService.findAll();
+    const studentSemesters = academicYears.flatMap((academicYear) =>
+      academicYear.semesters.map((semester) => ({
+        student: studentCreated,
+        semester,
+        registration_credits: 0, // Giá trị mặc định
+        gpa: 0, // Giá trị mặc định
+      })),
+    );
+
+    // Sử dụng `Promise.all` để lưu tất cả các student semester
+    await Promise.all(
+      studentSemesters.map((studentSemester) =>
+        this.studentSemesterRepository.save(studentSemester),
+      ),
+    );
+    
     return plainToClass(StudentDto, studentCreated);
   }
 
@@ -90,7 +116,7 @@ export class StudentsService {
       throw new HttpException('Không tìm thấy tài khoản', HttpStatus.NOT_FOUND);
     }
 
-    return student; 
+    return student;
   }
 
   async findAll() {
