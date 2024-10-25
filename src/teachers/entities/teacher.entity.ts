@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
 import { TeacherRoleEnum } from "common/enums/teacher-role.enum"
+import { CourseSection } from "src/course-section/entities/course-section.entity"
 
 @Entity()
 export class Teacher {
@@ -21,4 +22,7 @@ export class Teacher {
         default: TeacherRoleEnum.TEACHER,
     })
     teacher_role: TeacherRoleEnum
+
+    @OneToMany(() => CourseSection, (courseSection) => courseSection.teacher, {cascade: true})
+    courseSections: CourseSection[]
 }

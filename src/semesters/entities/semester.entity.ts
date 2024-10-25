@@ -3,6 +3,7 @@ import { AcademicYear } from "src/academic-years/entities/academic-year.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { StudentSemester } from "src/student-semester/entities/student-semester.entity";
 import { SemesterStatusEnum } from "common/enums/semester-status.enum";
+import { CourseSection } from "src/course-section/entities/course-section.entity";
 
 @Entity()
 export class Semester {
@@ -17,4 +18,7 @@ export class Semester {
 
     @OneToMany(() => StudentSemester, studentSemester => studentSemester.semester, {cascade: true})
     studentSemesters: StudentSemester[];
+
+    @OneToMany(() => CourseSection, (courseSection) => courseSection.semester, {cascade: true})
+    courseSections: CourseSection[]
 }

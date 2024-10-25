@@ -1,19 +1,22 @@
 import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateCourseDto {
-  @ApiProperty()
+export class CreateCourseSectionDto {
+@ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  course_name: string;
+  @IsNumber()
+  @Min(1)
+  semester_id: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
-  course_credits: number;
+  course_id: number;
 
   @ApiProperty()
-  @IsString()
-  course_des: string;
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  teacher_id: number;
 }

@@ -8,5 +8,6 @@ import { Semester } from './entities/semester.entity';
   imports: [TypeOrmModule.forFeature([Semester])],
   controllers: [SemestersController],
   providers: [SemestersService],
+  exports: [SemestersService]
 })
 export class SemestersModule {}

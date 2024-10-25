@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Semester } from './entities/semester.entity';
 import { Repository } from 'typeorm';
+import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
 
 @Injectable()
 export class SemestersService {
@@ -30,5 +31,10 @@ export class SemestersService {
     }
 
     return semester;
+  }
+
+  async openSemester(semester_id: number) {
+    const semester = await this.semesterRepository.findOne({where: {semester_id: semester_id}});
+    return await this.semesterRepository.save({...semester, semester_status: SemesterStatusEnum.IN_PROGRESS});
   }
 }

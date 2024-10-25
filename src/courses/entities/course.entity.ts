@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+import { CourseSection } from "src/course-section/entities/course-section.entity";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 
 @Entity()
 export class Course {
@@ -6,7 +7,7 @@ export class Course {
     course_id: number
 
     @Column()
-    course_display_name_id: string;
+    course_code: string;
 
     @Column()
     course_name: string
@@ -16,4 +17,7 @@ export class Course {
 
     @Column()
     course_des: string
+
+    @OneToMany(() => CourseSection, (courseSection) => courseSection.course, {cascade: true})
+    courseSections: CourseSection[]
 }

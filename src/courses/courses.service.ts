@@ -22,12 +22,12 @@ export class CoursesService {
       throw new HttpException('Tên môn học đã tồn tại', HttpStatus.BAD_REQUEST);
     }
 
-    const course_display_name_id = generateCode(
+    const course_code = generateCode(
       createCourseDto.course_name,
     );
 
     const courseCreated = await this.courseRepository.save({
-      course_display_name_id,
+      course_code,
       ...createCourseDto,
     });
 
@@ -72,16 +72,16 @@ export class CoursesService {
       throw new HttpException('Tên môn học đã tồn tại', HttpStatus.BAD_REQUEST);
     }
 
-    const course_display_name_id =
+    const course_code =
       isCourseExisted.course_name === updateCourseDto.course_name
-        ? isCourseExisted.course_display_name_id
+        ? isCourseExisted.course_code
         : generateCode(updateCourseDto.course_name);
 
     const courseUpdated = await this.courseRepository.save({
       ...isCourseExisted,
       course_name: updateCourseDto.course_name,
       course_des: updateCourseDto.course_des,
-      course_display_name_id,
+      course_code,
     });
 
     return courseUpdated;
