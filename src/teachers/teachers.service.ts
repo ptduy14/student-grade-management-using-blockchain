@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from './entities/teacher.entity';
 import { Repository } from 'typeorm';
 import { TeacherDto } from './dto/teacher.dto';
-import { plainToClass } from 'class-transformer';
+import { classToPlain, plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { TeacherUtil } from 'common/utils/teacher.util';
 
@@ -71,21 +71,27 @@ export class TeachersService {
   }
 
   async update(id: number, updateTeacherDto: UpdateTeacherDto) {
-    const updatedTeacher = { teacher_id: id, ...updateTeacherDto };
-
     const teacherFound = await this.teacherRepository.findOneBy({
       teacher_id: id,
     });
+
+    if (teacherFound.teacher_name !== updateTeacherDto.teacher_name) {
+      const teacherCount = await this.teacherRepository.count();
+      const teacherEmail = TeacherUtil.generateTeacherEmail(updateTeacherDto.teacher_name, teacherCount);
+
+      teacherFound.teacher_name = updateTeacherDto.teacher_name;
+      teacherFound.teacher_email = teacherEmail;
+    } 
+
     if (!teacherFound) {
       throw new HttpException(
         `Không tìm thấy giảng viên`,
         HttpStatus.NOT_FOUND,
       );
     }
-
-    const result = await this.teacherRepository.save(updatedTeacher);
-
-    return result;
+    
+    const teacherUpdated = await this.teacherRepository.save(teacherFound)
+    return plainToClass(TeacherDto, teacherUpdated);
   }
 
   // need to improve later

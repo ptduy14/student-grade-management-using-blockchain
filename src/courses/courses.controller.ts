@@ -17,7 +17,7 @@ export class CoursesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Post('/create')
-  @ApiOperation({summary: 'Create course'})
+  @ApiOperation({summary: 'Tạo môn học mới'})
   create(@Body(ValidationPipe) createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto);
   }
@@ -25,7 +25,7 @@ export class CoursesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Get()
-  @ApiOperation({summary: 'Create all courses'})
+  @ApiOperation({summary: 'Lấy tất cả danh sách môn học'})
   findAll() {
     return this.coursesService.findAll();
   }
@@ -33,19 +33,22 @@ export class CoursesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
   @Get(':id')
-  @ApiOperation({summary: 'Get course'})
+  @ApiOperation({summary: 'Lấy chi tiết môn học'})
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.coursesService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
-  @ApiOperation({summary: 'Update course'})
+  @ApiOperation({summary: 'Cập nhật môn học'})
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateCourseDto: UpdateCourseDto) {
     return this.coursesService.update(id, updateCourseDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(TeacherRoleEnum.ADMIN)
+  @ApiOperation({summary: 'Xóa môn học (không nên sử dụng)'})
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.coursesService.remove(id);

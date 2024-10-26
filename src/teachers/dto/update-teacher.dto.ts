@@ -6,15 +6,10 @@ export class UpdateTeacherDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  teacher_name?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  teacher_email?: string;
+  teacher_name: string;
 
   @ApiProperty()
   @IsOptional()
   @IsEnum(TeacherRoleEnum)
-  teacher_role?: TeacherRoleEnum;
+  teacher_role: TeacherRoleEnum;
 }

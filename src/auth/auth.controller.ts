@@ -22,19 +22,20 @@ export class AuthController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @ApiOperation({summary: 'Get teacher profile'})
+    @ApiOperation({summary: 'Lấy profile giáo viên'})
     @Get('/teacher/profile')
     async getTeacherProfile(@Auth() auth: any) {
         return this.authService.getTeacherProfile(auth);
     }
 
     @UseGuards(JwtAuthGuard)
-    @ApiOperation({summary: 'Get student profile'})
+    @ApiOperation({summary: 'Get profile sinh viên'})
     @Get('/student/profile')
     async getStudentProfile(@Auth() auth: any) {
         return this.authService.getStudentProfile(auth);
     }
 
+    @ApiOperation({summary: 'Đổi mật khẩu giảng viên'})
     @UseGuards(JwtAuthGuard)
     @Patch('/teacher/change-password')
     async changeTeacherPassword(@Auth() auth: any, @Body(ValidationPipe) changePasswordDto: ChangePasswordDto) {

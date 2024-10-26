@@ -1,10 +1,12 @@
+import { removeVietnameseTones } from "./remove-vietnamse-tones"; 
+
 export const StudentUtil = {
   generateStudentCode: (enrollment_year: number, total_student: number) => {
     return enrollment_year + total_student.toString().padStart(4, '0');
   },
 
   generateStudentEmail: (student_name: string, student_code: string) => {
-    const nameParts = student_name.split(' ');
+    const nameParts = removeVietnameseTones(student_name).split(' ');
 
     const stringNameConvert = nameParts
     .slice(0, -1)

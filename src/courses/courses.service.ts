@@ -79,8 +79,7 @@ export class CoursesService {
 
     const courseUpdated = await this.courseRepository.save({
       ...isCourseExisted,
-      course_name: updateCourseDto.course_name,
-      course_des: updateCourseDto.course_des,
+      ...updateCourseDto,
       course_code,
     });
 

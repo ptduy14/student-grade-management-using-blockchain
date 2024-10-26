@@ -17,7 +17,7 @@ export class ClassesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Post('/create')
-  @ApiOperation({summary: "Create class"})
+  @ApiOperation({summary: "Tạo lớp học mới"})
   async create(@Body(ValidationPipe) createClassDto: CreateClassDto) {
     return await this.classesService.create(createClassDto);
   }
@@ -25,14 +25,14 @@ export class ClassesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
   @Get()
-  @ApiOperation({summary: "Get all classes"})
+  @ApiOperation({summary: "Lấy danh sách lớp học"})
   async findAll() {
     return await this.classesService.findAll();
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
-  @ApiOperation({summary: "Get class"})
+  @ApiOperation({summary: "Lấy thông tin chi tiết lớp học/bao gồm sinh viên trong lớp"})
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.classesService.findOne(id);
@@ -40,14 +40,9 @@ export class ClassesController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
-  @ApiOperation({summary: "Update class"})
+  @ApiOperation({summary: "Cập nhật thông tin lớp học"})
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateClassDto: UpdateClassDto) {
     return this.classesService.update(id, updateClassDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.classesService.remove(+id);
   }
 }

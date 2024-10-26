@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  ValidationPipe,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CohortsService } from './cohorts.service';
 import { CreateCohortDto } from './dto/create-cohort.dto';
 import { UpdateCohortDto } from './dto/update-cohort.dto';
@@ -17,7 +28,7 @@ export class CohortsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Post('/create')
-  @ApiOperation({ summary: 'Create cohort' })
+  @ApiOperation({ summary: 'Tạo niên khóa mới' })
   create(@Body() createCohortDto: CreateCohortDto) {
     return this.cohortsService.create(createCohortDto);
   }
@@ -25,26 +36,16 @@ export class CohortsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
   @Get()
-  @ApiOperation({ summary: 'Get all cohort' })
+  @ApiOperation({ summary: 'Lấy danh sách niên khóa' })
   findAll() {
     return this.cohortsService.findAll();
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
-  @ApiOperation({ summary: 'Get cohort' })
+  @ApiOperation({ summary: 'Lấy chi tiết niên khóa' })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.cohortsService.findOne(id);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateCohortDto: UpdateCohortDto) {
-  //   return this.cohortsService.update(+id, updateCohortDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.cohortsService.remove(+id);
-  // }
 }

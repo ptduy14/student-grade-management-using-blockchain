@@ -1,6 +1,8 @@
+import { removeVietnameseTones } from "./remove-vietnamse-tones"; 
+
 export const TeacherUtil = {
   generateTeacherEmail: (teacher_name: string, count: number) => {
-    const nameParts = teacher_name.split(' ');
+    const nameParts = removeVietnameseTones(teacher_name).split(' ');
 
     const stringNameConvert =
       nameParts

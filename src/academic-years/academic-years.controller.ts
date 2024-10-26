@@ -25,7 +25,7 @@ export class AcademicYearsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Post('/create')
-  @ApiOperation({ summary: 'Create academic year' })
+  @ApiOperation({ summary: 'Tạo năm học mới' })
   create(@Body() createAcademicYearDto: CreateAcademicYearDto) {
     return this.academicYearsService.create(createAcademicYearDto);
   }
@@ -33,7 +33,7 @@ export class AcademicYearsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
   @Get()
-  @ApiOperation({ summary: 'Get all academic year' })
+  @ApiOperation({ summary: 'Lấy tất danh sách tất cả năm học' })
   findAll() {
     return this.academicYearsService.findAll();
   }
@@ -41,7 +41,7 @@ export class AcademicYearsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
   @Get(':id')
-  @ApiOperation({ summary: 'Get academic year' })
+  @ApiOperation({ summary: 'Lấy chi tiết năm học' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.academicYearsService.findOne(id);
   }

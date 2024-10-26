@@ -26,6 +26,7 @@ export class StudentEnrollmentController {
 
   // chỉ dành cho role sinh viên
   @UseGuards(JwtAuthGuard)
+  // chỉ dành cho sinh viên, admin
   @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí trong các học kì' })
   @Get('student/semesters')
   findAll(@Auth() auth: any) {
@@ -34,6 +35,7 @@ export class StudentEnrollmentController {
 
   // chỉ dành cho role sinh viên
   @UseGuards(JwtAuthGuard)
+  // chỉ dành cho sinh viên, admin
   @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí theo học kì cụ thể' })
   @Get('student/semesters/:semesterId')
   findBySemesterId(@Auth() auth: any, @Param('semesterId', ParseIntPipe) semesterId: number) {

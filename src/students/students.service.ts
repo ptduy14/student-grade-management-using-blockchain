@@ -32,13 +32,9 @@ export class StudentsService {
       where: { cohort_id: createStudentDto.cohort_id },
       relations: { classes: true },
     });
+
     if (!cohort) {
       throw new HttpException('Không tìm thấy niên khóa', HttpStatus.NOT_FOUND);
-    }
-
-    const currentYear = new Date().getFullYear();
-    if (cohort.enrollment_year !== currentYear) {
-      throw new HttpException('Niên khóa không hợp lệ', HttpStatus.BAD_REQUEST);
     }
 
     const isExistedClassInCohort = cohort.classes.some(
@@ -60,6 +56,7 @@ export class StudentsService {
       cohort.enrollment_year,
       total_student,
     );
+
     const studentEmail = StudentUtil.generateStudentEmail(
       createStudentDto.student_name,
       studentCode,
@@ -103,7 +100,7 @@ export class StudentsService {
         this.studentSemesterRepository.save(studentSemester),
       ),
     );
-    
+
     return plainToClass(StudentDto, studentCreated);
   }
 
@@ -163,15 +160,18 @@ export class StudentsService {
       throw new HttpException('Không tìm thấy sinh viên', HttpStatus.NOT_FOUND);
     }
 
-    const studentEmail = StudentUtil.generateStudentEmail(
-      updateStudentDto.student_name,
-      student.student_code,
-    );
+    if (student.student_name === updateStudentDto.student_name) {
+      const studentEmail = StudentUtil.generateStudentEmail(
+        updateStudentDto.student_name,
+        student.student_code,
+      );
+
+      student.student_email = studentEmail;
+    }
 
     const studentUpdated = this.studentRepository.save({
       ...student,
       ...updateStudentDto,
-      student_email: studentEmail,
     });
 
     return studentUpdated;

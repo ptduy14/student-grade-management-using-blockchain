@@ -16,7 +16,7 @@ export class StudentsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
-  @ApiOperation({summary: "Craete student"})
+  @ApiOperation({summary: "Thêm mới sinh viên"})
   @Post()
   async create(@Body(ValidationPipe) createStudentDto: CreateStudentDto) {
     return await this.studentsService.create(createStudentDto);
@@ -24,7 +24,7 @@ export class StudentsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
-  @ApiOperation({summary: "Get all students"})
+  @ApiOperation({summary: "Lấy danh sách sinh viên"})
   @Get()
   async findAll() {
     return await this.studentsService.findAll();
@@ -32,7 +32,7 @@ export class StudentsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
-  @ApiOperation({summary: "Get student"})
+  @ApiOperation({summary: "Lấy chi tiết sinh viên"})
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.studentsService.findOne(id);
@@ -40,7 +40,7 @@ export class StudentsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
-  @ApiOperation({summary: "update student"})
+  @ApiOperation({summary: "Cập nhật sinh viên"})
   @Patch(':id')
   async update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateStudentDto: UpdateStudentDto) {
     return await this.studentsService.update(id, updateStudentDto);

@@ -18,7 +18,7 @@ export class TeachersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Post('/create')
-  @ApiOperation({ summary: 'Create teacher account' })
+  @ApiOperation({ summary: 'Tạo tài khoản giảng viên/admin' })
   async create(@Body(ValidationPipe) createTeacherDto: CreateTeacherDto) {
     return await this.teachersService.create(createTeacherDto);
   }
@@ -26,7 +26,7 @@ export class TeachersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Get()
-  @ApiOperation({ summary: 'Get all teacher accounts' })
+  @ApiOperation({ summary: 'Lấy danh sách giảng viên/admin hiện có' })
   findAll() {
     return this.teachersService.findAll();
   }
@@ -34,7 +34,7 @@ export class TeachersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Get(':id')
-  @ApiOperation({ summary: 'Get teacher account' })
+  @ApiOperation({ summary: 'Lấy chi tiết tài khoản giảng viên/admin' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.teachersService.findOne(id);
   }
@@ -42,7 +42,7 @@ export class TeachersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Patch(':id')
-  @ApiOperation({ summary: 'Update teacher account' })
+  @ApiOperation({ summary: 'Cập nhật tài khoản giảng viên/admin' })
   update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateTeacherDto: UpdateTeacherDto) {
     return this.teachersService.update(id, updateTeacherDto);
   }
@@ -50,7 +50,7 @@ export class TeachersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(TeacherRoleEnum.ADMIN)
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete teacher account' })
+  @ApiOperation({ summary: 'Xóa tài khoản giảng viên/admin (không khuyến khích sử dụng)' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.teachersService.remove(id);
   }

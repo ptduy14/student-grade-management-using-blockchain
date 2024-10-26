@@ -9,12 +9,15 @@ import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseSection } from './entities/course-section.entity';
 import { Repository } from 'typeorm';
+import { StudentEnrollment } from 'src/student-enrollment/entities/student-enrollment.entity';
 
 @Injectable()
 export class CourseSectionService {
   constructor(
     @InjectRepository(CourseSection)
     private readonly courseSectionRepository: Repository<CourseSection>,
+    @InjectRepository(StudentEnrollment)
+    private readonly studentEnrollmentRepository: Repository<StudentEnrollment>,
     private readonly semesterService: SemestersService,
     private readonly courseService: CoursesService,
     private readonly teacherService: TeachersService,
@@ -32,7 +35,8 @@ export class CourseSectionService {
     );
 
     if (semester.semester_status === SemesterStatusEnum.NOT_STARTED) {
-      await this.semesterService.openSemester(semester.semester_id);
+      throw new HttpException('Học kì này hiện chưa mở', HttpStatus.CONFLICT);
+      // await this.semesterService.openSemester(semester.semester_id);
     }
 
     if (teacher.teacher_role === TeacherRoleEnum.ADMIN) {
@@ -72,6 +76,55 @@ export class CourseSectionService {
     return courseSections;
   }
 
+  async findAllBySemester(id: number) {
+    return await this.courseSectionRepository
+    .createQueryBuilder('course_section')
+    .leftJoinAndSelect('course_section.semester', 'semester')
+    .leftJoinAndSelect('course_section.course', 'course')
+    .leftJoinAndSelect('course_section.teacher', 'teacher')
+    .where('semester.semester_id = :id', {id})
+    .select([
+      'course_section',
+      'semester',
+      'course',
+      'teacher.teacher_id',
+      'teacher.teacher_name',
+      'teacher.teacher_email',
+    ])
+    .getMany();
+  }
+
+  async findAllCourseSectionsByTeacher(auth: any) {
+    return await this.courseSectionRepository
+    .createQueryBuilder('course_section')
+    .leftJoinAndSelect('course_section.semester', 'semester')
+    .leftJoinAndSelect('course_section.course', 'course')
+    .leftJoinAndSelect('course_section.teacher', 'teacher')
+    .where('teacher.teacher_id = :id', {id: auth.id})
+    .select([
+      'course_section',
+      'semester',
+      'course',
+    ])
+    .getMany();
+  }
+
+  async findAllCourseSectionsByTeacherAndSemester(auth: any, id: number) {
+    return await this.courseSectionRepository
+    .createQueryBuilder('course_section')
+    .leftJoinAndSelect('course_section.semester', 'semester')
+    .leftJoinAndSelect('course_section.course', 'course')
+    .leftJoinAndSelect('course_section.teacher', 'teacher')
+    .where('teacher.teacher_id = :teacherId', { teacherId: auth.id })
+    .andWhere('semester.semester_id = :semesterId', { semesterId: id })
+    .select([
+      'course_section',
+      'semester',
+      'course',
+    ])
+    .getMany();
+  }
+
   async findOne(id: number) {
     const courseSection = await this.courseSectionRepository
     .createQueryBuilder('course_section')
@@ -99,6 +152,23 @@ export class CourseSectionService {
     return courseSection;
   }
 
+  async findAllStudentsInCourseSection(courseSectionId: number) {
+    return await this.studentEnrollmentRepository
+      .createQueryBuilder('student_enrollment')
+      .innerJoin('student_enrollment.studentSemester', 'student_semester')
+      .innerJoin('student_semester.student', 'student')
+      .innerJoin('student_semester.semester', 'semester')
+      .where('student_enrollment.course_section_id = :courseSectionId', { courseSectionId })
+      .select([
+        'student.student_id',
+        'semester.semester_id',
+        'student_enrollment.course_section_id',
+        'student.student_name',
+        'student.student_email',
+      ])
+      .getRawMany();
+  }
+  
   async findBySemesterIdAndCourseId(semester_id: number, course_id: number) {
     const courseSection = await this.courseSectionRepository.findOne({
       where: {
@@ -117,11 +187,7 @@ export class CourseSectionService {
     return courseSection;
   }
 
-  update(id: number, updateCourseSectionDto: UpdateCourseSectionDto) {
-    return `This action updates a #${id} courseSection`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} courseSection`;
+  async updateCurrentStudents(courseSection: CourseSection) {
+    await this.courseSectionRepository.save(courseSection);
   }
 }

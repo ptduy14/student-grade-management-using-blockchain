@@ -23,7 +23,7 @@ export class ClassesService {
     });
 
     if (!cohort) {
-      throw new HttpException('Không tìm thấy cohort', HttpStatus.NOT_FOUND);
+      throw new HttpException('Không tìm thấy niên khóa', HttpStatus.NOT_FOUND);
     }
 
     const isClassNameExistedInCohort = cohort.classes.some(
@@ -48,19 +48,32 @@ export class ClassesService {
   }
 
   async findAll() {
-    return await this.classRepository.find({ relations: { cohort: true, students: true } });
+    const classes = await this.classRepository.find()
+
+    return classes;
   }
 
   async findOne(id: number) {
-    const classFounded = await this.classRepository.find({
-      where: { class_id: id },
-      relations: { cohort: true, students: true },
-    });
-    if (!classFounded) {
+    const classFound = await this.classRepository
+      .createQueryBuilder('class')
+      .innerJoinAndSelect('class.cohort', 'cohort')
+      .innerJoinAndSelect('class.students', 'students')
+      .where('class.class_id = :id', {id})
+      .select([
+        'class',
+        'cohort',
+        'students.student_id',
+        'students.student_code',
+        'students.student_name',
+        'students.student_email',
+      ])
+      .getOne();
+
+    if (!classFound) {
       throw new HttpException('Không tìm thấy lớp học', HttpStatus.NOT_FOUND);
     }
 
-    return classFounded;
+    return classFound;
   }
 
   async update(id: number, updateClassDto: UpdateClassDto) {
@@ -79,9 +92,7 @@ export class ClassesService {
       throw new HttpException('Tên lớp học đã tồn tại', HttpStatus.BAD_REQUEST);
     }
 
-    const class_display_name_id = generateCode(
-      updateClassDto.class_name,
-    );
+    const class_display_name_id = generateCode(updateClassDto.class_name);
     const classUpdated = await this.classRepository.save({
       ...isClassExisted,
       class_name: updateClassDto.class_name,
@@ -89,9 +100,5 @@ export class ClassesService {
     });
 
     return classUpdated;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} class`;
   }
 }
