@@ -1,6 +1,7 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Student } from 'src/students/entities/student.entity';
 import { Semester } from 'src/semesters/entities/semester.entity';
+import { StudentEnrollment } from 'src/student-enrollment/entities/student-enrollment.entity';
 
 @Entity()
 export class StudentSemester {
@@ -18,4 +19,7 @@ export class StudentSemester {
 
   @Column()
   gpa: number;
+
+  @OneToMany(() => StudentEnrollment, (studentEnrollment) => studentEnrollment.studentSemester, {cascade: true})
+  student_enrollments: StudentEnrollment[]
 }

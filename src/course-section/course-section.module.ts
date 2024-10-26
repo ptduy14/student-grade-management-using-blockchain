@@ -11,5 +11,6 @@ import { TeachersModule } from 'src/teachers/teachers.module';
   imports: [TypeOrmModule.forFeature([CourseSection]), SemestersModule, CoursesModule, TeachersModule],
   controllers: [CourseSectionController],
   providers: [CourseSectionService],
+  exports: [CourseSectionService]
 })
 export class CourseSectionModule {}

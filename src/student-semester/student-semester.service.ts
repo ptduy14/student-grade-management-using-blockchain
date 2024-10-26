@@ -33,7 +33,7 @@ export class StudentSemesterService {
     });
     
     if (!studentSemester) {
-        throw new HttpException(`Không tìm thấy dữ liệu`, HttpStatus.NOT_FOUND);
+        throw new HttpException(`Không tìm thấy dữ liệu học kì của sinh viên này`, HttpStatus.NOT_FOUND);
     }
 
     return studentSemester;

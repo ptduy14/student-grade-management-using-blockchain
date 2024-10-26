@@ -13,7 +13,8 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class CourseSectionService {
   constructor(
-    @InjectRepository(CourseSection) private readonly courseSectionRepository: Repository<CourseSection>,
+    @InjectRepository(CourseSection)
+    private readonly courseSectionRepository: Repository<CourseSection>,
     private readonly semesterService: SemestersService,
     private readonly courseService: CoursesService,
     private readonly teacherService: TeachersService,
@@ -46,22 +47,73 @@ export class CourseSectionService {
       course: course,
       teacher: teacher,
       course_section_name: course.course_name,
-      current_students: 0
-    })
+      current_students: 0,
+    });
 
     return courseSectionCreated;
   }
 
   async findAll() {
-    return await this.courseSectionRepository.find({relations: {semester: true, course: true, teacher: true}});
+    const courseSections = await this.courseSectionRepository
+      .createQueryBuilder('course_section')
+      .leftJoinAndSelect('course_section.semester', 'semester')
+      .leftJoinAndSelect('course_section.course', 'course')
+      .leftJoinAndSelect('course_section.teacher', 'teacher')
+      .select([
+        'course_section',
+        'semester',
+        'course',
+        'teacher.teacher_id',
+        'teacher.teacher_name',
+        'teacher.teacher_email',
+      ])
+      .getMany();
+
+    return courseSections;
   }
 
   async findOne(id: number) {
-    const courseSection = await this.courseSectionRepository.findOne({where: {course_section_id: id}, relations: {semester: true, course: true, teacher: true}})
+    const courseSection = await this.courseSectionRepository
+    .createQueryBuilder('course_section')
+    .leftJoinAndSelect('course_section.semester', 'semester')
+    .leftJoinAndSelect('course_section.course', 'course')
+    .leftJoinAndSelect('course_section.teacher', 'teacher')
+    .where("course_section.course_section_id = :id", {id})
+    .select([
+      'course_section',
+      'semester',
+      'course',
+      'teacher.teacher_id',
+      'teacher.teacher_name',
+      'teacher.teacher_email',
+    ])
+    .getOne();
+
     if (!courseSection) {
-      throw new HttpException("Không tìm thấy lớp học phần", HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'Không tìm thấy lớp học phần',
+        HttpStatus.NOT_FOUND,
+      );
     }
-    
+
+    return courseSection;
+  }
+
+  async findBySemesterIdAndCourseId(semester_id: number, course_id: number) {
+    const courseSection = await this.courseSectionRepository.findOne({
+      where: {
+        semester: { semester_id: semester_id },
+        course: { course_id: course_id },
+      },
+    });
+
+    if (!courseSection) {
+      throw new HttpException(
+        'Không tìm thấy lớp học phần',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return courseSection;
   }
 

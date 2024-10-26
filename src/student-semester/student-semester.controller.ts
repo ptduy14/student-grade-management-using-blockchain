@@ -1,7 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { StudentSemesterService } from './student-semester.service';
-import { CreateStudentSemesterDto } from './dto/create-student-semester.dto';
-import { UpdateStudentSemesterDto } from './dto/update-student-semester.dto';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiBearerAuth()
