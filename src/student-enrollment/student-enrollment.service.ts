@@ -24,14 +24,14 @@ export class StudentEnrollmentService {
 
   async enroll(createStudentEnrollmentDto: CreateStudentEnrollmentDto) {
     const isStudentEnrollmetExisted =
-      await this.studentEnrollmentRepository.find({
+      await this.studentEnrollmentRepository.findOne({
         where: {
-          student_id: createStudentEnrollmentDto.semester_id,
+          student_id: createStudentEnrollmentDto.student_id,
           semester_id: createStudentEnrollmentDto.semester_id,
           course_section_id: createStudentEnrollmentDto.course_section_id,
         },
       });
-
+      
     if (isStudentEnrollmetExisted) {
       throw new HttpException(
         'Học phần này đã được đăng kí',

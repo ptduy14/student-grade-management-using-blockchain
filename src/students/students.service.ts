@@ -12,6 +12,7 @@ import { plainToClass } from 'class-transformer';
 import { StudentDto } from './dto/student.dto';
 import { StudentSemester } from 'src/student-semester/entities/student-semester.entity';
 import { AcademicYearsService } from 'src/academic-years/academic-years.service';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 
 @Injectable()
 export class StudentsService {
@@ -82,6 +83,7 @@ export class StudentsService {
       student_email: studentEmail,
       class: classStudentToAdded,
       student_password: hashedPassword,
+      student_role: UserRoleEnum.STUDENT
     });
 
     const academicYears = await this.academicYearsService.findAll();

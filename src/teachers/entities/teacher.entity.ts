@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
-import { TeacherRoleEnum } from "common/enums/teacher-role.enum"
+import { UserRoleEnum } from "common/enums/user-role.enum"
 import { CourseSection } from "src/course-section/entities/course-section.entity"
 
 @Entity()
@@ -18,10 +18,10 @@ export class Teacher {
 
     @Column({
         type: "enum",
-        enum: TeacherRoleEnum,
-        default: TeacherRoleEnum.TEACHER,
+        enum: UserRoleEnum,
+        default: UserRoleEnum.TEACHER,
     })
-    teacher_role: TeacherRoleEnum
+    teacher_role: UserRoleEnum
 
     @OneToMany(() => CourseSection, (courseSection) => courseSection.teacher, {cascade: true})
     courseSections: CourseSection[]

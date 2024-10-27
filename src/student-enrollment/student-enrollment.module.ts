@@ -6,9 +6,10 @@ import { StudentEnrollment } from './entities/student-enrollment.entity';
 import { StudentSemesterModule } from 'src/student-semester/student-semester.module';
 import { CourseSectionModule } from 'src/course-section/course-section.module';
 import { StudentSemester } from 'src/student-semester/entities/student-semester.entity';
+import { CoursesModule } from 'src/courses/courses.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([StudentEnrollment, StudentSemester]), StudentSemesterModule, CourseSectionModule],
+  imports: [TypeOrmModule.forFeature([StudentEnrollment, StudentSemester]), StudentSemesterModule, CourseSectionModule, CoursesModule],
   controllers: [StudentEnrollmentController],
   providers: [StudentEnrollmentService],
 })

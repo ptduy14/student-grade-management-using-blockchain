@@ -1,4 +1,4 @@
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 import { Exclude, Expose } from 'class-transformer';
 
 export class TeacherDto {
@@ -15,5 +15,5 @@ export class TeacherDto {
   teacher_password: string;
 
   @Expose({ name: 'teacher_role' })
-  role: TeacherRoleEnum;
+  role: UserRoleEnum;
 }

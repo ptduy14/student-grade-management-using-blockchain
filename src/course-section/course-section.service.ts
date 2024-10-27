@@ -4,7 +4,7 @@ import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
 import { SemestersService } from 'src/semesters/semesters.service';
 import { CoursesService } from 'src/courses/courses.service';
 import { TeachersService } from 'src/teachers/teachers.service';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseSection } from './entities/course-section.entity';
@@ -39,7 +39,7 @@ export class CourseSectionService {
       // await this.semesterService.openSemester(semester.semester_id);
     }
 
-    if (teacher.teacher_role === TeacherRoleEnum.ADMIN) {
+    if (teacher.teacher_role === UserRoleEnum.ADMIN) {
       throw new HttpException(
         'Giáo viên được chỉ định không hợp lệ',
         HttpStatus.BAD_REQUEST,

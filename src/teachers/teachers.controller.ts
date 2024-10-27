@@ -6,7 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'common/decorators/roles.decorator';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiBearerAuth()
@@ -16,7 +16,7 @@ export class TeachersController {
   constructor(private readonly teachersService: TeachersService) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Post('/create')
   @ApiOperation({ summary: 'Tạo tài khoản giảng viên/admin' })
   async create(@Body(ValidationPipe) createTeacherDto: CreateTeacherDto) {
@@ -24,7 +24,7 @@ export class TeachersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Get()
   @ApiOperation({ summary: 'Lấy danh sách giảng viên/admin hiện có' })
   findAll() {
@@ -32,7 +32,7 @@ export class TeachersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Get(':id')
   @ApiOperation({ summary: 'Lấy chi tiết tài khoản giảng viên/admin' })
   findOne(@Param('id', ParseIntPipe) id: number) {
@@ -40,7 +40,7 @@ export class TeachersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Patch(':id')
   @ApiOperation({ summary: 'Cập nhật tài khoản giảng viên/admin' })
   update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateTeacherDto: UpdateTeacherDto) {
@@ -48,7 +48,7 @@ export class TeachersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Xóa tài khoản giảng viên/admin (không khuyến khích sử dụng)' })
   remove(@Param('id', ParseIntPipe) id: number) {

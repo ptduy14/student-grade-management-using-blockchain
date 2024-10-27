@@ -34,6 +34,11 @@ export class SemestersService {
   }
 
   async openSemester(semester_id: number) {
+    const isCurrentSemesterIsOpen = await this.semesterRepository.findOne({where: {semester_status: SemesterStatusEnum.IN_PROGRESS}});
+    if (isCurrentSemesterIsOpen) {
+      throw new HttpException("Không thể mở thêm học kì hiện tại", HttpStatus.CONFLICT);
+    }
+    
     const semester = await this.semesterRepository.findOne({where: {semester_id: semester_id}});
     return await this.semesterRepository.save({...semester, semester_status: SemesterStatusEnum.IN_PROGRESS});
   }

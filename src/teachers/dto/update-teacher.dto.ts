@@ -1,5 +1,5 @@
 import { IsString, IsOptional, IsEnum } from 'class-validator';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateTeacherDto {
@@ -10,6 +10,6 @@ export class UpdateTeacherDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsEnum(TeacherRoleEnum)
-  teacher_role: TeacherRoleEnum;
+  @IsEnum(UserRoleEnum)
+  teacher_role: UserRoleEnum;
 }

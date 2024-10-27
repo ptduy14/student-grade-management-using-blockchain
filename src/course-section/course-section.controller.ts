@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'common/decorators/roles.decorator';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 import { Auth } from 'common/decorators/auth.decorator';
 
 @ApiBearerAuth()
@@ -16,7 +16,7 @@ export class CourseSectionController {
   constructor(private readonly courseSectionService: CourseSectionService) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: 'Tạo lớp học phần'})
   @Post()
   async create(@Body(ValidationPipe) createCourseSectionDto: CreateCourseSectionDto) {
@@ -24,7 +24,7 @@ export class CourseSectionController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: 'Lấy tất cả lớp học phần hiện có'})
   @Get()
   async findAll() {
@@ -32,7 +32,7 @@ export class CourseSectionController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: 'Lấy tất cả lớp học phần theo học kì'})
   @Get('semesters/:id')
   async findAllBySemester(@Param('id', ParseIntPipe) id: number) {
@@ -41,7 +41,7 @@ export class CourseSectionController {
 
   // Lấy danh sách tất cả lớp học phần mà giáo viên giảng dạy
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.TEACHER)
   @ApiOperation({summary: 'Lấy danh sách tất cả lớp học phần giáo viên giảng dạy (AUTH)'})
   @Get('teacher')
   async findAllCourseSectionsByTeacher(@Auth() auth: any) {
@@ -50,7 +50,7 @@ export class CourseSectionController {
 
   // Lấy danh sách lớp học phần mà giáo viên giảng dạy theo học kì
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.TEACHER)
   @ApiOperation({summary: 'Lấy danh sách lớp học phần giáo viên giảng dạy theo học kì (AUTH)'})
   @Get('teacher/semesters/:id')
   async findAllCourseSectionsByTeacherAndSemester(@Auth() auth: any, @Param('id', ParseIntPipe) id: number) {
@@ -58,7 +58,7 @@ export class CourseSectionController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @ApiOperation({summary: 'Lấy chi tiết lớp học phần'})
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -67,7 +67,7 @@ export class CourseSectionController {
 
   // Lấy danh sách sinh viên trong lớp học phần
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @ApiOperation({summary: 'Lấy danh sách sinh viên trong lớp học phần'})
   @Get(':id/students')
   async findAllStudentsInCourseSection(@Param('id', ParseIntPipe) id: number) {

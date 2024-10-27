@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'common/decorators/roles.decorator';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 
 @ApiBearerAuth()
 @ApiTags('COURSE')
@@ -15,7 +15,7 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Post('/create')
   @ApiOperation({summary: 'Tạo môn học mới'})
   create(@Body(ValidationPipe) createCourseDto: CreateCourseDto) {
@@ -23,7 +23,7 @@ export class CoursesController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Get()
   @ApiOperation({summary: 'Lấy tất cả danh sách môn học'})
   findAll() {
@@ -31,7 +31,7 @@ export class CoursesController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @Get(':id')
   @ApiOperation({summary: 'Lấy chi tiết môn học'})
   findOne(@Param('id', ParseIntPipe) id: number) {
@@ -39,7 +39,7 @@ export class CoursesController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: 'Cập nhật môn học'})
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateCourseDto: UpdateCourseDto) {
@@ -47,7 +47,7 @@ export class CoursesController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: 'Xóa môn học (không nên sử dụng)'})
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {

@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'common/decorators/roles.decorator';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 
 @ApiBearerAuth()
 @ApiTags('CLASS')
@@ -15,7 +15,7 @@ export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @Post('/create')
   @ApiOperation({summary: "Tạo lớp học mới"})
   async create(@Body(ValidationPipe) createClassDto: CreateClassDto) {
@@ -23,7 +23,7 @@ export class ClassesController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @Get()
   @ApiOperation({summary: "Lấy danh sách lớp học"})
   async findAll() {
@@ -31,7 +31,7 @@ export class ClassesController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @ApiOperation({summary: "Lấy thông tin chi tiết lớp học/bao gồm sinh viên trong lớp"})
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -39,7 +39,7 @@ export class ClassesController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: "Cập nhật thông tin lớp học"})
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateClassDto: UpdateClassDto) {

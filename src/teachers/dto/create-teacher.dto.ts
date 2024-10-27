@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsString, MinLength, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 
 export class CreateTeacherDto {
     @ApiProperty()
@@ -15,7 +15,7 @@ export class CreateTeacherDto {
     @IsString()
     teacher_password: string
 
-    @ApiProperty({default: TeacherRoleEnum.TEACHER})
-    @IsEnum(TeacherRoleEnum)
-    teacher_role: TeacherRoleEnum
+    @ApiProperty({default: UserRoleEnum.TEACHER})
+    @IsEnum(UserRoleEnum)
+    teacher_role: UserRoleEnum
 }

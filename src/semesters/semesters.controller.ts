@@ -1,7 +1,7 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards, Patch } from '@nestjs/common';
 import { SemestersService } from './semesters.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { TeacherRoleEnum } from 'common/enums/teacher-role.enum';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'common/decorators/roles.decorator';
@@ -13,7 +13,7 @@ export class SemestersController {
   constructor(private readonly semestersService: SemestersService) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(TeacherRoleEnum.ADMIN, TeacherRoleEnum.TEACHER)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @ApiOperation({summary: 'Lấy danh sách học kì' })
   @Get()
   async findAll() {
@@ -21,9 +21,18 @@ export class SemestersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @ApiOperation({summary: 'Lấy chi tiết học kì' })
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.semestersService.findOne(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @ApiOperation({summary: 'Mở trạng thái học kì' })
+  @Patch(':id')
+  async openSemester(@Param('id', ParseIntPipe) id: number) {
+    return await this.semestersService.openSemester(id);
   }
 }
