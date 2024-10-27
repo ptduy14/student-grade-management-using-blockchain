@@ -23,6 +23,22 @@ export class StudentEnrollmentService {
   ) {}
 
   async enroll(createStudentEnrollmentDto: CreateStudentEnrollmentDto) {
+    const isStudentEnrollmetExisted =
+      await this.studentEnrollmentRepository.find({
+        where: {
+          student_id: createStudentEnrollmentDto.semester_id,
+          semester_id: createStudentEnrollmentDto.semester_id,
+          course_section_id: createStudentEnrollmentDto.course_section_id,
+        },
+      });
+
+    if (isStudentEnrollmetExisted) {
+      throw new HttpException(
+        'Học phần này đã được đăng kí',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     const studentSemester =
       await this.studentSemesterSevice.getStudentSemesterByStudentIdAndSemesterId(
         createStudentEnrollmentDto.student_id,
@@ -41,11 +57,20 @@ export class StudentEnrollmentService {
     });
 
     // cập nhật số lượng sinh viên đăng ký trong học phần
-    await this.courseSectionService.updateCurrentStudents({...courseSection, current_students: courseSection.current_students + 1})
+    await this.courseSectionService.updateCurrentStudents({
+      ...courseSection,
+      current_students: courseSection.current_students + 1,
+    });
 
     // cập nhật số lượng tín chỉ sinh viên đăng kí trong học kì (student_semester)
-    const course = await this.courseService.findOne(courseSection.course.course_id);
-    await this.studentSemesterRepository.save({...studentSemester, registration_credits: studentSemester.registration_credits + course.course_credits});
+    const course = await this.courseService.findOne(
+      courseSection.course.course_id,
+    );
+    await this.studentSemesterRepository.save({
+      ...studentSemester,
+      registration_credits:
+        studentSemester.registration_credits + course.course_credits,
+    });
 
     return studentEnrollmented;
   }
