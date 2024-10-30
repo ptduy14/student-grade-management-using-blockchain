@@ -65,13 +65,13 @@ export class CourseSectionController {
     return await this.courseSectionService.findOne(id);
   }
 
-  // Lấy danh sách sinh viên trong lớp học phần
+  // Lấy danh sách sinh viên trong lớp học phần và điểm
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
-  @ApiOperation({summary: 'Lấy danh sách sinh viên trong lớp học phần'})
-  @Get(':id/students')
-  async findAllStudentsInCourseSection(@Param('id', ParseIntPipe) id: number) {
-    return await this.courseSectionService.findAllStudentsInCourseSection(id);
+  @ApiOperation({summary: 'Lấy danh sách sinh viên trong lớp học phần và điểm'})
+  @Get(':id/students-with-score')
+  async findAllStudentsAndScoreInCourseSection(@Param('id', ParseIntPipe) id: number) {
+    return await this.courseSectionService.findAllStudentsAndScoreInCourseSection(id);
   }
 }
 

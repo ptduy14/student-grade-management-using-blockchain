@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
 import { StudentSemester } from 'src/student-semester/entities/student-semester.entity';
 import { CoursesService } from 'src/courses/courses.service';
+import { PassStatusEnum } from 'common/enums/pass-status.enum';
 
 @Injectable()
 export class StudentEnrollmentService {
@@ -31,7 +32,7 @@ export class StudentEnrollmentService {
           course_section_id: createStudentEnrollmentDto.course_section_id,
         },
       });
-      
+
     if (isStudentEnrollmetExisted) {
       throw new HttpException(
         'Học phần này đã được đăng kí',
@@ -49,11 +50,17 @@ export class StudentEnrollmentService {
       createStudentEnrollmentDto.course_section_id,
     );
 
-    // lưu đăng ký học phần
+    // lưu đăng ký học phần và tạo điểm cho học phần
     const studentEnrollmented = await this.studentEnrollmentRepository.save({
       ...createStudentEnrollmentDto,
+      pass_status: PassStatusEnum.UNDETERMINED,
       studentSemester: studentSemester,
       courseSection: courseSection,
+      score: {
+        midterm_score: null,
+        final_score: null,
+        total_score: null,
+      },
     });
 
     // cập nhật số lượng sinh viên đăng ký trong học phần
@@ -80,6 +87,7 @@ export class StudentEnrollmentService {
       await this.studentSemesterRepository
         .createQueryBuilder('student_semester')
         .innerJoinAndSelect('student_semester.semester', 'semester')
+        .innerJoinAndSelect('semester.academic_year', 'academic_year')
         .innerJoinAndSelect(
           'student_semester.student_enrollments',
           'student_enrollment',
@@ -88,6 +96,7 @@ export class StudentEnrollmentService {
           'student_enrollment.courseSection',
           'course_section',
         )
+        .innerJoinAndSelect('student_enrollment.score', 'score')
         .where(
           '(semester.semester_status = :statusInProgress OR semester.semester_status = :statusCompleted)',
           {
@@ -100,6 +109,23 @@ export class StudentEnrollmentService {
 
     return studentEnrollmentFindBySemesters;
   }
+
+  // async findOne(studentId: number, semesterId: number, courseSectionId: number) {
+  //   const enrollment = await this.studentEnrollmentRepository.findOne({
+  //     where: {
+  //       student_id: studentId,
+  //       semester_id: semesterId,
+  //       course_section_id: courseSectionId,
+  //     },
+  //     relations: {score: true},
+  //   });
+
+  //   if (!enrollment) {
+  //     throw new HttpException('Không tìm thấy học phần', HttpStatus.NOT_FOUND);
+  //   }
+    
+  //   return enrollment;
+  // }
 
   async findBySemesterId(auth: any, semesterId: number) {
     const studentEnrollmentFindBySemesterId =
@@ -129,17 +155,5 @@ export class StudentEnrollmentService {
     }
 
     return studentEnrollmentFindBySemesterId;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} studentEnrollment`;
-  }
-
-  update(id: number, updateStudentEnrollmentDto: UpdateStudentEnrollmentDto) {
-    return `This action updates a #${id} studentEnrollment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} studentEnrollment`;
   }
 }

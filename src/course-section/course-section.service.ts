@@ -125,6 +125,26 @@ export class CourseSectionService {
     .getMany();
   }
 
+  async getTeacherFromCourseSection(teacherId: number, courseSectionId: number) {
+    const teacher = this.courseSectionRepository.findOne({where: {teacher: {teacher_id: teacherId}, course_section_id: courseSectionId}});
+
+    if (!teacher) {
+      throw new HttpException("Giảng viên không dạy học phần này", HttpStatus.NOT_FOUND);
+    }
+
+    return teacher;
+  }
+
+  async getStudentFormCourseSection(studentId: number) {
+    const student = await this.courseSectionRepository.find({where: {student_enrollments: {student_id: studentId}}});
+
+    if (student) {
+      throw new HttpException("Sinh viên không học lớp này", HttpStatus.NOT_FOUND);
+    }
+
+    return student;
+  }
+
   async findOne(id: number) {
     const courseSection = await this.courseSectionRepository
     .createQueryBuilder('course_section')
@@ -152,23 +172,28 @@ export class CourseSectionService {
     return courseSection;
   }
 
-  async findAllStudentsInCourseSection(courseSectionId: number) {
-    return await this.studentEnrollmentRepository
-      .createQueryBuilder('student_enrollment')
-      .innerJoin('student_enrollment.studentSemester', 'student_semester')
-      .innerJoin('student_semester.student', 'student')
-      .innerJoin('student_semester.semester', 'semester')
-      .where('student_enrollment.course_section_id = :courseSectionId', { courseSectionId })
-      .select([
-        'student.student_id',
-        'semester.semester_id',
-        'student_enrollment.course_section_id',
-        'student.student_name',
-        'student.student_email',
-      ])
-      .getRawMany();
+  async findAllStudentsAndScoreInCourseSection(courseSectionId: number) {
+    const students = await this.studentEnrollmentRepository
+    .createQueryBuilder('student_enrollment')
+    .innerJoin('student_enrollment.studentSemester', 'student_semester')
+    .innerJoin('student_semester.student', 'student')
+    .innerJoin('student_semester.semester', 'semester')
+    .innerJoinAndSelect('student_enrollment.score', 'score')
+    .where('student_enrollment.course_section_id = :courseSectionId', { courseSectionId })
+    .select([
+      'student.student_id',
+      'semester.semester_id',
+      'student_enrollment.course_section_id',
+      'student_enrollment.pass_status',
+      'student.student_name',
+      'student.student_email',
+      'score'
+    ])
+    .getRawMany();
+
+    return students;
   }
-  
+
   async findBySemesterIdAndCourseId(semester_id: number, course_id: number) {
     const courseSection = await this.courseSectionRepository.findOne({
       where: {

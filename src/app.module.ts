@@ -14,6 +14,8 @@ import { StudentsModule } from './students/students.module';
 import { StudentSemesterModule } from './student-semester/student-semester.module';
 import { CourseSectionModule } from './course-section/course-section.module';
 import { StudentEnrollmentModule } from './student-enrollment/student-enrollment.module';
+import { BlockchainModule } from './blockchain/blockchain.module';
+import { ScoresModule } from './scores/scores.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { StudentEnrollmentModule } from './student-enrollment/student-enrollment
     StudentSemesterModule,
     CourseSectionModule,
     StudentEnrollmentModule,
+    BlockchainModule,
+    ScoresModule,
   ],
   controllers: [AppController],
   providers: [AppService],
