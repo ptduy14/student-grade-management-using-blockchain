@@ -50,8 +50,6 @@ contract SemesterManagement {
                     isScoreTypeExisted = currentSection.score.isMidtermSet;
                 } else if (_scoreType == ScoreType.FinalExam) {
                     isScoreTypeExisted = currentSection.score.isFinalExamSet;
-                } else if (_scoreType == ScoreType.Practical) {
-                    isScoreTypeExisted = currentSection.score.isPracticalSet;
                 }
 
                 if (isScoreTypeExisted) {

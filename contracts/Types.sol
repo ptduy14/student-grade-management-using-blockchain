@@ -5,11 +5,9 @@ pragma solidity >=0.7.0 <0.9.0;
 struct Score {
     uint16 midterm;
     uint16 finalExam;
-    uint16 practical;
     uint16 average;
     bool isMidtermSet;
     bool isFinalExamSet;
-    bool isPracticalSet;
 }
 
 struct CourseSection {
@@ -20,6 +18,5 @@ struct CourseSection {
 
 enum ScoreType {
     Midterm,
-    FinalExam,
-    Practical
+    FinalExam
 }

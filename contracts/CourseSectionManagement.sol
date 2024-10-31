@@ -85,9 +85,6 @@ contract CourseSectionManagement is ICourseSectionManagement {
         } else if (_scoreType == ScoreType.FinalExam) {
             courseSection.score.finalExam = _score;
             courseSection.score.isFinalExamSet = true;
-        } else if (_scoreType == ScoreType.Practical) {
-            courseSection.score.practical = _score;
-            courseSection.score.isPracticalSet = true;
         }
 
         if (!isCourseSectionExisted) {
@@ -115,9 +112,16 @@ contract CourseSectionManagement is ICourseSectionManagement {
             courseSection.score.midterm = _score;
         } else if (_scoreType == ScoreType.FinalExam) {
             courseSection.score.finalExam = _score;
-        } else if (_scoreType == ScoreType.Practical) {
-            courseSection.score.practical = _score;
         }
+
+        // cập nhật chỉnh sửa vào mảng
+        for (uint16 i = 0; i < studentCourseSections[_studentSemesterKey].length; i++) {
+            if (studentCourseSections[_studentSemesterKey][i].courseSectionId == _courseSectionId) {
+                studentCourseSections[_studentSemesterKey][i] = courseSection;
+                break;
+            }
+        }
+
     }
 
     // kiểm tra điểm của môn học đó đã được thêm hay chưa trước khi cho phép update
@@ -130,8 +134,6 @@ contract CourseSectionManagement is ICourseSectionManagement {
             isSet = courseSection.score.isMidtermSet;
         } else if (_scoreType == ScoreType.FinalExam) {
             isSet = courseSection.score.isFinalExamSet;
-        } else if (_scoreType == ScoreType.Practical) {
-            isSet = courseSection.score.isPracticalSet;
         }
 
         return isSet;
