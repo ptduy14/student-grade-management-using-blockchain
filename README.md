@@ -31,13 +31,13 @@ geth: Đây là client chính của Ethereum (Go Ethereum), chịu trách nhiệ
 
 - **--http.api "personal,eth,net,web3,txpool,miner,admin"**: Chỉ định các API mà HTTP-RPC cung cấp, bao gồm:
 
-    personal: Quản lý tài khoản cá nhân.
-    eth: Các thao tác liên quan đến blockchain và giao dịch Ethereum.
-    net: Thông tin về mạng.
-    web3: Thông tin về kết nối Web3.
-    txpool: Quản lý pool giao dịch.
-    miner: Các chức năng đào.
-    admin: Các chức năng quản trị node.
+    - personal: Quản lý tài khoản cá nhân.
+    - eth: Các thao tác liên quan đến blockchain và giao dịch Ethereum.
+    - net: Thông tin về mạng.
+    - web3: Thông tin về kết nối Web3.
+    - txpool: Quản lý pool giao dịch.
+    - miner: Các chức năng đào.
+    - admin: Các chức năng quản trị node.
 
 - **--http.corsdomain "http://localhost:8000, https://remix.ethereum.org"**: Các miền được phép truy cập vào RPC server, bao gồm địa chỉ localhost của bạn và Remix IDE.
 
