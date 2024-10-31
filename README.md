@@ -39,7 +39,7 @@ geth: Đây là client chính của Ethereum (Go Ethereum), chịu trách nhiệ
     - miner: Các chức năng đào.
     - admin: Các chức năng quản trị node.
 
-- **--http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com"**: Các miền được phép truy cập vào RPC server, bao gồm địa chỉ localhost để run local Block Explorer và Remix IDE và cả Ethernal(dịch vụ block explorer khá xịn).
+- **--http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com"**: Các miền được phép truy cập vào RPC server, bao gồm địa chỉ localhost để run local Block Explorer và Remix IDE và cả Ethernal (dịch vụ block explorer khá xịn).
 
 - **--allow-insecure-unlock**: Cho phép mở khóa tài khoản thông qua RPC (không khuyến nghị cho các mạng công khai, nhưng được sử dụng trong môi trường private).
 
