@@ -12,7 +12,7 @@ This intruction using geth 1.13.14-stable for PoA consensus
 - -**addr :30305**: Xác định địa chỉ mà bootnode lắng nghe các kết nối. 30305 là cổng mà bootnode sẽ mở để các nút khác kết nối. Ở đây, địa chỉ : chỉ ra rằng bootnode sẽ chấp nhận kết nối từ bất kỳ địa chỉ IP nào (bạn có thể thay đổi thành địa chỉ IP cụ thể nếu cần).
 
 ## Run node1:
-`geth --datadir ./node1 --networkid 12345 --port 30306 --http --http.addr "127.0.0.1" --http.port 8545 --http.api "personal,eth,net,web3,txpool,miner,admin" --http.corsdomain "http://localhost:8000, https://remix.ethereum.org" --allow-insecure-unlock --authrpc.port 8551 --bootnodes enode://283c7444a679a81b39d6727f2cfd09d4b54a9f86b21bbf6bf46ecebb02883e400f2b51088c0f56d1c9602667aae9dec4fcc928543894c3f4b644259d28ae45ed@127.0.0.1:0?discport=30305 --unlock 0xD91E59effa1757393191dA2Ba3582dE1d92D90ce --password node1/password.txt --miner.etherbase 0xD91E59effa1757393191dA2Ba3582dE1d92D90ce --mine --ipcpath ./node1/geth.ipc
+`geth --datadir ./node1 --networkid 12345 --port 30306 --http --http.addr "127.0.0.1" --http.port 8545 --http.api "personal,eth,net,web3,txpool,miner,admin" --http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com" --allow-insecure-unlock --authrpc.port 8551 --bootnodes enode://283c7444a679a81b39d6727f2cfd09d4b54a9f86b21bbf6bf46ecebb02883e400f2b51088c0f56d1c9602667aae9dec4fcc928543894c3f4b644259d28ae45ed@127.0.0.1:0?discport=30305 --unlock 0xD91E59effa1757393191dA2Ba3582dE1d92D90ce --password node1/password.txt --miner.etherbase 0xD91E59effa1757393191dA2Ba3582dE1d92D90ce --mine --ipcpath ./node1/geth.ipc
 `
 
 geth: Đây là client chính của Ethereum (Go Ethereum), chịu trách nhiệm chạy một node của blockchain.
@@ -39,7 +39,7 @@ geth: Đây là client chính của Ethereum (Go Ethereum), chịu trách nhiệ
     - miner: Các chức năng đào.
     - admin: Các chức năng quản trị node.
 
-- **--http.corsdomain "http://localhost:8000, https://remix.ethereum.org"**: Các miền được phép truy cập vào RPC server, bao gồm địa chỉ localhost của bạn và Remix IDE.
+- **--http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com"**: Các miền được phép truy cập vào RPC server, bao gồm địa chỉ localhost để run local Block Explorer và Remix IDE và cả Ethernal(dịch vụ block explorer khá xịn).
 
 - **--allow-insecure-unlock**: Cho phép mở khóa tài khoản thông qua RPC (không khuyến nghị cho các mạng công khai, nhưng được sử dụng trong môi trường private).
 
