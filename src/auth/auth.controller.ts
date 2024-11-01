@@ -16,8 +16,8 @@ export class AuthController {
 
     @UseGuards(LocalTeacherAuthGuard)
     @ApiOperation({summary: 'Đăng nhập giảng viên/sinh viên'})
-    @Post('/teacher/login')
-    async teacherLogin(@Request() req: any, @Body(ValidationPipe) loginDto: LoginDto) {
+    @Post('/login')
+    async login(@Request() req: any, @Body(ValidationPipe) loginDto: LoginDto) {
         return await this.authService.generateToken(req.user);
     }
 
