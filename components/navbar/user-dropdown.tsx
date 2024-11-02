@@ -54,12 +54,7 @@ export const UserDropdown = () => {
           <p>{user?.name}</p>
           <p className="opacity-70">{user?.email}</p>
         </DropdownItem>
-        <DropdownItem key="settings">My Settings</DropdownItem>
-        <DropdownItem key="team_settings">Team Settings</DropdownItem>
-        <DropdownItem key="analytics">Analytics</DropdownItem>
-        <DropdownItem key="system">System</DropdownItem>
-        <DropdownItem key="configurations">Configurations</DropdownItem>
-        <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+        <DropdownItem key="settings">Thông tin cá nhân</DropdownItem>
         <DropdownItem
           key="logout"
           color="danger"
