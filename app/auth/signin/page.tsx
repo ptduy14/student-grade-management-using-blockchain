@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
+import { Signin } from "@/components/auth/signin";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const Home: NextPage = () => {
+const signin = () => {
   const cookieStore = cookies();
   const userJSON = cookieStore.get("user");
 
@@ -11,7 +11,7 @@ const Home: NextPage = () => {
     redirect(`/${user.role}/`);
   }
 
-  return <h1>Loading...</h1>;
+  return <Signin />;
 };
 
-export default Home;
+export default signin;
