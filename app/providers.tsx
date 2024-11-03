@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import AuthProvider from "@/context/auth-context";
 import { PersistGate } from "redux-persist/es/integration/react";
+import { Web3Provider } from "@/context/web3-conext";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -23,16 +24,18 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <AuthProvider>
-          <NextUIProvider>
-            <NextThemesProvider
-              defaultTheme="system"
-              attribute="class"
-              {...themeProps}
-            >
-              {children}
-              <ToastContainer />
-            </NextThemesProvider>
-          </NextUIProvider>
+          <Web3Provider>
+            <NextUIProvider>
+              <NextThemesProvider
+                defaultTheme="system"
+                attribute="class"
+                {...themeProps}
+              >
+                {children}
+                <ToastContainer />
+              </NextThemesProvider>
+            </NextUIProvider>
+          </Web3Provider>
         </AuthProvider>
       </PersistGate>
     </Provider>

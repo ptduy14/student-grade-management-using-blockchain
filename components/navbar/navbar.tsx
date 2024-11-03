@@ -5,40 +5,21 @@ import { BurguerButton } from "./burguer-button";
 import { NotificationsDropdown } from "./notifications-dropdown";
 import { UserDropdown } from "./user-dropdown";
 import { Button } from "@nextui-org/react";
-import { ethers } from "ethers";
-import { privateChainConfig } from "@/config/private-chain";
+import { useWeb3 } from "@/context/web3-conext";
+import { LoaderBtn } from "../loaders/loader-btn";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export const NavbarWrapper = ({ children }: Props) => {
+  const {isConnected, connectWallet, isCheckingConnected} = useWeb3();
+
   const connectToMetaMask = async () => {
-    // Kiểm tra xem MetaMask có được cài đặt không
-    if (typeof window.ethereum !== "undefined") {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-      try {
-        // Thêm mạng nếu chưa có
-        await provider.send("wallet_addEthereumChain", [privateChainConfig]);
-
-        // Yêu cầu người dùng kết nối tài khoản MetaMask
-        const accounts = await provider.send("eth_requestAccounts", []);
-
-        // Lấy signer
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        console.log("Connected address:", address);
-
-        // Lưu thông tin vào localStorage
-        localStorage.setItem("connectedAccount", accounts[0]);
-      } catch (error) {
-        console.error("Error connecting to MetaMask:", error);
-      }
-    } else {
-      console.log("Please install MetaMask!");
-    }
+    connectWallet();
   };
+
+  const buttonContent = isCheckingConnected ? <LoaderBtn /> : (isConnected ? "Đã kết nối ví Meta Mask" : "Kết nối ví Meta Mask");
 
   return (
     <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
@@ -70,8 +51,8 @@ export const NavbarWrapper = ({ children }: Props) => {
         >
           <NotificationsDropdown />
 
-          <Button color="primary" onClick={connectToMetaMask}>
-            Kết nối ví Meta Mask
+          <Button color="primary" onClick={connectToMetaMask} isDisabled={isConnected}>
+            {buttonContent}
           </Button>
           <NavbarContent>
             <UserDropdown />
