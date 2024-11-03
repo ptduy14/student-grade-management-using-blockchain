@@ -10,6 +10,9 @@ export class Semester {
     @PrimaryGeneratedColumn()
     semester_id: number
 
+    @Column({type: 'enum', enum: SemesterNameEnum})
+    semester_name: SemesterNameEnum;
+
     @Column({type: 'enum', enum: SemesterStatusEnum, default: SemesterStatusEnum.NOT_STARTED})
     semester_status: SemesterStatusEnum
 
