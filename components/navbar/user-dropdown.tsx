@@ -7,10 +7,9 @@ import {
   Navbar,
   NavbarItem,
 } from "@nextui-org/react";
-import React, { useEffect } from "react";
+import React from "react";
 import { DarkModeSwitch } from "./darkmodeswitch";
 import { useDispatch, useSelector } from "react-redux";
-import { redirect } from "next/navigation";
 import { AuthService } from "@/services/auth-service";
 import { jwtManage } from "@/helpers/jwt-manage";
 import { removeUser } from "@/redux/slices/userSlice";
