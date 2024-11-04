@@ -44,7 +44,7 @@ export const CourseSectionWithStudentAndScore = ({courseSectionId}:{courseSectio
           <span> / </span>{" "}
         </li>
         <li className="flex gap-2">
-          <span>Danh sách học kỳ</span>
+          <span>Danh sách học phần</span>
         </li>
       </ul>
 

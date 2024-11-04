@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { privateChainConfig } from "@/config/private-chain";
 import { toast } from "react-toastify";
+import { AuthService } from "@/services/auth-service";
 
 const Web3Context = createContext<Web3ProviderType | undefined>(undefined);
 
@@ -24,7 +25,16 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
         await web3Provider.send("wallet_addEthereumChain", [privateChainConfig]);
 
         // Yêu cầu người dùng kết nối tài khoản MetaMask
-        await web3Provider.send("eth_requestAccounts", []);
+        const accounts = await web3Provider.send("eth_requestAccounts", []);
+
+        // kiểm tra wallet ở database
+        const res = await AuthService.checkWalletAddress();
+        console.log(res.data);
+
+        if (!res.data.isExisted) {
+          await AuthService.addWalletAddress(accounts[0]);
+        }
+
         setIsConnected(true);
         toast.success("Kết nối thành công");
       } catch (error) {
@@ -47,6 +57,17 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     }
     setIsCheckingConnected(false);
   };
+
+  const getSigner = async() => {
+    if (web3Provider) {
+      const accounts = await web3Provider.listAccounts();
+      const signerAddress = accounts[0];
+
+
+    } else {
+      toast.error("Bạn chưa kết nối ví Meta Mask")
+    }
+  }
 
   useEffect(() => {
     if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
