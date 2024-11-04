@@ -185,13 +185,25 @@ export class CourseSectionService {
       'semester.semester_id',
       'student_enrollment.course_section_id',
       'student_enrollment.pass_status',
+      'student.student_code',
       'student.student_name',
       'student.student_email',
       'score'
     ])
     .getRawMany();
 
-    return students;
+    if (students.length == 0) {
+      throw new HttpException("Tạm thời chưa có lớp học phần hoặc sinh viên", HttpStatus.NOT_FOUND);
+    }
+
+    const courseSection = await this.courseSectionRepository.findOne({where: {course_section_id: courseSectionId}});
+    const semester = await this.semesterService.findOne(students[0].semester_semester_id);
+
+    return {
+      courseSection,
+      semester,
+      students
+    };
   }
 
   async findBySemesterIdAndCourseId(semester_id: number, course_id: number) {

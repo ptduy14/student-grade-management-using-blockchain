@@ -11,6 +11,9 @@ export class TeacherDto {
   @Expose({ name: 'teacher_email' })
   email: string;
 
+  @Expose({ name: 'teacher_wallet_address' })
+  wallet_address: string;
+
   @Exclude()
   teacher_password: string;
 

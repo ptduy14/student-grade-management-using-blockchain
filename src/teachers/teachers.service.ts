@@ -8,6 +8,7 @@ import { TeacherDto } from './dto/teacher.dto';
 import { classToPlain, plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { TeacherUtil } from 'common/utils/teacher.util';
+import { ppid } from 'process';
 
 @Injectable()
 export class TeachersService {
@@ -92,6 +93,33 @@ export class TeachersService {
     
     const teacherUpdated = await this.teacherRepository.save(teacherFound)
     return plainToClass(TeacherDto, teacherUpdated);
+  }
+
+  //check wallet address
+  async checkWalletAddress(teacherId: number) {
+    const teacher = await this.teacherRepository.findOne({where: {teacher_id: teacherId}});
+
+    if (teacher.teacher_wallet_address) {
+      return {
+        isExisted: true
+      }
+    }
+
+    return {isExisted: false}
+  }
+
+  // thêm address
+  async addWalletAddress(teacherId: number, walletAddress: string) {
+    const res = await this.checkWalletAddress(teacherId);
+
+    if (res.isExisted) {
+      throw new HttpException("Đã tồn tại wallet address", HttpStatus.CONFLICT);
+    }
+
+    const teacher = await this.teacherRepository.findOne({where: {teacher_id: teacherId}});
+    teacher.teacher_wallet_address = walletAddress;
+
+    await this.teacherRepository.save(teacher);
   }
 
   // need to improve later

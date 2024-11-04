@@ -10,6 +10,7 @@ import { ChangePasswordDto } from './dtos/change-password.dto';
 import { StudentsService } from 'src/students/students.service';
 import { StudentDto } from 'src/students/dto/student.dto';
 import { extractDomain } from 'common/utils/extract-domain.util';
+import { AddWalletAddressDto } from './dtos/add-wallet-address.dto';
 
 @Injectable()
 export class AuthService {
@@ -81,7 +82,7 @@ export class AuthService {
     return plainToClass(StudentDto, student);
   }
 
-  async changeTeacherPassword(auth: any, changePasswordDto: ChangePasswordDto) {
+  async changePassword(auth: any, changePasswordDto: ChangePasswordDto) {
     if (changePasswordDto.newPassword !== changePasswordDto.confirmPassword) {
       throw new HttpException('Mật khẩu không khớp', HttpStatus.BAD_REQUEST);
     }
@@ -137,5 +138,13 @@ export class AuthService {
     }
 
     return 'Cập nhật mật khẩu thành công';
+  }
+
+  async checkWalletAddress(auth: any) {
+    return await this.teacherService.checkWalletAddress(auth.id);
+  }  
+
+  async addWalletAddress(auth: any, addWalletAddressDto: AddWalletAddressDto) {
+    return this.teacherService.addWalletAddress(auth.id, addWalletAddressDto.wallet_address);
   }
 }

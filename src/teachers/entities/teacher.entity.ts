@@ -16,6 +16,9 @@ export class Teacher {
     @Column()
     teacher_password: string
 
+    @Column({nullable: true})
+    teacher_wallet_address: string
+
     @Column({
         type: "enum",
         enum: UserRoleEnum,
