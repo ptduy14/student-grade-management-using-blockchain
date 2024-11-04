@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Sidebar } from "./sidebar.styles";
 import { Avatar, Tooltip } from "@nextui-org/react";
 import { HomeIcon } from "../icons/sidebar/home-icon";
@@ -18,11 +18,25 @@ import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { useSidebarContext } from "../layout/layout-context";
 import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
 import { usePathname } from "next/navigation";
-import LogoCTUET from "../../../public/logo_ctuet.png";
+import { useSelector } from "react-redux";
+import { acdemicYearService } from "@/services/academic-year-service";
+import { IAcademicYear } from "@/interfaces/AcademicYear";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
+  const user = useSelector((state: any) => state.account.user);
+
+  const [academicYears, setAcademicYears] = useState<IAcademicYear[]>([]);
+
+  const getAllAcademicYear = async () => {
+    const res = await acdemicYearService.getAllAcademicYear();
+    setAcademicYears(res.data);
+  }
+
+  useEffect(() => {
+    getAllAcademicYear()
+  }, [])
 
   return (
     <aside className="h-screen z-[20] sticky top-0">
@@ -43,27 +57,16 @@ export const SidebarWrapper = () => {
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
             <SidebarItem
-              title="Home"
+              title="Trang chủ"
               icon={<HomeIcon />}
-              isActive={pathname === "/"}
-              href="/"
+              isActive={pathname === `/${user?.role}`}
+              href={`/${user?.role}`}
             />
             <SidebarMenu title="Main Menu">
-              <SidebarItem
-                isActive={pathname === "/accounts"}
-                title="Accounts"
-                icon={<AccountsIcon />}
-                href="accounts"
-              />
-              <SidebarItem
-                isActive={pathname === "/payments"}
-                title="Payments"
-                icon={<PaymentsIcon />}
-              />
               <CollapseItems
                 icon={<BalanceIcon />}
-                items={["Banks Accounts", "Credit Cards", "Loans"]}
-                title="Balances"
+                items={academicYears}
+                title="Năm học"
               />
               <SidebarItem
                 isActive={pathname === "/customers"}

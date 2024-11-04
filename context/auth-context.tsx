@@ -6,6 +6,7 @@ import { isAxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { AuthService } from "@/services/auth-service";
 import { setUser } from "@/redux/slices/userSlice";
+import { jwtManage } from "@/helpers/jwt-manage";
 
 const AuthContext = createContext<undefined | AuthContextValueType>(undefined);
 
@@ -26,6 +27,9 @@ export default function AuthProvider({
       // set cookie
       await AuthService.setAuthCookie(response.data);
       dispatch(setUser(response.data));
+
+      //set token
+      jwtManage.setToken(response.data.acess_token);
       return true;
     } catch (error) {
       if (isAxiosError(error)) {

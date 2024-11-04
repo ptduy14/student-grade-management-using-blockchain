@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { ChevronDownIcon } from "../icons/sidebar/chevron-down-icon";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import clsx from "clsx";
+import { IAcademicYear } from "@/interfaces/AcademicYear";
 
 interface Props {
   icon: React.ReactNode;
   title: string;
-  items: string[];
+  items: IAcademicYear[];
 }
 
 export const CollapseItems = ({ icon, items, title }: Props) => {
@@ -36,12 +37,13 @@ export const CollapseItems = ({ icon, items, title }: Props) => {
         >
           <div className="pl-12">
             {items.map((item, index) => (
-              <span
+              <a
                 key={index}
                 className="w-full flex  text-default-500 hover:text-default-900 transition-colors"
+                href={`/teacher/academic-years/${item.academic_year_id}`}
               >
-                {item}
-              </span>
+                {item.academic_year_start .toString() + " - " + item.academic_year_end.toString()}
+              </a>
             ))}
           </div>
         </AccordionItem>
