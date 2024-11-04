@@ -77,7 +77,7 @@ export const CourseSectionWithStudentAndScore = ({courseSectionId}:{courseSectio
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <TableWrapper students={courseSections!.students} />
+        <TableWrapper students={courseSections!.students} setCourseSections={setCourseSections}/>
       </div>
     </div>
     )

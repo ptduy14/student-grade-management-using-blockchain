@@ -7,13 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import React from "react";
+import React, { SetStateAction } from "react";
 import { columns } from "./data";
 import { RenderCell } from "./render-cell";
 import { ICourseSection } from "@/interfaces/CourseSection";
-import { CourseSectionStudentDetail } from "@/interfaces/CourseSectionStudent";
+import { CourseSectionStudent, CourseSectionStudentDetail } from "@/interfaces/CourseSectionStudent";
 
-export const TableWrapper = ({students}: {students: CourseSectionStudentDetail[]}) => {
+export const TableWrapper = ({students, setCourseSections}: {students: CourseSectionStudentDetail[], setCourseSections: React.Dispatch<SetStateAction<CourseSectionStudent | null>>}) => {
   return (
     <div className=" w-full flex flex-col gap-4">
       <Table isStriped aria-label="Example table with custom cells">
@@ -33,7 +33,7 @@ export const TableWrapper = ({students}: {students: CourseSectionStudentDetail[]
             <TableRow key={item.student_student_id}>
               {(columnKey) => (
                 <TableCell>
-                  {RenderCell({ courseSectionStudent: item, columnKey: columnKey })}
+                  {RenderCell({ courseSectionStudent: item, columnKey: columnKey, setCourseSections })}
                 </TableCell>
               )}
             </TableRow>
