@@ -101,7 +101,8 @@ export class TeachersService {
 
     if (teacher.teacher_wallet_address) {
       return {
-        isExisted: true
+        isExisted: true,
+        walletAddress: teacher.teacher_wallet_address
       }
     }
 
@@ -110,12 +111,15 @@ export class TeachersService {
 
   // thêm address
   async addWalletAddress(teacherId: number, walletAddress: string) {
-    const res = await this.checkWalletAddress(teacherId);
+    const teachers = await this.teacherRepository.find();
+    const walletAddressExisted = teachers.map((teacher: Teacher) => {
+      return teacher.teacher_wallet_address;
+    })
 
-    if (res.isExisted) {
-      throw new HttpException("Đã tồn tại wallet address", HttpStatus.CONFLICT);
+    if (!walletAddressExisted.includes(walletAddress)) {
+      throw new HttpException("Đã tồn tại wallet address, vui lòng hủy kết nối và chọn tài khoản khác", HttpStatus.CONFLICT);
     }
-
+    
     const teacher = await this.teacherRepository.findOne({where: {teacher_id: teacherId}});
     teacher.teacher_wallet_address = walletAddress;
 
