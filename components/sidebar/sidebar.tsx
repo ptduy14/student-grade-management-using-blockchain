@@ -32,11 +32,11 @@ export const SidebarWrapper = () => {
   const getAllAcademicYear = async () => {
     const res = await acdemicYearService.getAllAcademicYear();
     setAcademicYears(res.data);
-  }
+  };
 
   useEffect(() => {
-    getAllAcademicYear()
-  }, [])
+    getAllAcademicYear();
+  }, []);
 
   return (
     <aside className="h-screen z-[20] sticky top-0">
@@ -63,16 +63,22 @@ export const SidebarWrapper = () => {
               href={`/${user?.role}`}
             />
             <SidebarMenu title="Main Menu">
-              <CollapseItems
-                icon={<BalanceIcon />}
-                items={academicYears}
-                title="Năm học"
-              />
-              <SidebarItem
-                isActive={pathname === "/customers"}
-                title="Customers"
-                icon={<CustomersIcon />}
-              />
+              {user?.role === "teacher" && (
+                <CollapseItems
+                  icon={<BalanceIcon />}
+                  items={academicYears}
+                  title="Năm học"
+                />
+              )}
+              {user?.role === "admin" && (
+                <SidebarItem
+                  isActive={pathname === "/admin/teachers"}
+                  title="Quản lí giảng viên"
+                  icon={<CustomersIcon />}
+                  href={`/${user?.role}/teachers`}
+                />
+              )}
+
               <SidebarItem
                 isActive={pathname === "/products"}
                 title="Products"

@@ -9,6 +9,7 @@ import { isAxiosError } from "axios";
 const Web3Context = createContext<Web3ProviderType | undefined>(undefined);
 
 interface Web3ProviderType {
+  web3Provider: ethers.providers.Web3Provider | null,
   connectWallet: () => void;
   isConnected: boolean;
   isCheckingConnected: boolean;
@@ -86,6 +87,8 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     return null;
   };
 
+  
+
   useEffect(() => {
     if (!window.ethereum) {
       // Nothing to do here... no ethereum provider found
@@ -103,6 +106,7 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
   }, [web3Provider]);
 
   const web3ProviderValue: Web3ProviderType = {
+    web3Provider,
     connectWallet,
     isConnected,
     isCheckingConnected,
