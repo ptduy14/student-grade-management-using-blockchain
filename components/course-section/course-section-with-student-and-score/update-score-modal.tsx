@@ -19,6 +19,7 @@ import { UpdateIcon } from "@/components/icons/table/update-icon";
 import { ScoreService } from "@/services/score-service";
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
+import { useWeb3 } from "@/context/web3-conext";
 
 export const UpdateScoreModal = ({
   courseSectionStudent,
@@ -35,8 +36,14 @@ export const UpdateScoreModal = ({
   const [scoreInput, setScoreInput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isHandling, setIsHandling] = useState<boolean>(false);
+  const {isConnected, getSigner} = useWeb3();
 
   const handleUpdateScore = async () => {
+    const signer = await getSigner();
+    if (signer === null) {
+      return;
+    }
+
     const score = parseFloat(scoreInput);
 
     // Kiểm tra xem điểm có trống không
@@ -125,7 +132,7 @@ export const UpdateScoreModal = ({
     <>
       <div className="flex flex-wrap gap-4 items-center">
         <span>{courseSectionStudent[scoreType]}</span>{" "}
-        <Button size="sm" color="primary" onPress={onOpen}>
+        <Button size="sm" color="primary" onPress={onOpen} isDisabled={!isConnected}>
           <UpdateIcon size={20} />
           Sửa
         </Button>

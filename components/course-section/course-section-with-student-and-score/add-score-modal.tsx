@@ -18,6 +18,7 @@ import { SetStateAction, useState } from "react";
 import { ScoreService } from "@/services/score-service";
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
+import { useWeb3 } from "@/context/web3-conext";
 
 export const AddScoreModal = ({
   courseSectionStudent,
@@ -34,8 +35,14 @@ export const AddScoreModal = ({
   const [scoreInput, setScoreInput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isHandling, setIsHandling] = useState<boolean>(false);
+  const { isConnected, getSigner } = useWeb3();
 
   const handleAddScore = async () => {
+    const signer = await getSigner();
+    if (signer === null) {
+      return;
+    }
+    
     const score = parseFloat(scoreInput);
 
     // Kiểm tra xem điểm có trống không
@@ -76,7 +83,7 @@ export const AddScoreModal = ({
         data.score.final_score !== null
           ? parseFloat(data.score.final_score).toFixed(2)
           : "-";
-          
+
       data.score.total_score =
         data.score.total_score !== null
           ? parseFloat(data.score.total_score).toFixed(2)
@@ -124,7 +131,12 @@ export const AddScoreModal = ({
     <>
       <div className="flex flex-wrap gap-4 items-center">
         <span>-</span>{" "}
-        <Button onPress={onOpen} size="sm" color="primary">
+        <Button
+          onPress={onOpen}
+          size="sm"
+          color="primary"
+          isDisabled={!isConnected}
+        >
           <AddIcon size={20} />
           Thêm
         </Button>
