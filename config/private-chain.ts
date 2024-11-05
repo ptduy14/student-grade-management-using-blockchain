@@ -2,11 +2,11 @@ import { ethers } from "ethers";
 
 export const privateChainConfig = {
     chainId: ethers.utils.hexValue(12345),
-    chainName: "My Private Chain",
+    chainName: "Education Network",
     rpcUrls: ["http://localhost:8545"],
     nativeCurrency: {
-        name: 'MyCoin',
-        symbol: 'MYC',
+        name: 'EducationToken',
+        symbol: 'EDU',
         decimals: 18
     }
 }
