@@ -1,4 +1,4 @@
-export const EducationTokenABI =[
+export const EducationTokenABI = [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",

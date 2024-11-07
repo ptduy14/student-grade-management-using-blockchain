@@ -13,7 +13,7 @@ import { EyeIcon } from "../icons/table/eye-icon";
 import { ITeacher } from "@/interfaces/Teacher";
 import { useEffect } from "react";
 import { ethers } from "ethers";
-import { EducationTokenABI } from "@/blockchain/abi/education-token";
+import { EducationTokenABI } from "@/blockchain/abi/education-token-abi";
 import { useWeb3 } from "@/context/web3-conext";
 
 export const ViewBalance = ({ teacher }: { teacher: ITeacher }) => {
@@ -27,15 +27,15 @@ export const ViewBalance = ({ teacher }: { teacher: ITeacher }) => {
       if (!web3Provider) return;
 
       const signer = await getSigner();
-      const EducationContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_EDU_SMART_CONTRACT!,
+      const EducationTokenContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_EDU_SMART_CONTRACT_ADDRESS!,
         EducationTokenABI,
         signer!
       );
 
-      const balance = await EducationContract.balanceOf(teacher.teacher_wallet_address);
+      const balance = await EducationTokenContract.balanceOf(teacher.teacher_wallet_address);
       // Định dạng số dư
-      const decimals = await EducationContract.decimals();
+      const decimals = await EducationTokenContract.decimals();
       const formattedBalance = ethers.utils.formatUnits(balance, decimals);
       setBalance(formattedBalance);
       setIsFetching(false);

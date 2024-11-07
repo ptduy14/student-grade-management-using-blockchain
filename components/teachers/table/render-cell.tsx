@@ -5,6 +5,7 @@ import { EditIcon } from "@/components/icons/table/edit-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { ITeacher } from "@/interfaces/Teacher";
 import { ViewBalance } from "../view-balance";
+import IssuedToken from "../issued-token";
 
 interface Props {
   teacher: ITeacher;
@@ -18,8 +19,7 @@ export const RenderCell = ({ teacher, columnKey }: Props) => {
     case "actions":
       return (
         <div className="flex items-center gap-4 ">
-          <Button color="primary" size="sm">Chuyển token</Button>
-          <Button color="primary" size="sm">Cấp token</Button>
+          <IssuedToken teacher={teacher}/>
           <ViewBalance teacher={teacher}/>
           <div>
             <Tooltip content="Edit user" color="secondary">
