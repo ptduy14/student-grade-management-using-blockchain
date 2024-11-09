@@ -39,7 +39,7 @@ export class ScoresService {
       throw new HttpException('Không tìm thấy học phần', HttpStatus.NOT_FOUND);
     }
 
-    // Cập nhật điểm theo loại
+    // Thêm điểm theo loại
     if (createScoreDto.score_type === ScoreTypeEnum.MIDTERM) {
       if (enrollment.score.midterm_score) {
         throw new HttpException('Điểm giữa kì đã tồn tại', HttpStatus.CONFLICT);

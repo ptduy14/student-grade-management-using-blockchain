@@ -33,7 +33,7 @@ export class TeachersService {
 
   async findAll() {
     const teachers = await this.teacherRepository.find({
-      select: ['teacher_id', 'teacher_name', 'teacher_email', 'teacher_role'],
+      select: ['teacher_id', 'teacher_name', 'teacher_email', 'teacher_role', 'teacher_wallet_address'],
     });
 
     return teachers;
@@ -116,7 +116,7 @@ export class TeachersService {
       return teacher.teacher_wallet_address;
     })
 
-    if (!walletAddressExisted.includes(walletAddress)) {
+    if (walletAddressExisted.includes(walletAddress)) {
       throw new HttpException("Đã tồn tại wallet address, vui lòng hủy kết nối và chọn tài khoản khác", HttpStatus.CONFLICT);
     }
     

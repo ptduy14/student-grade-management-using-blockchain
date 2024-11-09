@@ -114,11 +114,6 @@ export const abi = [
 							},
 							{
 								"internalType": "uint16",
-								"name": "practical",
-								"type": "uint16"
-							},
-							{
-								"internalType": "uint16",
 								"name": "average",
 								"type": "uint16"
 							},
@@ -130,11 +125,6 @@ export const abi = [
 							{
 								"internalType": "bool",
 								"name": "isFinalExamSet",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isPracticalSet",
 								"type": "bool"
 							}
 						],
@@ -197,11 +187,6 @@ export const abi = [
 							},
 							{
 								"internalType": "uint16",
-								"name": "practical",
-								"type": "uint16"
-							},
-							{
-								"internalType": "uint16",
 								"name": "average",
 								"type": "uint16"
 							},
@@ -213,11 +198,6 @@ export const abi = [
 							{
 								"internalType": "bool",
 								"name": "isFinalExamSet",
-								"type": "bool"
-							},
-							{
-								"internalType": "bool",
-								"name": "isPracticalSet",
 								"type": "bool"
 							}
 						],
