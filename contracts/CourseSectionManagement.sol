@@ -87,6 +87,8 @@ contract CourseSectionManagement is ICourseSectionManagement {
             courseSection.score.isFinalExamSet = true;
         }
 
+        // gọi hàm tính điểm trung bình ở đây
+
         if (!isCourseSectionExisted) {
             studentCourseSections[_studentSemesterKey].push(courseSection);
         } else {
@@ -113,6 +115,8 @@ contract CourseSectionManagement is ICourseSectionManagement {
         } else if (_scoreType == ScoreType.FinalExam) {
             courseSection.score.finalExam = _score;
         }
+
+        // gọi hàm tính điểm trung bình ở đây
 
         // cập nhật chỉnh sửa vào mảng
         for (uint16 i = 0; i < studentCourseSections[_studentSemesterKey].length; i++) {

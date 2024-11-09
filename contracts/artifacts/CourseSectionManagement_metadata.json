@@ -284,11 +284,11 @@
 	},
 	"sources": {
 		"contracts/CourseSectionManagement.sol": {
-			"keccak256": "0xffadd81008d887968b929a135e11ad218958a35e8f4f522daabb6b4505bc2b88",
+			"keccak256": "0xe55e2e579b87988c892564f30baa189ab560c2c81f1db25ea7426876f0551665",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://397bf5306b1dd1e8013cbaa6381cfe3e5113ac7e8307555536ae856d28d1930f",
-				"dweb:/ipfs/QmbwBuPAEJazqegvnKDoA5vPAuL1HRFNHjt1SKzFo9SY62"
+				"bzz-raw://4b853200e7cfcb68660841652947994e81a7cf4b6a8b2234c346f7839aa4fe61",
+				"dweb:/ipfs/QmNXNpXsnZE4p11U3yHgtDmST2n9x79XTzaf4HmB8qVij6"
 			]
 		},
 		"contracts/ICourseSectionManagement.sol": {

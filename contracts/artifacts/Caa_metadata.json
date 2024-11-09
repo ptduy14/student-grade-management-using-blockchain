@@ -163,6 +163,25 @@
 						"type": "uint256"
 					}
 				],
+				"name": "ETHTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
 				"name": "TokensMinted",
 				"type": "event"
 			},
@@ -468,6 +487,23 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawETH",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -573,9 +609,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/EducationToken.sol": "EducationToken"
+			"contracts/Caa.sol": "Caa"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -627,12 +663,12 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"contracts/EducationToken.sol": {
-			"keccak256": "0x9dc9641f71126df86d6c98876c905aa6eb5c46d87eec9eae02024b7acbd88d2f",
+		"contracts/Caa.sol": {
+			"keccak256": "0xff835d8d2169c086048bf95f4dbb5174573e2089e18187293ecf1b5e62fc71a5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://65d542181ab26b77cd5a29893e4eb80ce1e2188dbc496e479cf8513f3794b691",
-				"dweb:/ipfs/QmU8BNRH7vXrPykHWPciJkV57Y51KRynso1FqDzHA25WDT"
+				"bzz-raw://976ad61fa2bbec60f1874d25ec8b41f18a3b6feac8afb7d790ad80fde491705d",
+				"dweb:/ipfs/QmZdsbBBdBCKKk8NsYRtjg3XrSophNXYLzipuYVcZtACSD"
 			]
 		}
 	},
