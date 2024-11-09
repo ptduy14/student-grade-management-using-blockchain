@@ -22,6 +22,8 @@ import { useWeb3 } from "@/context/web3-conext";
 import { ethers, Signer } from "ethers";
 import { SemesterManagementABI } from "@/blockchain/abi/semester-management-abi";
 import { LoaderBtn } from "@/components/loaders/loader-btn";
+import { PreviousDataScore } from "@/interfaces/PreviousDataScore";
+import { BlockchainService } from "@/services/blockchain-service";
 
 export const AddScoreModal = ({
   courseSectionStudent,
@@ -77,7 +79,10 @@ export const AddScoreModal = ({
     }
 
     // thực hiện kiểm tra validate logic thêm điểm
-    if (courseSectionStudent.score_midterm_score === null && scoreType === ScoreTypeEnum.FINAL) {
+    if (
+      courseSectionStudent.score_midterm_score === null &&
+      scoreType === ScoreTypeEnum.FINAL
+    ) {
       toast.error("Không thể thêm điểm cuối kì");
       setIsHandling(false);
       return;
@@ -110,18 +115,25 @@ export const AddScoreModal = ({
       );
 
       toast.success("Thêm điểm thành công, giao dịch đang được xử lí");
-      
-      // gọi hàm để store điểm vào DB
-      await handleStoreScoreToDB(score);
 
-      const receipt = await tx.wait();
-
-      if (receipt.status) {
-        console.log("Giao dịch thành công");
-      } else {
-        console.log("Giao dịch thất bại - đang rollback...");
+      const transactionHash = tx.hash;
+      const previousDataScore: PreviousDataScore = {
+        transaction_hash: transactionHash,
+        course_section_id: courseSectionStudent.student_enrollment_course_section_id,
+        enrollment_pass_status: courseSectionStudent.student_enrollment_pass_status,
+        student_id: courseSectionStudent.student_student_id,
+        semester_id: courseSectionStudent.semester_semester_id,
+        score_id: courseSectionStudent.score_score_id,
+        midterm_score: courseSectionStudent.score_midterm_score,
+        final_score: courseSectionStudent.score_final_score,
+        total_score: courseSectionStudent.score_final_score
       }
 
+      // gọi hàm để store điểm vào DB
+      await handleStoreScoreToDB(score);
+      
+      // chuyển lắng nghe sự kiện mint transaction lên server
+      await BlockchainService.listenTransaction(previousDataScore);
     } catch (error) {
       console.log(error);
     }
@@ -141,6 +153,7 @@ export const AddScoreModal = ({
     try {
       const res = await ScoreService.add(scoreSubmission);
       const data = res.data;
+      console.log(data);
 
       data.score.midterm_score =
         data.score.midterm_score !== null
@@ -195,7 +208,7 @@ export const AddScoreModal = ({
   const handleClose = () => {
     onClose();
     setError("");
-  }
+  };
 
   return (
     <>
@@ -258,7 +271,7 @@ export const AddScoreModal = ({
                   onClick={handleAddScore}
                   disabled={isHandling}
                 >
-                  {isHandling ? <LoaderBtn/> : "Thêm"}
+                  {isHandling ? <LoaderBtn /> : "Thêm"}
                 </Button>
               </ModalFooter>
             </>
