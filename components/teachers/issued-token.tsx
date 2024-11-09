@@ -58,14 +58,17 @@ export default function IssuedToken({ teacher }: { teacher: ITeacher }) {
         teacher.teacher_wallet_address,
         amountInWei
       );
+
+      toast.info("Giao dịch đang được xử lí");
+      onClose();
+
       const receipt = await tx.wait();
 
       if (receipt.status === 1) {
         setAmountInput("");
-        onClose();
-        toast.success("Mint token thành công!");
+        console.log("Mint token thành công!");
       } else {
-        toast.error("Giao dịch thất bại!");
+        console.log("Giao dịch thất bại!");
       }
     } catch (error: any) {
       console.log(error);
