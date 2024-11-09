@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Score } from './entities/score.entity';
 import { ScoreTypeEnum } from 'common/enums/score-type.enum';
 import { PassStatusEnum } from 'common/enums/pass-status.enum';
+import { PreviousDataScore } from 'src/blockchain/dto/previous-score-data.dto';
 
 @Injectable()
 export class ScoresService {
@@ -115,7 +116,7 @@ export class ScoresService {
         );
       }
 
-      enrollment.score.midterm_score = updateScoreDto.score
+      enrollment.score.midterm_score = updateScoreDto.score;
     } else if (updateScoreDto.score_type === ScoreTypeEnum.FINAL) {
       if (enrollment.score.final_score === null) {
         throw new HttpException(
@@ -124,13 +125,38 @@ export class ScoresService {
         );
       }
 
-      enrollment.score.final_score = updateScoreDto.score
+      enrollment.score.final_score = updateScoreDto.score;
     }
 
     this.calculateTotalScore(enrollment);
 
-    const enrollmentUpdated = await this.studentEnrollmentRepository.save(enrollment);
+    const enrollmentUpdated =
+      await this.studentEnrollmentRepository.save(enrollment);
 
     return enrollmentUpdated;
+  }
+
+  async rollbackDataScore(previousDataScore: PreviousDataScore) {
+    let enrollment = await this.studentEnrollmentRepository.findOne({
+      where: {
+        student_id: previousDataScore.student_id,
+        semester_id: previousDataScore.semester_id,
+        course_section_id: previousDataScore.course_section_id,
+      },
+      relations: ['score'],
+    });
+
+    enrollment.pass_status =
+      previousDataScore.enrollment_pass_status === PassStatusEnum.UNDETERMINED
+        ? PassStatusEnum.UNDETERMINED
+        : previousDataScore.enrollment_pass_status === PassStatusEnum.PASS
+          ? PassStatusEnum.PASS
+          : PassStatusEnum.FAIL;
+
+    enrollment.score.midterm_score = previousDataScore.midterm_score;
+    enrollment.score.final_score = previousDataScore.final_score;
+    enrollment.score.total_score = previousDataScore.total_score;
+
+    await this.studentEnrollmentRepository.save(enrollment);
   }
 }

@@ -12,6 +12,8 @@ import { BlockchainService } from './blockchain.service';
 import { CreateBlockchainDto } from './dto/create-blockchain.dto';
 import { UpdateBlockchainDto } from './dto/update-blockchain.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Auth } from 'common/decorators/auth.decorator';
+import { PreviousDataScore } from './dto/previous-score-data.dto';
 
 @ApiTags('BLOCKCHAIN')
 @Controller('blockchain')
@@ -46,5 +48,13 @@ export class BlockchainController {
       studentId,
       courseSectionId
     );
+  }
+
+  @ApiOperation({
+    summary: 'Lắng nghe giao dịch',
+  })
+  @Post('/listern-transaction')
+  async listernTransaction(@Auth() auth, @Body() previousDataScore: PreviousDataScore) {
+    return this.blockchainService.listenTransaction(previousDataScore);
   }
 }

@@ -11,5 +11,6 @@ import { StudentEnrollmentModule } from 'src/student-enrollment/student-enrollme
   imports: [TypeOrmModule.forFeature([Score, StudentEnrollment]), CourseSectionModule, StudentEnrollmentModule],
   controllers: [ScoresController],
   providers: [ScoresService],
+  exports: [ScoresService]
 })
 export class ScoresModule {}
