@@ -9,11 +9,12 @@ import { isAxiosError } from "axios";
 const Web3Context = createContext<Web3ProviderType | undefined>(undefined);
 
 interface Web3ProviderType {
-  web3Provider: ethers.providers.Web3Provider | null,
+  web3Provider: ethers.providers.Web3Provider | null;
   connectWallet: () => void;
   isConnected: boolean;
   isCheckingConnected: boolean;
   getSigner: () => Promise<Signer | null>;
+  getBalance: () => Promise<string | null>;
 }
 
 export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
@@ -79,7 +80,10 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     const signerAddress = accounts[0];
 
     const res = await AuthService.checkWalletAddress();
-    if (res.data.isExisted && res.data.walletAddress === signerAddress.toLowerCase()) {
+    if (
+      res.data.isExisted &&
+      res.data.walletAddress === signerAddress.toLowerCase()
+    ) {
       return web3Provider.getSigner(signerAddress);
     }
 
@@ -87,7 +91,27 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     return null;
   };
 
-  
+  const getBalance = async () => {
+    if (!isConnected || !web3Provider) {
+      toast.error("Chưa kết nối ví MetaMask");
+      return null;
+    }
+
+    try {
+      const accounts = await web3Provider.listAccounts();
+      const currentAccountAddress = accounts[0];
+      // Lấy số dư bằng hàm getBalance
+      const balance = await web3Provider.getBalance(currentAccountAddress);
+
+      // Chuyển đổi từ Wei sang Ether
+      const etherBalance = ethers.utils.formatEther(balance);
+
+      return etherBalance;
+    } catch (error) {
+      console.error("Đã xảy ra lỗi:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     if (!window.ethereum) {
@@ -111,6 +135,7 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     isConnected,
     isCheckingConnected,
     getSigner,
+    getBalance,
   };
 
   return (

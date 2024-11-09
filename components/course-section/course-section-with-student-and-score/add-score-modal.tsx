@@ -19,6 +19,9 @@ import { ScoreService } from "@/services/score-service";
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useWeb3 } from "@/context/web3-conext";
+import { ethers, Signer } from "ethers";
+import { SemesterManagementABI } from "@/blockchain/abi/semester-management-abi";
+import { LoaderBtn } from "@/components/loaders/loader-btn";
 
 export const AddScoreModal = ({
   courseSectionStudent,
@@ -35,42 +38,107 @@ export const AddScoreModal = ({
   const [scoreInput, setScoreInput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isHandling, setIsHandling] = useState<boolean>(false);
-  const { isConnected, getSigner } = useWeb3();
+  const { isConnected, getSigner, web3Provider, getBalance } = useWeb3();
 
   const handleAddScore = async () => {
+    setIsHandling(true);
+
     const signer = await getSigner();
-    if (signer === null) {
+    if (signer === null || web3Provider === null) {
+      setIsHandling(false);
       return;
     }
-    
-    const score = parseFloat(scoreInput);
 
     // Kiểm tra xem điểm có trống không
     if (!scoreInput) {
       setError("Điểm không được để trống.");
+      setIsHandling(false);
       return;
     }
+
+    const score = parseFloat(scoreInput);
 
     // Kiểm tra xem điểm có nằm trong khoảng từ 0 đến 10 không
     if (isNaN(score) || score < 0 || score > 10) {
       setError("Điểm phải từ 0 đến 10.");
+      setIsHandling(false);
       return;
     }
 
     // Reset error nếu tất cả các điều kiện đều hợp lệ
     setError("");
 
+    // kiểm tra số dư tài khoản
+    const etherBalance = await getBalance();
+    if (parseFloat(etherBalance || "0") == 0) {
+      toast.error("Không đủ số dư giao dịch");
+      setIsHandling(false);
+      return;
+    }
+
+    // thực hiện kiểm tra validate logic thêm điểm
+    if (courseSectionStudent.score_midterm_score === null && scoreType === ScoreTypeEnum.FINAL) {
+      toast.error("Không thể thêm điểm cuối kì");
+      setIsHandling(false);
+      return;
+    }
+
+    await handleStoreScoreToBlockchain(score, signer);
+  };
+
+  const handleStoreScoreToBlockchain = async (
+    score: number,
+    signer: Signer
+  ) => {
+    try {
+      const SemesterManagementContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_SEMESTER_MANAGEMENT_ADDRESS!,
+        SemesterManagementABI,
+        signer!
+      );
+
+      const scoreAddToBlockchain = score * 100;
+      const scoreTypeAddToBlockchain =
+        scoreType === ScoreTypeEnum.MIDTERM ? 0 : 1;
+
+      const tx = await SemesterManagementContract.addOrUpdateCourseSection(
+        courseSectionStudent.semester_semester_id,
+        courseSectionStudent.student_student_id,
+        courseSectionStudent.student_enrollment_course_section_id,
+        scoreAddToBlockchain,
+        scoreTypeAddToBlockchain
+      );
+
+      toast.success("Thêm điểm thành công, giao dịch đang được xử lí");
+      
+      // gọi hàm để store điểm vào DB
+      await handleStoreScoreToDB(score);
+
+      const receipt = await tx.wait();
+
+      if (receipt.status) {
+        console.log("Giao dịch thành công");
+      } else {
+        console.log("Giao dịch thất bại - đang rollback...");
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleStoreScoreToDB = async (score: any) => {
     const scoreSubmission: ScoreSubmission = {
       student_id: courseSectionStudent.student_student_id,
       semester_id: courseSectionStudent.semester_semester_id,
       course_section_id:
         courseSectionStudent.student_enrollment_course_section_id,
-      score: Number(scoreInput),
+      score: score,
       score_type: scoreType == ScoreTypeEnum.MIDTERM ? "midterm" : "final",
     };
+    console.log(scoreSubmission);
 
     try {
-      setIsHandling(true);
       const res = await ScoreService.add(scoreSubmission);
       const data = res.data;
 
@@ -114,9 +182,6 @@ export const AddScoreModal = ({
         };
       });
 
-      // setCourseSections()
-      console.log(res);
-      toast.success("Thêm điểm thành công");
       onClose();
     } catch (error) {
       if (isAxiosError(error)) {
@@ -126,6 +191,11 @@ export const AddScoreModal = ({
       setIsHandling(false);
     }
   };
+
+  const handleClose = () => {
+    onClose();
+    setError("");
+  }
 
   return (
     <>
@@ -178,7 +248,7 @@ export const AddScoreModal = ({
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={onClose}
+                  onPress={handleClose}
                   isDisabled={isHandling}
                 >
                   Thoát
@@ -188,7 +258,7 @@ export const AddScoreModal = ({
                   onClick={handleAddScore}
                   disabled={isHandling}
                 >
-                  Thêm
+                  {isHandling ? <LoaderBtn/> : "Thêm"}
                 </Button>
               </ModalFooter>
             </>

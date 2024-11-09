@@ -8,7 +8,6 @@ import {
   Button,
   Input,
 } from "@nextui-org/react";
-import { EditIcon } from "@/components/icons/table/edit-icon";
 import { useState, SetStateAction } from "react";
 import {
   CourseSectionStudent,
@@ -20,6 +19,9 @@ import { ScoreService } from "@/services/score-service";
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useWeb3 } from "@/context/web3-conext";
+import { ethers, Signer } from "ethers";
+import { SemesterManagementABI } from "@/blockchain/abi/semester-management-abi";
+import { LoaderBtn } from "@/components/loaders/loader-btn";
 
 export const UpdateScoreModal = ({
   courseSectionStudent,
@@ -36,39 +38,98 @@ export const UpdateScoreModal = ({
   const [scoreInput, setScoreInput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isHandling, setIsHandling] = useState<boolean>(false);
-  const {isConnected, getSigner} = useWeb3();
+  const { isConnected, getSigner, web3Provider, getBalance } = useWeb3();
 
   const handleUpdateScore = async () => {
+    setIsHandling(true);
+
     const signer = await getSigner();
-    if (signer === null) {
+    if (signer === null || web3Provider === null) {
+      setIsHandling(false);
+      return;
+    }
+
+    // Kiểm tra xem điểm có trống không
+    if (!scoreInput) {
+      setError("Điểm không được để trống.");
+      setIsHandling(false);
       return;
     }
 
     const score = parseFloat(scoreInput);
 
-    // Kiểm tra xem điểm có trống không
-    if (!scoreInput) {
-      setError("Điểm không được để trống.");
-      return;
-    }
-
     // Kiểm tra xem điểm có nằm trong khoảng từ 0 đến 10 không
     if (isNaN(score) || score < 0 || score > 10) {
       setError("Điểm phải từ 0 đến 10.");
+      setIsHandling(false);
       return;
     }
 
     // Reset error nếu tất cả các điều kiện đều hợp lệ
     setError("");
 
+    // kiểm tra số dư tài khoản
+    const etherBalance = await getBalance();
+    if (parseFloat(etherBalance || "0") == 0) {
+      toast.error("Không đủ số dư giao dịch");
+      setIsHandling(false);
+      return;
+    }
+
+    // gọi hàm để update điểm trong blockchain
+    await handleUpdateScoreToBlockchain(score, signer);
+  };
+
+  const handleUpdateScoreToBlockchain = async (
+    score: number,
+    signer: Signer
+  ) => {
+    try {
+      const SemesterManagementContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_SEMESTER_MANAGEMENT_ADDRESS!,
+        SemesterManagementABI,
+        signer!
+      );
+
+      const scoreUpdateToBlockchain = score * 100;
+      const scoreTypeUpdateToBlockchain =
+        scoreType === ScoreTypeEnum.MIDTERM ? 0 : 1;
+
+      const tx = await SemesterManagementContract.addOrUpdateCourseSection(
+        courseSectionStudent.semester_semester_id,
+        courseSectionStudent.student_student_id,
+        courseSectionStudent.student_enrollment_course_section_id,
+        scoreUpdateToBlockchain,
+        scoreTypeUpdateToBlockchain
+      );
+
+      toast.success("Cập nhật điểm thành công");
+
+      // gọi hàm để cập nhật điểm trên DB
+      await handleUpdateScoreToDB(score);
+
+      const receipt = await tx.wait();
+
+      if (receipt.status) {
+        console.log("Giao dịch thành công");
+      } else {
+        console.log("Giao dịch thất bại - đang rollback...");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUpdateScoreToDB = async (score: any) => {
     const scoreSubmission: ScoreSubmission = {
       student_id: courseSectionStudent.student_student_id,
       semester_id: courseSectionStudent.semester_semester_id,
       course_section_id:
         courseSectionStudent.student_enrollment_course_section_id,
-      score: Number(scoreInput),
+      score: score,
       score_type: scoreType == ScoreTypeEnum.MIDTERM ? "midterm" : "final",
     };
+    console.log(scoreSubmission);
 
     try {
       setIsHandling(true);
@@ -116,8 +177,6 @@ export const UpdateScoreModal = ({
         };
       });
 
-      toast.success("Cập nhật điểm thành công");
-      setScoreInput("");
       onClose();
     } catch (error) {
       if (isAxiosError(error)) {
@@ -132,7 +191,12 @@ export const UpdateScoreModal = ({
     <>
       <div className="flex flex-wrap gap-4 items-center">
         <span>{courseSectionStudent[scoreType]}</span>{" "}
-        <Button size="sm" color="primary" onPress={onOpen} isDisabled={!isConnected}>
+        <Button
+          size="sm"
+          color="primary"
+          onPress={onOpen}
+          isDisabled={!isConnected}
+        >
           <UpdateIcon size={20} />
           Sửa
         </Button>
@@ -184,7 +248,7 @@ export const UpdateScoreModal = ({
                   onClick={handleUpdateScore}
                   disabled={isHandling}
                 >
-                  Thêm
+                  {isHandling ? <LoaderBtn/> : "Thêm"}
                 </Button>
               </ModalFooter>
             </>

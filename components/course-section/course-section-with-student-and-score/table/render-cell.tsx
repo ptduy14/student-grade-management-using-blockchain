@@ -18,7 +18,7 @@ export const RenderCell = ({ courseSectionStudent, columnKey, setCourseSections 
     courseSectionStudent: CourseSectionStudentDetail,
     scoreType: keyof CourseSectionStudentDetail
   ) => {
-    if (courseSectionStudent[scoreType] === null) {
+    if (courseSectionStudent[scoreType] === null || courseSectionStudent[scoreType] === "-") {
       return <AddScoreModal courseSectionStudent={courseSectionStudent} scoreType={scoreType} setCourseSections={setCourseSections}/>;
     }
 
