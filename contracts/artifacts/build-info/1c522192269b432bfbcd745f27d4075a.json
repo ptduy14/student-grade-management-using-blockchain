@@ -1,5 +1,5 @@
 {
-	"id": "4a80af625740b43e1d2aa187ea271f04",
+	"id": "1c522192269b432bfbcd745f27d4075a",
 	"_format": "hh-sol-build-info-1",
 	"solcVersion": "0.8.26",
 	"solcLongVersion": "0.8.26+commit.8a97fa7a",
@@ -7,7 +7,7 @@
 		"language": "Solidity",
 		"sources": {
 			"contracts/Types.sol": {
-				"content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n// Types.sol\r\nstruct Score {\r\n    uint16 midterm;\r\n    uint16 finalExam;\r\n    uint16 average;\r\n    bool isMidtermSet;\r\n    bool isFinalExamSet;\r\n}\r\n\r\nstruct CourseSection {\r\n    uint16 courseSectionId;\r\n    bool isCourseSectionExisted;\r\n    Score score;\r\n}\r\n\r\nenum ScoreType {\r\n    Midterm,\r\n    FinalExam\r\n}"
+				"content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n// Types.sol\r\nstruct Score {\r\n    uint16 midterm;\r\n    uint16 finalExam;\r\n    uint16 total;\r\n    bool isMidtermSet;\r\n    bool isFinalExamSet;\r\n}\r\n\r\nstruct CourseSection {\r\n    uint16 courseSectionId;\r\n    bool isCourseSectionExisted;\r\n    Score score;\r\n}\r\n\r\nenum ScoreType {\r\n    Midterm,\r\n    FinalExam\r\n}"
 			}
 		},
 		"settings": {
@@ -134,11 +134,11 @@
 									"constant": false,
 									"id": 7,
 									"mutability": "mutable",
-									"name": "average",
-									"nameLocation": "157:7:0",
+									"name": "total",
+									"nameLocation": "157:5:0",
 									"nodeType": "VariableDeclaration",
 									"scope": 12,
-									"src": "150:14:0",
+									"src": "150:12:0",
 									"stateVariable": false,
 									"storageLocation": "default",
 									"typeDescriptions": {
@@ -162,10 +162,10 @@
 									"id": 9,
 									"mutability": "mutable",
 									"name": "isMidtermSet",
-									"nameLocation": "176:12:0",
+									"nameLocation": "174:12:0",
 									"nodeType": "VariableDeclaration",
 									"scope": 12,
-									"src": "171:17:0",
+									"src": "169:17:0",
 									"stateVariable": false,
 									"storageLocation": "default",
 									"typeDescriptions": {
@@ -176,7 +176,7 @@
 										"id": 8,
 										"name": "bool",
 										"nodeType": "ElementaryTypeName",
-										"src": "171:4:0",
+										"src": "169:4:0",
 										"typeDescriptions": {
 											"typeIdentifier": "t_bool",
 											"typeString": "bool"
@@ -189,10 +189,10 @@
 									"id": 11,
 									"mutability": "mutable",
 									"name": "isFinalExamSet",
-									"nameLocation": "200:14:0",
+									"nameLocation": "198:14:0",
 									"nodeType": "VariableDeclaration",
 									"scope": 12,
-									"src": "195:19:0",
+									"src": "193:19:0",
 									"stateVariable": false,
 									"storageLocation": "default",
 									"typeDescriptions": {
@@ -203,7 +203,7 @@
 										"id": 10,
 										"name": "bool",
 										"nodeType": "ElementaryTypeName",
-										"src": "195:4:0",
+										"src": "193:4:0",
 										"typeDescriptions": {
 											"typeIdentifier": "t_bool",
 											"typeString": "bool"
@@ -216,7 +216,7 @@
 							"nameLocation": "93:5:0",
 							"nodeType": "StructDefinition",
 							"scope": 24,
-							"src": "86:132:0",
+							"src": "86:130:0",
 							"visibility": "public"
 						},
 						{
@@ -228,10 +228,10 @@
 									"id": 14,
 									"mutability": "mutable",
 									"name": "courseSectionId",
-									"nameLocation": "257:15:0",
+									"nameLocation": "255:15:0",
 									"nodeType": "VariableDeclaration",
 									"scope": 20,
-									"src": "250:22:0",
+									"src": "248:22:0",
 									"stateVariable": false,
 									"storageLocation": "default",
 									"typeDescriptions": {
@@ -242,7 +242,7 @@
 										"id": 13,
 										"name": "uint16",
 										"nodeType": "ElementaryTypeName",
-										"src": "250:6:0",
+										"src": "248:6:0",
 										"typeDescriptions": {
 											"typeIdentifier": "t_uint16",
 											"typeString": "uint16"
@@ -255,10 +255,10 @@
 									"id": 16,
 									"mutability": "mutable",
 									"name": "isCourseSectionExisted",
-									"nameLocation": "284:22:0",
+									"nameLocation": "282:22:0",
 									"nodeType": "VariableDeclaration",
 									"scope": 20,
-									"src": "279:27:0",
+									"src": "277:27:0",
 									"stateVariable": false,
 									"storageLocation": "default",
 									"typeDescriptions": {
@@ -269,7 +269,7 @@
 										"id": 15,
 										"name": "bool",
 										"nodeType": "ElementaryTypeName",
-										"src": "279:4:0",
+										"src": "277:4:0",
 										"typeDescriptions": {
 											"typeIdentifier": "t_bool",
 											"typeString": "bool"
@@ -282,10 +282,10 @@
 									"id": 19,
 									"mutability": "mutable",
 									"name": "score",
-									"nameLocation": "319:5:0",
+									"nameLocation": "317:5:0",
 									"nodeType": "VariableDeclaration",
 									"scope": 20,
-									"src": "313:11:0",
+									"src": "311:11:0",
 									"stateVariable": false,
 									"storageLocation": "default",
 									"typeDescriptions": {
@@ -299,14 +299,14 @@
 											"id": 17,
 											"name": "Score",
 											"nameLocations": [
-												"313:5:0"
+												"311:5:0"
 											],
 											"nodeType": "IdentifierPath",
 											"referencedDeclaration": 12,
-											"src": "313:5:0"
+											"src": "311:5:0"
 										},
 										"referencedDeclaration": 12,
-										"src": "313:5:0",
+										"src": "311:5:0",
 										"typeDescriptions": {
 											"typeIdentifier": "t_struct$_Score_$12_storage_ptr",
 											"typeString": "struct Score"
@@ -316,10 +316,10 @@
 								}
 							],
 							"name": "CourseSection",
-							"nameLocation": "229:13:0",
+							"nameLocation": "227:13:0",
 							"nodeType": "StructDefinition",
 							"scope": 24,
-							"src": "222:106:0",
+							"src": "220:106:0",
 							"visibility": "public"
 						},
 						{
@@ -329,25 +329,25 @@
 								{
 									"id": 21,
 									"name": "Midterm",
-									"nameLocation": "354:7:0",
+									"nameLocation": "352:7:0",
 									"nodeType": "EnumValue",
-									"src": "354:7:0"
+									"src": "352:7:0"
 								},
 								{
 									"id": 22,
 									"name": "FinalExam",
-									"nameLocation": "368:9:0",
+									"nameLocation": "366:9:0",
 									"nodeType": "EnumValue",
-									"src": "368:9:0"
+									"src": "366:9:0"
 								}
 							],
 							"name": "ScoreType",
-							"nameLocation": "337:9:0",
+							"nameLocation": "335:9:0",
 							"nodeType": "EnumDefinition",
-							"src": "332:48:0"
+							"src": "330:48:0"
 						}
 					],
-					"src": "37:343:0"
+					"src": "37:341:0"
 				},
 				"id": 0
 			}

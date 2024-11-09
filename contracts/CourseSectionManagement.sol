@@ -60,6 +60,19 @@ contract CourseSectionManagement is ICourseSectionManagement {
         return courseSectionScore[_studentSemesterKey][_courseSectionId];
     } 
 
+    function calculateTotalScore(CourseSection storage courseSection) private {
+        // Kiểm tra cả 2 điểm đã được nhập chưa
+        if (courseSection.score.isMidtermSet && courseSection.score.isFinalExamSet) {
+            // Tính điểm theo công thức (giữa kì * 40 + cuối kì * 60) / 100 
+            uint256 scoreMidterm = courseSection.score.midterm;
+            uint256 scoreFinalExam = courseSection.score.finalExam;
+            uint256 total = (scoreMidterm * 40 + scoreFinalExam * 60) / 100;
+
+            // Cập nhật điểm trung bình (chuyển đổi về uint16)
+            courseSection.score.total = uint16(total); 
+        }
+    }
+
     // Function thêm điểm và tự động assign giảng viên nếu cần
     function addCourseSectionScore(bytes32 _studentSemesterKey, uint16 _courseSectionId, uint16 _score, ScoreType _scoreType) public onlySemesterManagement onlyTeacher(_courseSectionId) {
         require(isValidScore(_score), "Score not valid, must be 0 or between 100 and 999, and divisible by 10!");
@@ -88,6 +101,7 @@ contract CourseSectionManagement is ICourseSectionManagement {
         }
 
         // gọi hàm tính điểm trung bình ở đây
+        calculateTotalScore(courseSection);
 
         if (!isCourseSectionExisted) {
             studentCourseSections[_studentSemesterKey].push(courseSection);
@@ -117,6 +131,7 @@ contract CourseSectionManagement is ICourseSectionManagement {
         }
 
         // gọi hàm tính điểm trung bình ở đây
+        calculateTotalScore(courseSection); 
 
         // cập nhật chỉnh sửa vào mảng
         for (uint16 i = 0; i < studentCourseSections[_studentSemesterKey].length; i++) {
