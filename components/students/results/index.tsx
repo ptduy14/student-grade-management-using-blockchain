@@ -8,30 +8,25 @@ import { InfoIcon } from "@/components/icons/accounts/info-icon";
 import { TrashIcon } from "@/components/icons/accounts/trash-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
+import { IStudentResult } from "@/interfaces/StudentResult";
+import { studentEnrollmentService } from "@/services/student-enrollment-service";
 import { TableWrapper } from "./table/table";
-import { ITeacher } from "@/interfaces/Teacher";
-import { TeacherService } from "@/services/teacher-service";
-import { useSelector } from "react-redux";
 
-export const Teachers = () => {
+export const StudentResults = () => {
   const [isFetching, setIsFetching] = useState<boolean>(true);
-  const [teachers, setTeachers] = useState<ITeacher[]>([]);
-  const user = useSelector((state: any) => state.account.user);
+  const [studentResults, setStudentResults] = useState<IStudentResult[]>([]);
 
-  const getAllTeacher = async () => {
-    const res = await TeacherService.getAllTeachers();
-    const teacherFiltered = res.data.filter((item: ITeacher) => {
-      return item.teacher_id !== user.sub; // auth id
-    });
-    setTeachers(teacherFiltered);
+  const getAllStudentEnrollments = async () => {
+    const res = await studentEnrollmentService.getAllStudentEnrollments();
+    setStudentResults(res.data);
     setIsFetching(false);
   };
 
   useEffect(() => {
-    getAllTeacher();
+    getAllStudentEnrollments();
   }, []);
 
-  if (isFetching) return <h1>Waiting...</h1>;
+  if (isFetching) return <h1>Waiting</h1>;
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -45,11 +40,11 @@ export const Teachers = () => {
         </li>
 
         <li className="flex gap-2">
-          <span>Quản lí giảng viên</span>
+          <span>Kết quả học tập</span>
         </li>
       </ul>
 
-      <h3 className="text-xl font-semibold">Quản Lí Giảng Viên</h3>
+      <h3 className="text-xl font-semibold">Kết quả học tập</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
           <Input
@@ -71,7 +66,14 @@ export const Teachers = () => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <TableWrapper teachers={teachers} />
+        {studentResults.map((studentResult: IStudentResult) => (
+          <div key={studentResult.id}>
+            <div>
+              <h3 className="text-xl font-semibold">{`${studentResult.semester.semester_name} (${studentResult.semester.academic_year.academic_year_start} - ${studentResult.semester.academic_year.academic_year_end})`}</h3>
+            </div>
+            <TableWrapper studentEnrollments={studentResult.student_enrollments}/>
+          </div>
+        ))}
       </div>
     </div>
   );

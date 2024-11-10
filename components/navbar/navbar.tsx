@@ -7,19 +7,27 @@ import { UserDropdown } from "./user-dropdown";
 import { Button } from "@nextui-org/react";
 import { useWeb3 } from "@/context/web3-conext";
 import { LoaderBtn } from "../loaders/loader-btn";
+import { useSelector } from "react-redux";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export const NavbarWrapper = ({ children }: Props) => {
-  const {isConnected, connectWallet, isCheckingConnected} = useWeb3();
+  const user = useSelector((state: any) => state.account.user);
+  const { isConnected, connectWallet, isCheckingConnected } = useWeb3();
 
   const connectToMetaMask = async () => {
     connectWallet();
   };
 
-  const buttonContent = isCheckingConnected ? <LoaderBtn /> : (isConnected ? "Đã kết nối ví Meta Mask" : "Kết nối ví Meta Mask");
+  const buttonContent = isCheckingConnected ? (
+    <LoaderBtn />
+  ) : isConnected ? (
+    "Đã kết nối ví Meta Mask"
+  ) : (
+    "Kết nối ví Meta Mask"
+  );
 
   return (
     <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
@@ -51,9 +59,15 @@ export const NavbarWrapper = ({ children }: Props) => {
         >
           <NotificationsDropdown />
 
-          <Button color="primary" onClick={connectToMetaMask} isDisabled={isConnected}>
-            {buttonContent}
-          </Button>
+          {user?.role === "student" ? null : (
+            <Button
+              color="primary"
+              onClick={connectToMetaMask}
+              isDisabled={isConnected}
+            >
+              {buttonContent}
+            </Button>
+          )}
           <NavbarContent>
             <UserDropdown />
           </NavbarContent>

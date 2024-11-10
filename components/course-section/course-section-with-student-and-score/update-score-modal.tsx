@@ -22,6 +22,9 @@ import { useWeb3 } from "@/context/web3-conext";
 import { ethers, Signer } from "ethers";
 import { SemesterManagementABI } from "@/blockchain/abi/semester-management-abi";
 import { LoaderBtn } from "@/components/loaders/loader-btn";
+import { TransactionTypeEnum } from "./enum/transaction-type-enum";
+import { BlockchainService } from "@/services/blockchain-service";
+import { PreviousDataScore } from "@/interfaces/PreviousDataScore";
 
 export const UpdateScoreModal = ({
   courseSectionStudent,
@@ -103,18 +106,28 @@ export const UpdateScoreModal = ({
         scoreTypeUpdateToBlockchain
       );
 
-      toast.success("Cập nhật điểm thành công");
+      toast.success("Cập nhật điểm thành công, giao dịch đang được xử lí");
+
+      const transactionHash = tx.hash;
+
+      const previousDataScore: PreviousDataScore = {
+        transaction_hash: transactionHash,
+        course_section_id: courseSectionStudent.student_enrollment_course_section_id,
+        enrollment_pass_status: courseSectionStudent.student_enrollment_pass_status,
+        student_id: courseSectionStudent.student_student_id,
+        semester_id: courseSectionStudent.semester_semester_id,
+        score_id: courseSectionStudent.score_score_id,
+        midterm_score: courseSectionStudent.score_midterm_score,
+        final_score: courseSectionStudent.score_final_score,
+        total_score: courseSectionStudent.score_final_score,
+        transaction_type: TransactionTypeEnum.UPDATE
+      }
 
       // gọi hàm để cập nhật điểm trên DB
       await handleUpdateScoreToDB(score);
 
-      const receipt = await tx.wait();
-
-      if (receipt.status) {
-        console.log("Giao dịch thành công");
-      } else {
-        console.log("Giao dịch thất bại - đang rollback...");
-      }
+      // chuyển lắng nghe sự kiện mint transaction lên server
+      await BlockchainService.listenTransaction(previousDataScore);
     } catch (error) {
       console.log(error);
     }

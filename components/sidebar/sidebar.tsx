@@ -35,7 +35,9 @@ export const SidebarWrapper = () => {
   };
 
   useEffect(() => {
-    getAllAcademicYear();
+    if (user?.role === "teacher") {
+      getAllAcademicYear();
+    }
   }, []);
 
   return (
@@ -78,17 +80,14 @@ export const SidebarWrapper = () => {
                   href={`/${user?.role}/teachers`}
                 />
               )}
-
-              <SidebarItem
-                isActive={pathname === "/products"}
-                title="Products"
-                icon={<ProductsIcon />}
-              />
-              <SidebarItem
-                isActive={pathname === "/reports"}
-                title="Reports"
-                icon={<ReportsIcon />}
-              />
+              {user?.role === "student" && (
+                <SidebarItem
+                  isActive={pathname === "/students/results"}
+                  title="Kết quả học tập"
+                  icon={<ReportsIcon />}
+                  href={`/${user?.role}/results`}
+                />
+              )}
             </SidebarMenu>
 
             <SidebarMenu title="General">

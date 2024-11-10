@@ -24,6 +24,7 @@ import { SemesterManagementABI } from "@/blockchain/abi/semester-management-abi"
 import { LoaderBtn } from "@/components/loaders/loader-btn";
 import { PreviousDataScore } from "@/interfaces/PreviousDataScore";
 import { BlockchainService } from "@/services/blockchain-service";
+import { TransactionTypeEnum } from "./enum/transaction-type-enum";
 
 export const AddScoreModal = ({
   courseSectionStudent,
@@ -111,12 +112,13 @@ export const AddScoreModal = ({
         courseSectionStudent.student_student_id,
         courseSectionStudent.student_enrollment_course_section_id,
         scoreAddToBlockchain,
-        scoreTypeAddToBlockchain
+        scoreTypeAddToBlockchain,
       );
 
       toast.success("Thêm điểm thành công, giao dịch đang được xử lí");
 
       const transactionHash = tx.hash;
+
       const previousDataScore: PreviousDataScore = {
         transaction_hash: transactionHash,
         course_section_id: courseSectionStudent.student_enrollment_course_section_id,
@@ -126,7 +128,8 @@ export const AddScoreModal = ({
         score_id: courseSectionStudent.score_score_id,
         midterm_score: courseSectionStudent.score_midterm_score,
         final_score: courseSectionStudent.score_final_score,
-        total_score: courseSectionStudent.score_final_score
+        total_score: courseSectionStudent.score_final_score,
+        transaction_type: TransactionTypeEnum.ADD
       }
 
       // gọi hàm để store điểm vào DB
