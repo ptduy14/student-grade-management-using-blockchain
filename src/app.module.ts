@@ -16,6 +16,7 @@ import { CourseSectionModule } from './course-section/course-section.module';
 import { StudentEnrollmentModule } from './student-enrollment/student-enrollment.module';
 import { BlockchainModule } from './blockchain/blockchain.module';
 import { ScoresModule } from './scores/scores.module';
+import { TransactionHistoryModule } from './transaction-history/transaction-history.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ScoresModule } from './scores/scores.module';
     StudentEnrollmentModule,
     BlockchainModule,
     ScoresModule,
+    TransactionHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

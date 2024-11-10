@@ -1,3 +1,5 @@
+import { TransactionTypeEnum } from "common/enums/transaction-type.enum";
+
 export class PreviousDataScore {
   transaction_hash: string;
   course_section_id: number;
@@ -8,4 +10,5 @@ export class PreviousDataScore {
   midterm_score: number | null;
   final_score: number | null;
   total_score: number | null;
+  transaction_type: TransactionTypeEnum
 }

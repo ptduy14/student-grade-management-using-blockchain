@@ -5,7 +5,7 @@ export interface Grade {
   scores: {
     midterm: string; // Điểm vẫn được giữ ở dạng string vì chúng được định dạng bằng .toFixed(2)
     finalExam: string;
-    average: string;
+    total: string;
     isMidtermSet: boolean;
     isFinalExamSet: boolean;
   };

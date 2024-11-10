@@ -97,6 +97,7 @@ export class StudentEnrollmentService {
           'course_section',
         )
         .innerJoinAndSelect('student_enrollment.score', 'score')
+        .innerJoinAndSelect('course_section.course', 'course')
         .where(
           '(semester.semester_status = :statusInProgress OR semester.semester_status = :statusCompleted)',
           {
@@ -123,7 +124,7 @@ export class StudentEnrollmentService {
   //   if (!enrollment) {
   //     throw new HttpException('Không tìm thấy học phần', HttpStatus.NOT_FOUND);
   //   }
-    
+
   //   return enrollment;
   // }
 
@@ -148,6 +149,7 @@ export class StudentEnrollmentService {
           },
         )
         .andWhere('semester.semester_id = :semesterId', { semesterId })
+        .andWhere('student_semester.student.student_id = :id', { id: auth.id })
         .getOne();
 
     if (!studentEnrollmentFindBySemesterId) {

@@ -114,7 +114,7 @@ export const abi = [
 							},
 							{
 								"internalType": "uint16",
-								"name": "average",
+								"name": "total",
 								"type": "uint16"
 							},
 							{
@@ -187,7 +187,7 @@ export const abi = [
 							},
 							{
 								"internalType": "uint16",
-								"name": "average",
+								"name": "total",
 								"type": "uint16"
 							},
 							{

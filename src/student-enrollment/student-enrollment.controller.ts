@@ -27,7 +27,7 @@ export class StudentEnrollmentController {
   // chỉ dành cho role sinh viên
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.STUDENT)
-  @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí trong các học kì' })
+  @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí trong các học kì (AUTH)' })
   @Get('student/semesters')
   findAll(@Auth() auth: any) {
     return this.studentEnrollmentService.findAll(auth);
@@ -36,7 +36,7 @@ export class StudentEnrollmentController {
   // chỉ dành cho role sinh viên
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.STUDENT)
-  @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí theo học kì cụ thể (Chưa cần thiết sử dụng)' })
+  @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí theo học kì cụ thể (Chưa cần thiết sử dụng) (AUTH)' })
   @Get('student/semesters/:semesterId')
   findBySemesterId(@Auth() auth: any, @Param('semesterId', ParseIntPipe) semesterId: number) {
     return this.studentEnrollmentService.findBySemesterId(auth, semesterId);

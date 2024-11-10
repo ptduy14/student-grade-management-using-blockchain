@@ -159,4 +159,8 @@ export class ScoresService {
 
     await this.studentEnrollmentRepository.save(enrollment);
   }
+
+  async findById(id: number) {
+    return await this.scoreRepository.findOne({where: {score_id: id}});
+  }
 }
