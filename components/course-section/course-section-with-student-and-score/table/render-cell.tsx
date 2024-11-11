@@ -1,28 +1,53 @@
 import { Chip } from "@nextui-org/react";
 import React, { SetStateAction } from "react";
 import { Button } from "@nextui-org/react";
-import { CourseSectionStudent, CourseSectionStudentDetail } from "@/interfaces/CourseSectionStudent";
+import {
+  CourseSectionStudent,
+  CourseSectionStudentDetail,
+} from "@/interfaces/CourseSectionStudent";
 import { AddScoreModal } from "../add-score-modal";
 import { UpdateScoreModal } from "../update-score-modal";
+import StudentDetailModal from "../student-detail-modal";
 
 interface Props {
   courseSectionStudent: CourseSectionStudentDetail;
   columnKey: string | React.Key;
-  setCourseSections: React.Dispatch<SetStateAction<CourseSectionStudent | null>>
+  setCourseSections: React.Dispatch<
+    SetStateAction<CourseSectionStudent | null>
+  >;
 }
 
-export const RenderCell = ({ courseSectionStudent, columnKey, setCourseSections }: Props) => {
+export const RenderCell = ({
+  courseSectionStudent,
+  columnKey,
+  setCourseSections,
+}: Props) => {
   // @ts-ignore
   const cellValue = courseSectionStudent[columnKey];
   const renderScoreCell = (
     courseSectionStudent: CourseSectionStudentDetail,
     scoreType: keyof CourseSectionStudentDetail
   ) => {
-    if (courseSectionStudent[scoreType] === null || courseSectionStudent[scoreType] === "-") {
-      return <AddScoreModal courseSectionStudent={courseSectionStudent} scoreType={scoreType} setCourseSections={setCourseSections}/>;
+    if (
+      courseSectionStudent[scoreType] === null ||
+      courseSectionStudent[scoreType] === "-"
+    ) {
+      return (
+        <AddScoreModal
+          courseSectionStudent={courseSectionStudent}
+          scoreType={scoreType}
+          setCourseSections={setCourseSections}
+        />
+      );
     }
 
-    return <UpdateScoreModal courseSectionStudent={courseSectionStudent} scoreType={scoreType} setCourseSections={setCourseSections}/>;
+    return (
+      <UpdateScoreModal
+        courseSectionStudent={courseSectionStudent}
+        scoreType={scoreType}
+        setCourseSections={setCourseSections}
+      />
+    );
   };
 
   switch (columnKey) {
@@ -56,9 +81,9 @@ export const RenderCell = ({ courseSectionStudent, columnKey, setCourseSections 
 
     case "actions":
       return (
-        <Button color="primary" href={``}>
-          Chi tiết sinh viên
-        </Button>
+        <StudentDetailModal
+          studentId={courseSectionStudent.student_student_id}
+        />
       );
     default:
       return cellValue;
