@@ -11,6 +11,7 @@ import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { Button, Input } from "@nextui-org/react";
 import { courseSectionService } from "@/services/course-section-service";
 import { TableWrapper } from "./table/table";
+import { SearchStudentByName } from "./search-student-by-name";
 
 export const CourseSectionWithStudentAndScore = ({courseSectionId}:{courseSectionId: string}) => {
     const [courseSections, setCourseSections] = useState<CourseSectionStudent | null>(null)
@@ -58,13 +59,7 @@ export const CourseSectionWithStudentAndScore = ({courseSectionId}:{courseSectio
       }`}</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-          <Input
-            classNames={{
-              input: "w-full",
-              mainWrapper: "w-full",
-            }}
-            placeholder="Tìm kiếm sinh viên"
-          />
+          <SearchStudentByName courseSectionId={courseSectionId} setCourseSections={setCourseSections} getCourseSectionWithStudentAndScore={getCourseSectionWithStudentAndScore}/>
           <SettingsIcon />
           <TrashIcon />
           <InfoIcon />
@@ -77,7 +72,7 @@ export const CourseSectionWithStudentAndScore = ({courseSectionId}:{courseSectio
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <TableWrapper students={courseSections!.students} setCourseSections={setCourseSections}/>
+        <TableWrapper students={courseSections!.students} setCourseSections={setCourseSections} />
       </div>
     </div>
     )
