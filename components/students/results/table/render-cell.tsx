@@ -1,6 +1,7 @@
-import { Chip } from "@nextui-org/react";
+import { Button, Chip } from "@nextui-org/react";
 import React from "react";
 import { IStudentEnrollment } from "@/interfaces/StudentResult";
+import TransactionHistory from "../transaction-history";
 
 interface Props {
   studentEnrollment: IStudentEnrollment;
@@ -38,6 +39,9 @@ export const RenderCell = ({ studentEnrollment, columnKey }: Props) => {
       ) : (
         "-"
       );
+
+    case "transaction_history":
+      return <TransactionHistory scoreId={studentEnrollment.score.score_id}/>
 
     default:
       return cellValue;

@@ -21,6 +21,7 @@ import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { acdemicYearService } from "@/services/academic-year-service";
 import { IAcademicYear } from "@/interfaces/AcademicYear";
+import { CourseIcon } from "../icons/course-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -73,12 +74,21 @@ export const SidebarWrapper = () => {
                 />
               )}
               {user?.role === "admin" && (
-                <SidebarItem
-                  isActive={pathname === "/admin/teachers"}
-                  title="Quản lí giảng viên"
-                  icon={<CustomersIcon />}
-                  href={`/${user?.role}/teachers`}
-                />
+                <>
+                  <SidebarItem
+                    isActive={pathname === "/admin/teachers"}
+                    title="Quản lí giảng viên"
+                    icon={<CustomersIcon />}
+                    href={`/${user?.role}/teachers`}
+                  />
+
+                  <SidebarItem
+                    isActive={pathname === "/admin/courses"}
+                    title="Quản lí môn học"
+                    icon={<CourseIcon />}
+                    href={`/${user?.role}/courses`}
+                  />
+                </>
               )}
               {user?.role === "student" && (
                 <SidebarItem
@@ -89,7 +99,6 @@ export const SidebarWrapper = () => {
                 />
               )}
             </SidebarMenu>
-
             <SidebarMenu title="General">
               <SidebarItem
                 isActive={pathname === "/developers"}
