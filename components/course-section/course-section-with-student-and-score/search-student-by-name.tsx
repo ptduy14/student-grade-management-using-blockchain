@@ -10,7 +10,6 @@ export const SearchStudentByName = ({courseSectionId, setCourseSections, getCour
 
     const findStudentByName = async(courseSectionId: string, studentName: string) => {
         const res = await courseSectionService.findStudentByName(courseSectionId, studentName);
-        console.log(res.data);
         setCourseSections(res.data);
     }
 
