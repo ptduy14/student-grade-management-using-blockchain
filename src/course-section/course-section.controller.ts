@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe, ParseIntPipe, Query } from '@nestjs/common';
 import { CourseSectionService } from './course-section.service';
 import { CreateCourseSectionDto } from './dto/create-course-section.dto';
 import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
@@ -72,6 +72,15 @@ export class CourseSectionController {
   @Get(':id/students-with-score')
   async findAllStudentsAndScoreInCourseSection(@Param('id', ParseIntPipe) id: number) {
     return await this.courseSectionService.findAllStudentsAndScoreInCourseSection(id);
+  }
+
+  // Lấy danh sách sinh viên trong lớp học phần và điểm
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
+  @ApiOperation({summary: 'Tìm kiếm sinh viên trong lớp học phần'})
+  @Get(':id/search/student')
+  async findStudentByNameInCourseSection(@Param('id', ParseIntPipe) id: number, @Query('student_name', ValidationPipe) student_name: string) {
+    return await this.courseSectionService.findStudentByNameInCourseSection(id, student_name);
   }
 }
 

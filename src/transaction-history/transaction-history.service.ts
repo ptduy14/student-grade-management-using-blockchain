@@ -25,4 +25,8 @@ export class TransactionHistoryService {
 
     return this.transactionHistoryRepository.save(transaction);
   }
+
+  async getTransactionHistoriesByScoreId(scoreId: number) {
+    return this.transactionHistoryRepository.find({where: {score: {score_id: scoreId}}});
+  }
 }
