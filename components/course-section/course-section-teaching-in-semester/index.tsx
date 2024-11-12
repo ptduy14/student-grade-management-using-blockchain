@@ -13,6 +13,7 @@ import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { ISemester } from "@/interfaces/Semester";
 import { semesterService } from "@/services/semester-service";
 import { TableWrapper } from "./table/table";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface IDetailSemester extends ISemester {
   academic_year: {
@@ -32,6 +33,8 @@ export const CourseSectionTeachingInSemester = ({
   );
   const [semester, setSemester] = useState<IDetailSemester | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(true);
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedSearchValue = useDebounce(searchValue, 500); // Debounce sau 500ms
 
   const getCourseSectionTeaching = async () => {
     const res = await courseSectionService.getCourseSectionTeachingInSemester(
@@ -46,12 +49,38 @@ export const CourseSectionTeachingInSemester = ({
     setSemester(res.data);
   };
 
+  const findCourseSectionTeachingInSemesterByName = async (
+    semesterId: string,
+    courseSectionName: string
+  ) => {
+    const res =
+      await courseSectionService.findCourseSectionTeachingInSemesterByName(
+        semesterId,
+        courseSectionName
+      );
+    setCourseSection(res.data);
+  };
+
   useEffect(() => {
-    getCourseSectionTeaching();
     getSemester();
   }, []);
 
-  if (isFetching) return <h1>waiting...</h1>;
+  useEffect(() => {
+    if (debouncedSearchValue) {
+      findCourseSectionTeachingInSemesterByName(
+        semesterId,
+        debouncedSearchValue
+      );
+    } else {
+      getCourseSectionTeaching();
+    }
+  }, [debouncedSearchValue]);
+
+  const handleClearInputSearch = () => {
+    setSearchValue("");
+  };
+
+  if (isFetching) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -89,6 +118,9 @@ export const CourseSectionTeachingInSemester = ({
               mainWrapper: "w-full",
             }}
             placeholder="Tìm kiếm lớp học phần"
+            value={searchValue}
+            onClear={() => handleClearInputSearch()}
+            onChange={(e: any) => setSearchValue(e.target.value)}
           />
           <SettingsIcon />
           <TrashIcon />

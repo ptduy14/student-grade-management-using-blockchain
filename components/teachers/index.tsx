@@ -31,7 +31,7 @@ export const Teachers = () => {
     getAllTeacher();
   }, []);
 
-  if (isFetching) return <h1>Waiting...</h1>;
+  if (isFetching) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">

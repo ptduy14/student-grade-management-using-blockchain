@@ -67,11 +67,19 @@ export const SidebarWrapper = () => {
             />
             <SidebarMenu title="Main Menu">
               {user?.role === "teacher" && (
-                <CollapseItems
+                <>
+                  <CollapseItems
                   icon={<BalanceIcon />}
                   items={academicYears}
                   title="Năm học"
                 />
+                <SidebarItem
+                    isActive={pathname === "/teacher/course-section/current-open-semester"}
+                    title="Lớp học phần"
+                    icon={<CourseIcon />}
+                    href={`/${user?.role}/course-section/current-open-semester`}
+                  />
+                </>
               )}
               {user?.role === "admin" && (
                 <>

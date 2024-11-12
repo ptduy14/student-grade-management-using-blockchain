@@ -28,7 +28,7 @@ export const AcademicYear = ({
     getDetailAcademicYear();
   }, []);
 
-  if (!academicYearDetail) return <h1>waiting</h1>;
+  if (!academicYearDetail) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
   
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">

@@ -23,4 +23,12 @@ export const courseSectionService = {
       }
     );
   },
+
+  findCourseSectionTeachingInSemesterByName: async(semesterId: string, courseSectionName: string) => {
+    return await AxiosInstance.get(`/course-section/teacher/semesters/${semesterId}/search`, {
+      params: {
+        course_section_name: courseSectionName
+      }
+    })
+  }
 };
