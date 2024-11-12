@@ -10,22 +10,22 @@ export const CourseSectionTeachingInCurrentOpenSemester = () => {
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [currentSemester, setCurrentSemester] = useState<ISemester | null>();
 
-    // const getCurrentOpenSemester = async () => {
-    //     try {
-    //         const res = await semesterService.getCurrentOpenSemester();
-    //         setCurrentSemester(res.data);
-    //     } catch (error) {
-    //         if (isAxiosError(error)) {
-    //             toast.info(error.response?.data.message);
-    //         }
-    //     } finally {
-    //         setIsFetching(false);
-    //     }
-    // }
+    const getCurrentOpenSemester = async () => {
+      try {
+        const res = await semesterService.getCurrentOpenSemester();
+        setCurrentSemester(res.data);
+      } catch (error) {
+        if (isAxiosError(error)) {
+          toast.info(error.response?.data.message);
+        }
+      } finally {
+        setIsFetching(false);
+      }
+    };
 
-    // useEffect(() => {
-    //     getCurrentOpenSemester();
-    // }, [])
+    useEffect(() => {
+      getCurrentOpenSemester();
+    }, []);
 
     if (isFetching) return <div className="w-full h-full flex justify-center items-center">Waiting...</div>
 
