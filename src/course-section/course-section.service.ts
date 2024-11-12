@@ -295,4 +295,23 @@ export class CourseSectionService {
       students,
     };
   }
+
+  async findTeacherCourseSectionsInSemester(
+    auth: any,
+    semesterId: number,
+    courseSeactionName: string,
+  ) {
+    return await this.courseSectionRepository
+      .createQueryBuilder('course_section')
+      .leftJoinAndSelect('course_section.semester', 'semester')
+      .leftJoinAndSelect('course_section.course', 'course')
+      .leftJoinAndSelect('course_section.teacher', 'teacher')
+      .where('teacher.teacher_id = :teacherId', { teacherId: auth.id })
+      .andWhere('semester.semester_id = :semesterId', { semesterId })
+      .andWhere('course_section.course_section_name LIKE :courseSectionName', {
+        courseSectionName: `%${courseSeactionName}%`,
+      })
+      .select(['course_section', 'semester', 'course'])
+      .getMany();
+  }
 }

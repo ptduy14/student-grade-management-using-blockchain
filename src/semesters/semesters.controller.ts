@@ -20,6 +20,14 @@ export class SemestersController {
     return await this.semestersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
+  @ApiOperation({summary: 'Lấy học kì hiện tại đang mở' })
+  @Get('/current-open-semester')
+  async findCurrentOpenSemester() {
+    return await this.semestersService.findCurrentOpenSemester();
+  }
+
   @UseGuards(JwtAuthGuard)
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @ApiOperation({summary: 'Lấy chi tiết học kì' })
