@@ -39,8 +39,16 @@ export class SemestersController {
   @UseGuards(JwtAuthGuard)
   @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: 'Mở trạng thái học kì' })
-  @Patch(':id')
+  @Patch(':id/open')
   async openSemester(@Param('id', ParseIntPipe) id: number) {
     return await this.semestersService.openSemester(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @ApiOperation({summary: 'Xác nhận hoàn thành học kì' })
+  @Get(':id/complete')
+  async completeSemester(@Param('id', ParseIntPipe) id: number) {
+    return await this.semestersService.completeSemester(id);
   }
 }

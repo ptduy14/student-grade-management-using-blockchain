@@ -366,7 +366,7 @@ export class CourseSectionService {
   }
 
   async reopenCourseSection(courseSectionId: number, auth: any) {
-    const courseSection = await this.courseSectionRepository.findOne({where: {course_section_id: courseSectionId}});
+    const courseSection = await this.courseSectionRepository.findOne({where: {course_section_id: courseSectionId}, relations: {semester: true}});
 
     if (!courseSection) {
       throw new HttpException("Không tìm thấy lớp học phần", HttpStatus.NOT_FOUND);
@@ -374,6 +374,10 @@ export class CourseSectionService {
 
     if (courseSection.course_section_status === CourseSectionStatusEnum.IN_PROGRESS) {
       throw new HttpException("Lớp học phần hiện đang không khóa", HttpStatus.CONFLICT);
+    }
+
+    if (courseSection.semester.semester_status === SemesterStatusEnum.COMPLETED) {
+      throw new HttpException("Không thể mở khóa lớp học phần", HttpStatus.CONFLICT);
     }
 
     courseSection.course_section_status = CourseSectionStatusEnum.IN_PROGRESS;

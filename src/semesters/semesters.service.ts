@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Semester } from './entities/semester.entity';
 import { Repository } from 'typeorm';
 import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
+import { CourseSection } from 'src/course-section/entities/course-section.entity';
+import { CourseSectionStatusEnum } from 'common/enums/course-section-status.enum';
 
 @Injectable()
 export class SemestersService {
@@ -66,5 +68,29 @@ export class SemestersService {
     }
 
     return currentOpenSemester;
+  }
+
+  async completeSemester(semesterId: number) {
+    const semester = await this.semesterRepository.findOne({where: {semester_id: semesterId}, relations: {courseSections: true}});
+  
+    if (!semester) {
+      throw new HttpException("Không tìm thấy học kỳ", HttpStatus.NOT_FOUND);
+    }
+
+    if (semester.semester_status === SemesterStatusEnum.COMPLETED) {
+      throw new HttpException("Học kỳ đã hoàn tất", HttpStatus.CONFLICT);
+    }
+
+    const isNotEligibleForComplete = semester.courseSections.some((CourseSection: any) => CourseSection.course_section_status === CourseSectionStatusEnum.IN_PROGRESS);
+
+    if (isNotEligibleForComplete) {
+      throw new HttpException("Không đủ điều kiện hoàn thành học kỳ", HttpStatus.CONFLICT);
+    }
+
+    semester.semester_status = SemesterStatusEnum.COMPLETED
+
+    await this.semesterRepository.save(semester);
+
+    return "success";
   }
 }
