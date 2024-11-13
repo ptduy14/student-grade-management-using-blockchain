@@ -7,5 +7,9 @@ export const semesterService = {
 
     getCurrentOpenSemester: async () => {
         return await AxiosInstance.get('/semesters/current-open-semester');
+    },
+
+    completeSemester: async (semesterId: string) => {
+        return await AxiosInstance.get(`/semesters/${semesterId}/complete`);
     }
 }

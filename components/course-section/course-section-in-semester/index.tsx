@@ -14,6 +14,8 @@ import { ISemester } from "@/interfaces/Semester";
 import { semesterService } from "@/services/semester-service";
 import { TableWrapper } from "./table/table";
 import { useDebounce } from "@/hooks/useDebounce";
+import CompleteSemesterModal from "./complete-semester-modal";
+import { SemesterStatusEnum } from "@/common/enum/semester-status-enum";
 
 interface IDetailSemester extends ISemester {
   academic_year: {
@@ -35,6 +37,8 @@ export const CourseSectionsInSemester = ({
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearchValue = useDebounce(searchValue, 500); // Debounce sau 500ms
+  // using for dispatch reupdate UI after handle complete semester is done
+  const [isSemesterCompleted, setIsSemesterCompleted] = useState<boolean>(false)
 
   const getAllCourseSectionInSemester = async () => {
     const res = await courseSectionService.getAllCourseSectionInSemester(
@@ -47,6 +51,7 @@ export const CourseSectionsInSemester = ({
   const getSemester = async () => {
     const res = await semesterService.getSemesterById(semesterId);
     setSemester(res.data);
+    setIsSemesterCompleted(res.data.semester_status === SemesterStatusEnum.COMPLETED);
   };
 
   const searchCourseSectionInSemester = async (
@@ -129,6 +134,7 @@ export const CourseSectionsInSemester = ({
           <DotsIcon />
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
+          <CompleteSemesterModal semesterId={semesterId} isSemesterCompleted={isSemesterCompleted} setIsSemesterCompleted={setIsSemesterCompleted}/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>

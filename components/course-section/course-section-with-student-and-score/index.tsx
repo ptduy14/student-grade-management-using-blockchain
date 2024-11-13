@@ -17,6 +17,7 @@ import { CompleteCourseSectionModal } from "./complete-course-section-modal";
 import { CourseSectionStatusEnum } from "./enum/course-section-status-enum";
 import { useSelector } from "react-redux";
 import ReopenCourseSection from "./admin-role/reopen-course-section-modal";
+import { SemesterStatusEnum } from "@/common/enum/semester-status-enum";
 
 export const CourseSectionWithStudentAndScore = ({
   courseSectionId,
@@ -31,7 +32,7 @@ export const CourseSectionWithStudentAndScore = ({
   const [isScoreEditable, setIsScoreEditable] = useState<boolean>(false);
   const debouncedSearchValue = useDebounce(searchValue, 500); // Debounce sau 500ms
   // this state use to trigger rerender of parent component when admin completed reopen course section
-  const [isReopenCompleted, setIsReopenCompleted] = useState<boolean>(false)
+  const [isReopenCompleted, setIsReopenCompleted] = useState<boolean>(false);
 
   const getCourseSectionWithStudentAndScore = async () => {
     const res = await courseSectionService.getCourseSectionWithStudentAndScore(
@@ -134,8 +135,11 @@ export const CourseSectionWithStudentAndScore = ({
               setIsScoreEditable={setIsScoreEditable}
             />
           ) : courseSections?.courseSection.course_section_status ===
-            CourseSectionStatusEnum.COMPLETED ? (
-            <ReopenCourseSection courseSectionId={courseSectionId} setIsReopenCompleted={setIsReopenCompleted}/>
+            CourseSectionStatusEnum.COMPLETED && courseSections?.semester.semester_status !== SemesterStatusEnum.COMPLETED ? (
+            <ReopenCourseSection
+              courseSectionId={courseSectionId}
+              setIsReopenCompleted={setIsReopenCompleted}
+            />
           ) : (
             <></>
           )}
