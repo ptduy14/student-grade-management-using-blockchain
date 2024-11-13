@@ -13,7 +13,7 @@ import { RenderCell } from "./render-cell";
 import { ICourseSection } from "@/interfaces/CourseSection";
 import { CourseSectionStudent, CourseSectionStudentDetail } from "@/interfaces/CourseSectionStudent";
 
-export const TableWrapper = ({students, setCourseSections}: {students: CourseSectionStudentDetail[], setCourseSections: React.Dispatch<SetStateAction<CourseSectionStudent | null>>}) => {
+export const TableWrapper = ({students, setCourseSections, isScoreEditable}: {students: CourseSectionStudentDetail[], setCourseSections: React.Dispatch<SetStateAction<CourseSectionStudent | null>>, isScoreEditable: boolean}) => {
   return (
     <div className=" w-full flex flex-col gap-4">
       <Table isStriped aria-label="Example table with custom cells">
@@ -33,7 +33,7 @@ export const TableWrapper = ({students, setCourseSections}: {students: CourseSec
             <TableRow key={item.student_student_id}>
               {(columnKey) => (
                 <TableCell>
-                  {RenderCell({ courseSectionStudent: item, columnKey: columnKey, setCourseSections })}
+                  {RenderCell({ courseSectionStudent: item, columnKey: columnKey, setCourseSections, isScoreEditable })}
                 </TableCell>
               )}
             </TableRow>

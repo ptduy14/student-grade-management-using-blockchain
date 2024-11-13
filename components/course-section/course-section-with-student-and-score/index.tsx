@@ -12,6 +12,9 @@ import { Button, Input } from "@nextui-org/react";
 import { courseSectionService } from "@/services/course-section-service";
 import { TableWrapper } from "./table/table";
 import { useDebounce } from "@/hooks/useDebounce";
+import { FlagIcon } from "@/components/icons/flag-icon";
+import { CompleteCourseSectionModal } from "./complete-course-section-modal";
+import { CourseSectionStatusEnum } from "./enum/course-section-status-enum";
 
 export const CourseSectionWithStudentAndScore = ({
   courseSectionId,
@@ -22,6 +25,7 @@ export const CourseSectionWithStudentAndScore = ({
     useState<CourseSectionStudent | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState("");
+  const [isScoreEditable, setIsScoreEditable] = useState<boolean>(false);
   const debouncedSearchValue = useDebounce(searchValue, 500); // Debounce sau 500ms
 
   const getCourseSectionWithStudentAndScore = async () => {
@@ -29,6 +33,7 @@ export const CourseSectionWithStudentAndScore = ({
       courseSectionId
     );
     setCourseSections(res.data);
+    setIsScoreEditable(res.data.courseSection.course_section_status === CourseSectionStatusEnum.IN_PROGRESS ? true : false);
     setIsFetching(false);
   };
 
@@ -49,13 +54,18 @@ export const CourseSectionWithStudentAndScore = ({
     } else {
       getCourseSectionWithStudentAndScore();
     }
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, isScoreEditable]);
 
   const handleClearInputSearch = () => {
     setSearchValue("");
   };
 
-  if (isFetching) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
+  if (isFetching)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        Waiting...
+      </div>
+    );
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -105,6 +115,7 @@ export const CourseSectionWithStudentAndScore = ({
           <DotsIcon />
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
+          <CompleteCourseSectionModal courseSectionId={courseSectionId} isScoreEditable={isScoreEditable} setIsScoreEditable={setIsScoreEditable}/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
@@ -114,6 +125,7 @@ export const CourseSectionWithStudentAndScore = ({
         <TableWrapper
           students={courseSections!.students}
           setCourseSections={setCourseSections}
+          isScoreEditable={isScoreEditable}
         />
       </div>
     </div>

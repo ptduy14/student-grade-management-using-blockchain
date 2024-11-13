@@ -13,7 +13,7 @@ import {
   CourseSectionStudent,
   CourseSectionStudentDetail,
 } from "@/interfaces/CourseSectionStudent";
-import { ScoreTypeEnum } from "./enum/score-type-enum";
+import { ScoreTypeEnum, ScoreTypeNames } from "./enum/score-type-enum";
 import { UpdateIcon } from "@/components/icons/table/update-icon";
 import { ScoreService } from "@/services/score-service";
 import { isAxiosError } from "axios";
@@ -220,7 +220,7 @@ export const UpdateScoreModal = ({
             <>
               <ModalHeader className="flex flex-col gap-1">
                 Sửa điểm{" "}
-                {scoreType === ScoreTypeEnum.MIDTERM ? "giữa kì" : "cuối kì"}
+                {ScoreTypeNames[scoreType]}
               </ModalHeader>
               <ModalBody className="space-y-3">
                 <h1>

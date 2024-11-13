@@ -15,12 +15,14 @@ interface Props {
   setCourseSections: React.Dispatch<
     SetStateAction<CourseSectionStudent | null>
   >;
+  isScoreEditable: boolean
 }
 
 export const RenderCell = ({
   courseSectionStudent,
   columnKey,
   setCourseSections,
+  isScoreEditable
 }: Props) => {
   // @ts-ignore
   const cellValue = courseSectionStudent[columnKey];
@@ -58,10 +60,10 @@ export const RenderCell = ({
       return courseSectionStudent.student_student_name ?? "-";
 
     case "score_midterm_score":
-      return renderScoreCell(courseSectionStudent, "score_midterm_score");
+      return isScoreEditable ? renderScoreCell(courseSectionStudent, "score_midterm_score") : courseSectionStudent.score_midterm_score;
 
     case "score_final_score":
-      return renderScoreCell(courseSectionStudent, "score_final_score");
+      return isScoreEditable ? renderScoreCell(courseSectionStudent, "score_final_score") : courseSectionStudent.score_final_score;
 
     case "score_total_score":
       return courseSectionStudent.score_total_score ?? "-";

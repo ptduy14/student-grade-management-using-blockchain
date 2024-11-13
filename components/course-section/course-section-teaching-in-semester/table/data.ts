@@ -5,5 +5,6 @@ export const columns = [
    {name: 'MÃ MÔN HỌC', uid: 'course_id'},
    {name: 'TÊN MÔN HỌC', uid: 'course_name'},
    {name: 'SỐ TÍN CHỈ', uid: 'course_credits'},
+   {name: "TRẠNG THÁI", uid: 'course_section_status'},
    {name: 'ACTIONS', uid: 'actions'},
 ];

@@ -1,3 +1,5 @@
+import { CourseSectionStatusEnum } from "@/components/course-section/course-section-with-student-and-score/enum/course-section-status-enum";
+
 export interface CourseSectionStudentDetail {
   student_enrollment_course_section_id: number;
   student_enrollment_pass_status: string;
@@ -16,6 +18,7 @@ export interface CourseSectionStudent {
   courseSection: {
     course_section_id: number;
     course_section_name: string;
+    course_section_status: CourseSectionStatusEnum;
     current_students: number;
   };
   semester: {

@@ -1,4 +1,4 @@
-import { TransactionTypeEnum } from "@/components/course-section/course-section-with-student-and-score/enum/transaction-type-enum";
+import { TransactionTypeEnum, TransactionTypeNames } from "@/components/course-section/course-section-with-student-and-score/enum/transaction-type-enum";
 import { ITransactionHistory } from "@/interfaces/TransactionHistory";
 import { transactionHistoryService } from "@/services/transaction-history-service";
 import {
@@ -69,7 +69,7 @@ export default function TransactionHistory({ scoreId }: { scoreId: number }) {
                         </p>
                         <p>
                           <strong>Loại giao dịch:</strong>{" "}
-                          {history.transaction_type}
+                          {TransactionTypeNames[history.transaction_type]}
                         </p>
                         <p>
                           <strong>Block Number:</strong> {history.block_number}

@@ -30,5 +30,9 @@ export const courseSectionService = {
         course_section_name: courseSectionName
       }
     })
+  },
+
+  completeCourseSection: async(courseSectionId: string) => {
+    return await AxiosInstance.get(`/course-section/${courseSectionId}/complete`);
   }
 };
