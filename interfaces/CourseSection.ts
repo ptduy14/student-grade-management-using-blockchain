@@ -1,5 +1,6 @@
 import { ICourse } from "./Course";
 import { ISemester } from "./Semester";
+import { ITeacher } from "./Teacher";
 
 export interface ICourseSection {
     course_section_id: number,
@@ -7,5 +8,6 @@ export interface ICourseSection {
     current_students: number,
     course_section_status: string,
     semester: ISemester,
-    course: ICourse
+    course: ICourse,
+    teacher: ITeacher
 }

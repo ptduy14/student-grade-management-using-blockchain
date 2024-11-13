@@ -23,7 +23,7 @@ interface IDetailSemester extends ISemester {
   };
 }
 
-export const CourseSectionTeachingInSemester = ({
+export const CourseSectionsInSemester = ({
   semesterId,
 }: {
   semesterId: string;
@@ -36,8 +36,8 @@ export const CourseSectionTeachingInSemester = ({
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearchValue = useDebounce(searchValue, 500); // Debounce sau 500ms
 
-  const getCourseSectionTeaching = async () => {
-    const res = await courseSectionService.getCourseSectionTeachingInSemester(
+  const getAllCourseSectionInSemester = async () => {
+    const res = await courseSectionService.getAllCourseSectionInSemester(
       semesterId
     );
     setCourseSection(res.data);
@@ -49,15 +49,14 @@ export const CourseSectionTeachingInSemester = ({
     setSemester(res.data);
   };
 
-  const searchCourseSectionTeachingInSemester = async (
+  const searchCourseSectionInSemester = async (
     semesterId: string,
     courseSectionName: string
   ) => {
-    const res =
-      await courseSectionService.searchCourseSectionTeachingInSemester(
-        semesterId,
-        courseSectionName
-      );
+    const res = await courseSectionService.searchCourseSectionInSemester(
+      semesterId,
+      courseSectionName
+    );
     setCourseSection(res.data);
   };
 
@@ -67,12 +66,9 @@ export const CourseSectionTeachingInSemester = ({
 
   useEffect(() => {
     if (debouncedSearchValue) {
-      searchCourseSectionTeachingInSemester(
-        semesterId,
-        debouncedSearchValue
-      );
+      searchCourseSectionInSemester(semesterId, debouncedSearchValue);
     } else {
-      getCourseSectionTeaching();
+      getAllCourseSectionInSemester();
     }
   }, [debouncedSearchValue]);
 
@@ -80,7 +76,12 @@ export const CourseSectionTeachingInSemester = ({
     setSearchValue("");
   };
 
-  if (isFetching) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
+  if (isFetching)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        Waiting...
+      </div>
+    );
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">

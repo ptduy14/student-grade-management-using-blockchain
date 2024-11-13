@@ -4,6 +4,7 @@ import { ChevronDownIcon } from "../icons/sidebar/chevron-down-icon";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import clsx from "clsx";
 import { IAcademicYear } from "@/interfaces/AcademicYear";
+import { useSelector } from "react-redux";
 
 interface Props {
   icon: React.ReactNode;
@@ -13,6 +14,7 @@ interface Props {
 
 export const CollapseItems = ({ icon, items, title }: Props) => {
   const [open, setOpen] = useState(false);
+  const user = useSelector((state: any) => state.account.user);
 
   return (
     <div className="flex gap-4 h-full items-center cursor-pointer">
@@ -40,7 +42,7 @@ export const CollapseItems = ({ icon, items, title }: Props) => {
               <a
                 key={index}
                 className="w-full flex  text-default-500 hover:text-default-900 transition-colors"
-                href={`/teacher/academic-years/${item.academic_year_id}`}
+                href={`/${user?.role}/academic-years/${item.academic_year_id}`}
               >
                 {item.academic_year_start .toString() + " - " + item.academic_year_end.toString()}
               </a>

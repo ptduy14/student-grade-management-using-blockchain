@@ -8,6 +8,6 @@ interface TransactionTypeNamesType {
 }
 
 export const TransactionTypeNames: TransactionTypeNamesType = {
-    [TransactionTypeEnum.ADD]: "Thêm mới",
-    [TransactionTypeEnum.UPDATE]: "Cập nhật"
+    [TransactionTypeEnum.ADD]: "Thêm điểm",
+    [TransactionTypeEnum.UPDATE]: "Cập nhật điểm"
 }

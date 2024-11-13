@@ -1,4 +1,4 @@
-import { Chip } from "@nextui-org/react";
+import { Chip, user } from "@nextui-org/react";
 import React, { SetStateAction } from "react";
 import { Button } from "@nextui-org/react";
 import {
@@ -8,6 +8,7 @@ import {
 import { AddScoreModal } from "../add-score-modal";
 import { UpdateScoreModal } from "../update-score-modal";
 import StudentDetailModal from "../student-detail-modal";
+import TransactionHistory from "@/components/students/results/transaction-history";
 
 interface Props {
   courseSectionStudent: CourseSectionStudentDetail;
@@ -15,14 +16,14 @@ interface Props {
   setCourseSections: React.Dispatch<
     SetStateAction<CourseSectionStudent | null>
   >;
-  isScoreEditable: boolean
+  isScoreEditable: boolean;
 }
 
 export const RenderCell = ({
   courseSectionStudent,
   columnKey,
   setCourseSections,
-  isScoreEditable
+  isScoreEditable,
 }: Props) => {
   // @ts-ignore
   const cellValue = courseSectionStudent[columnKey];
@@ -60,10 +61,18 @@ export const RenderCell = ({
       return courseSectionStudent.student_student_name ?? "-";
 
     case "score_midterm_score":
-      return isScoreEditable ? renderScoreCell(courseSectionStudent, "score_midterm_score") : courseSectionStudent.score_midterm_score;
+      return isScoreEditable
+        ? renderScoreCell(courseSectionStudent, "score_midterm_score")
+        : courseSectionStudent.score_midterm_score === null
+        ? "-"
+        : courseSectionStudent.score_midterm_score;
 
     case "score_final_score":
-      return isScoreEditable ? renderScoreCell(courseSectionStudent, "score_final_score") : courseSectionStudent.score_final_score;
+      return isScoreEditable
+        ? renderScoreCell(courseSectionStudent, "score_final_score")
+        : courseSectionStudent.score_final_score === null
+        ? "-"
+        : courseSectionStudent.score_final_score;
 
     case "score_total_score":
       return courseSectionStudent.score_total_score ?? "-";
@@ -83,9 +92,12 @@ export const RenderCell = ({
 
     case "actions":
       return (
-        <StudentDetailModal
+        <div className="flex justify-center items-center gap-x-2">
+          <StudentDetailModal
           studentId={courseSectionStudent.student_student_id}
         />
+        <TransactionHistory scoreId={courseSectionStudent.score_score_id}/>
+        </div>
       );
     default:
       return cellValue;

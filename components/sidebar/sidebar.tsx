@@ -36,7 +36,7 @@ export const SidebarWrapper = () => {
   };
 
   useEffect(() => {
-    if (user?.role === "teacher") {
+    if (user?.role === "teacher" || user?.role === "admin") {
       getAllAcademicYear();
     }
   }, []);
@@ -69,12 +69,15 @@ export const SidebarWrapper = () => {
               {user?.role === "teacher" && (
                 <>
                   <CollapseItems
-                  icon={<BalanceIcon />}
-                  items={academicYears}
-                  title="Năm học"
-                />
-                <SidebarItem
-                    isActive={pathname === "/teacher/course-section/current-open-semester"}
+                    icon={<BalanceIcon />}
+                    items={academicYears}
+                    title="Năm học"
+                  />
+                  <SidebarItem
+                    isActive={
+                      pathname ===
+                      "/teacher/course-section/current-open-semester"
+                    }
                     title="Lớp học phần"
                     icon={<CourseIcon />}
                     href={`/${user?.role}/course-section/current-open-semester`}
@@ -83,6 +86,11 @@ export const SidebarWrapper = () => {
               )}
               {user?.role === "admin" && (
                 <>
+                  <CollapseItems
+                    icon={<BalanceIcon />}
+                    items={academicYears}
+                    title="Năm học"
+                  />
                   <SidebarItem
                     isActive={pathname === "/admin/teachers"}
                     title="Quản lí giảng viên"

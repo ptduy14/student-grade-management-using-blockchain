@@ -15,25 +15,37 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { FlagIcon } from "@/components/icons/flag-icon";
 import { CompleteCourseSectionModal } from "./complete-course-section-modal";
 import { CourseSectionStatusEnum } from "./enum/course-section-status-enum";
+import { useSelector } from "react-redux";
+import ReopenCourseSection from "./admin-role/reopen-course-section-modal";
 
 export const CourseSectionWithStudentAndScore = ({
   courseSectionId,
 }: {
   courseSectionId: string;
 }) => {
+  const user = useSelector((state: any) => state.account.user);
   const [courseSections, setCourseSections] =
     useState<CourseSectionStudent | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState("");
   const [isScoreEditable, setIsScoreEditable] = useState<boolean>(false);
   const debouncedSearchValue = useDebounce(searchValue, 500); // Debounce sau 500ms
+  // this state use to trigger rerender of parent component when admin completed reopen course section
+  const [isReopenCompleted, setIsReopenCompleted] = useState<boolean>(false)
 
   const getCourseSectionWithStudentAndScore = async () => {
     const res = await courseSectionService.getCourseSectionWithStudentAndScore(
       courseSectionId
     );
     setCourseSections(res.data);
-    setIsScoreEditable(res.data.courseSection.course_section_status === CourseSectionStatusEnum.IN_PROGRESS ? true : false);
+    if (user?.role === "teacher") {
+      setIsScoreEditable(
+        res.data.courseSection.course_section_status ===
+          CourseSectionStatusEnum.IN_PROGRESS
+          ? true
+          : false
+      );
+    }
     setIsFetching(false);
   };
 
@@ -54,7 +66,7 @@ export const CourseSectionWithStudentAndScore = ({
     } else {
       getCourseSectionWithStudentAndScore();
     }
-  }, [debouncedSearchValue, isScoreEditable]);
+  }, [debouncedSearchValue, isScoreEditable, isReopenCompleted]);
 
   const handleClearInputSearch = () => {
     setSearchValue("");
@@ -115,7 +127,19 @@ export const CourseSectionWithStudentAndScore = ({
           <DotsIcon />
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <CompleteCourseSectionModal courseSectionId={courseSectionId} isScoreEditable={isScoreEditable} setIsScoreEditable={setIsScoreEditable}/>
+          {user?.role === "teacher" ? (
+            <CompleteCourseSectionModal
+              courseSectionId={courseSectionId}
+              isScoreEditable={isScoreEditable}
+              setIsScoreEditable={setIsScoreEditable}
+            />
+          ) : courseSections?.courseSection.course_section_status ===
+            CourseSectionStatusEnum.COMPLETED ? (
+            <ReopenCourseSection courseSectionId={courseSectionId} setIsReopenCompleted={setIsReopenCompleted}/>
+          ) : (
+            <></>
+          )}
+
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>

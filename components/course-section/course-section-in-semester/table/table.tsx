@@ -10,10 +10,10 @@ import {
 import React from "react";
 import { columns } from "./data";
 import { RenderCell } from "./render-cell";
-import { ISemester } from "@/interfaces/Semester";
+import { ICourseSection } from "@/interfaces/CourseSection";
 import { useSelector } from "react-redux";
 
-export const TableWrapper = ({semesters}: {semesters: any}) => {
+export const TableWrapper = ({courseSections}: {courseSections: ICourseSection[]}) => {
   const user = useSelector((state: any) => state.account.user);
   return (
     <div className=" w-full flex flex-col gap-4">
@@ -29,12 +29,12 @@ export const TableWrapper = ({semesters}: {semesters: any}) => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={semesters}>
-          {(item: ISemester) => (
-            <TableRow key={item.semester_id}>
+        <TableBody items={courseSections} emptyContent={courseSections.length == 0 && "Không có lớp học phần"}>
+          {(item: ICourseSection) => (
+            <TableRow key={item.course_section_id}>
               {(columnKey) => (
                 <TableCell>
-                  {RenderCell({ semester: item, columnKey: columnKey, user })}
+                  {RenderCell({ courseSection: item, columnKey: columnKey, user })}
                 </TableCell>
               )}
             </TableRow>

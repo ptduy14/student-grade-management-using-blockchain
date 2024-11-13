@@ -1,6 +1,10 @@
 import { AxiosInstance } from "@/config/axios-instance";
 
 export const courseSectionService = {
+  getAllCourseSectionInSemester: async (semesterId: string) => {
+    return await AxiosInstance.get(`/course-section/semesters/${semesterId}`);
+  },
+
   getCourseSectionTeachingInSemester: async (semesterId: string) => {
     return await AxiosInstance.get(
       `/course-section/teacher/semesters/${semesterId}`
@@ -24,15 +28,35 @@ export const courseSectionService = {
     );
   },
 
-  findCourseSectionTeachingInSemesterByName: async(semesterId: string, courseSectionName: string) => {
-    return await AxiosInstance.get(`/course-section/teacher/semesters/${semesterId}/search`, {
+  searchCourseSectionTeachingInSemester: async (
+    semesterId: string,
+    courseSectionName: string
+  ) => {
+    return await AxiosInstance.get(
+      `/course-section/teacher/semesters/${semesterId}/search`,
+      {
+        params: {
+          course_section_name: courseSectionName,
+        },
+      }
+    );
+  },
+
+  completeCourseSection: async (courseSectionId: string) => {
+    return await AxiosInstance.get(
+      `/course-section/${courseSectionId}/complete`
+    );
+  },
+
+  searchCourseSectionInSemester: async(semesterId: string, course_section_name: string) => {
+    return await AxiosInstance.get(`/course-section/semesters/${semesterId}/search`, {
       params: {
-        course_section_name: courseSectionName
+        course_section_name: course_section_name
       }
     })
   },
 
-  completeCourseSection: async(courseSectionId: string) => {
-    return await AxiosInstance.get(`/course-section/${courseSectionId}/complete`);
+  reopenCourseSection: async(courseSectionId: string) => {
+    return await AxiosInstance.get(`/course-section/${courseSectionId}/reopen`);
   }
 };

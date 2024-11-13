@@ -39,7 +39,7 @@ export default function StudentDetailModal({
 
   return (
     <>
-      <Button color="primary" onPress={onOpen}>
+      <Button color="primary" size="md" onPress={onOpen}>
         Chi tiết sinh viên
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">

@@ -41,7 +41,7 @@ export default function TransactionHistory({ scoreId }: { scoreId: number }) {
 
   return (
     <>
-      <Button color="primary" size="sm" onPress={onOpen}>
+      <Button color="primary" onPress={onOpen}>
         Xem lịch sử
       </Button>
       <Modal
