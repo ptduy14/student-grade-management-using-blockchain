@@ -298,10 +298,10 @@ export class CourseSectionService {
     };
   }
 
-  async findTeacherCourseSectionsInSemester(
+  async searchCourseSectionTeachingInSemester(
     auth: any,
     semesterId: number,
-    courseSeactionName: string,
+    courseSectionName: string,
   ) {
     return await this.courseSectionRepository
       .createQueryBuilder('course_section')
@@ -311,7 +311,7 @@ export class CourseSectionService {
       .where('teacher.teacher_id = :teacherId', { teacherId: auth.id })
       .andWhere('semester.semester_id = :semesterId', { semesterId })
       .andWhere('course_section.course_section_name LIKE :courseSectionName', {
-        courseSectionName: `%${courseSeactionName}%`,
+        courseSectionName: `%${courseSectionName}%`,
       })
       .select(['course_section', 'semester', 'course'])
       .getMany();
@@ -349,5 +349,37 @@ export class CourseSectionService {
     await this.courseSectionRepository.save(courseSection);
 
     return "success"
+  }
+
+  async searchCourseSectionInSemester(semesterId: number, courseSectionName: string) {
+    return await this.courseSectionRepository
+      .createQueryBuilder('course_section')
+      .leftJoinAndSelect('course_section.semester', 'semester')
+      .leftJoinAndSelect('course_section.course', 'course')
+      .leftJoinAndSelect('course_section.teacher', 'teacher')
+      .where('semester.semester_id = :semesterId', { semesterId })
+      .andWhere('course_section.course_section_name LIKE :courseSectionName', {
+        courseSectionName: `%${courseSectionName}%`,
+      })
+      .select(['course_section', 'semester', 'course', 'teacher'])
+      .getMany();
+  }
+
+  async reopenCourseSection(courseSectionId: number, auth: any) {
+    const courseSection = await this.courseSectionRepository.findOne({where: {course_section_id: courseSectionId}});
+
+    if (!courseSection) {
+      throw new HttpException("Không tìm thấy lớp học phần", HttpStatus.NOT_FOUND);
+    }
+
+    if (courseSection.course_section_status === CourseSectionStatusEnum.IN_PROGRESS) {
+      throw new HttpException("Lớp học phần hiện đang không khóa", HttpStatus.CONFLICT);
+    }
+
+    courseSection.course_section_status = CourseSectionStatusEnum.IN_PROGRESS;
+
+    await this.courseSectionRepository.save(courseSection);
+
+    return "success";
   }
 }
