@@ -86,7 +86,7 @@ export class CourseSectionController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.TEACHER)
   @ApiOperation({
-    summary: 'Tìm kiếm lớp học phần giảng viên dạy trong học kì (Auth)',
+    summary: 'Tìm kiếm lớp học phần giảng viên dạy trong học kì (AUTH)',
   })
   @Get('teacher/semesters/:id/search')
   async findTeacherCourseSectionsInSemester(
@@ -113,7 +113,7 @@ export class CourseSectionController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER)
   @ApiOperation({
-    summary: 'Lấy danh sách sinh viên trong lớp học phần và điểm',
+    summary: 'Lấy danh sách sinh viên trong lớp học phần và điểm (AUTH)',
   })
   @Get(':id/students-with-score')
   async findAllStudentsAndScoreInCourseSection(
@@ -137,5 +137,14 @@ export class CourseSectionController {
       id,
       student_name,
     );
+  }
+
+  // Xác nhận hoàn thành học phần từ giảng viên
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.TEACHER)
+  @ApiOperation({ summary: 'Xác nhận hoàn thành học phần từ giảng viên' })
+  @Get(':id/complete')
+  async completeCourseSection(@Auth() auth: any, @Param('id', ParseIntPipe) id: number) {
+    return await this.courseSectionService.completeCourseSection(id, auth);
   }
 }

@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CourseSection } from './entities/course-section.entity';
 import { Repository } from 'typeorm';
 import { StudentEnrollment } from 'src/student-enrollment/entities/student-enrollment.entity';
+import { CourseSectionStatusEnum } from 'common/enums/course-section-status.enum';
 
 @Injectable()
 export class CourseSectionService {
@@ -51,6 +52,7 @@ export class CourseSectionService {
       course: course,
       teacher: teacher,
       course_section_name: course.course_name,
+      course_section_status: CourseSectionStatusEnum.NOT_STARTED,
       current_students: 0,
     });
 
@@ -313,5 +315,39 @@ export class CourseSectionService {
       })
       .select(['course_section', 'semester', 'course'])
       .getMany();
+  }
+
+  async completeCourseSection(courseSectionId: number, auth: any) {
+    const courseSection = await this.courseSectionRepository
+      .createQueryBuilder('course_section')
+      .innerJoin('course_section.teacher', 'teacher')
+      .innerJoinAndSelect("course_section.student_enrollments", "student_enrollments")
+      .innerJoinAndSelect("student_enrollments.score", "score")
+      .where('course_section.course_section_id = :courseSectionId', {
+        courseSectionId,
+      })
+      .andWhere('teacher.teacher_id = :teacherId', { teacherId: auth.id }).getOne();
+
+    if (!courseSection) {
+      throw new HttpException("Không tìm thấy học phần", HttpStatus.NOT_FOUND);
+    }
+    
+    const isNotEligibleForComplete = courseSection.student_enrollments.some((item: any) => {
+      return item.score.total_score === null;
+    });
+    
+    if (courseSection.course_section_status === CourseSectionStatusEnum.COMPLETED) {
+      throw new HttpException("Học phần đã hoàn thành cập nhật", HttpStatus.CONFLICT);
+    }
+    
+    if (isNotEligibleForComplete) {
+      throw new HttpException("Không đủ điều kiện xác nhận hoàn thành học phần", HttpStatus.CONFLICT);
+    }
+
+    courseSection.course_section_status = CourseSectionStatusEnum.COMPLETED;
+
+    await this.courseSectionRepository.save(courseSection);
+
+    return "success"
   }
 }
