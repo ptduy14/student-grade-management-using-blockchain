@@ -29,7 +29,7 @@ export interface IStudentEnrollment {
 export interface IStudentResult {
   id: number;
   registration_credits: number;
-  gpa: number;
+  gpa: number | null;
   semester: Semester;
   student_enrollments: IStudentEnrollment[];
 }

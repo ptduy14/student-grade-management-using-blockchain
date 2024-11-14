@@ -135,7 +135,9 @@ export const CourseSectionWithStudentAndScore = ({
               setIsScoreEditable={setIsScoreEditable}
             />
           ) : courseSections?.courseSection.course_section_status ===
-            CourseSectionStatusEnum.COMPLETED && courseSections?.semester.semester_status !== SemesterStatusEnum.COMPLETED ? (
+              CourseSectionStatusEnum.COMPLETED &&
+            courseSections?.semester.semester_status !==
+              SemesterStatusEnum.COMPLETED ? (
             <ReopenCourseSection
               courseSectionId={courseSectionId}
               setIsReopenCompleted={setIsReopenCompleted}

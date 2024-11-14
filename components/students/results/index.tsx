@@ -26,7 +26,12 @@ export const StudentResults = () => {
     getAllStudentEnrollments();
   }, []);
 
-  if (isFetching) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
+  if (isFetching)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        Waiting...
+      </div>
+    );
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -67,11 +72,23 @@ export const StudentResults = () => {
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
         {studentResults.map((studentResult: IStudentResult) => (
-          <div key={studentResult.id}>
+          <div key={studentResult.id} className="space-y-2">
             <div>
               <h3 className="text-xl font-semibold">{`${studentResult.semester.semester_name} (${studentResult.semester.academic_year.academic_year_start} - ${studentResult.semester.academic_year.academic_year_end})`}</h3>
             </div>
-            <TableWrapper studentEnrollments={studentResult.student_enrollments}/>
+            <TableWrapper
+              studentEnrollments={studentResult.student_enrollments}
+            />
+            <div className="pl-2">
+              <span className="font-medium">
+                Số tín chỉ đăng kí trong học kì:
+              </span>{" "}
+              {studentResult.registration_credits}
+            </div>
+            <div className="pl-2">
+              <span className="font-medium">Điểm GPA:</span>{" "}
+              {studentResult.gpa ? studentResult.gpa.toFixed(2) : "Chưa cập nhật"}
+            </div>
           </div>
         ))}
       </div>
