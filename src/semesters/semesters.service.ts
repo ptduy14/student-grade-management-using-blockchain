@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
 import { CourseSection } from 'src/course-section/entities/course-section.entity';
 import { CourseSectionStatusEnum } from 'common/enums/course-section-status.enum';
+import { StudentSemesterService } from 'src/student-semester/student-semester.service';
 
 @Injectable()
 export class SemestersService {
   constructor(
     @InjectRepository(Semester)
     private readonly semesterRepository: Repository<Semester>,
+    private readonly studentSemesterService: StudentSemesterService,
   ) {}
 
   async findAll() {
@@ -91,6 +93,7 @@ export class SemestersService {
 
     await this.semesterRepository.save(semester);
 
+    await this.studentSemesterService.calculateStudentsGPA(semesterId);
     return "success";
   }
 }

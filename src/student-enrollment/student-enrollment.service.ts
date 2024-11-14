@@ -10,6 +10,7 @@ import { SemesterStatusEnum } from 'common/enums/semester-status.enum';
 import { StudentSemester } from 'src/student-semester/entities/student-semester.entity';
 import { CoursesService } from 'src/courses/courses.service';
 import { PassStatusEnum } from 'common/enums/pass-status.enum';
+import { SemestersService } from 'src/semesters/semesters.service';
 
 @Injectable()
 export class StudentEnrollmentService {
@@ -18,6 +19,7 @@ export class StudentEnrollmentService {
     private readonly studentEnrollmentRepository: Repository<StudentEnrollment>,
     @InjectRepository(StudentSemester)
     private readonly studentSemesterRepository: Repository<StudentSemester>,
+    private readonly semesterService: SemestersService,
     private readonly courseService: CoursesService,
     private readonly studentSemesterSevice: StudentSemesterService,
     private readonly courseSectionService: CourseSectionService,
@@ -32,6 +34,14 @@ export class StudentEnrollmentService {
           course_section_id: createStudentEnrollmentDto.course_section_id,
         },
       });
+
+    const semester = await this.semesterService.findOne(createStudentEnrollmentDto.semester_id);
+
+    if (semester.semester_status === SemesterStatusEnum.COMPLETED) {
+      throw new HttpException("Không thể đăng kí học phần này cho sinh viên vì học kỳ đã hoàn thành", HttpStatus.CONFLICT);
+    }
+    
+    // cần thiết thì check thêm học phần đang ở trạng thái nào
 
     if (isStudentEnrollmetExisted) {
       throw new HttpException(
@@ -68,16 +78,14 @@ export class StudentEnrollmentService {
       ...courseSection,
       current_students: courseSection.current_students + 1,
     });
-
-    // cập nhật số lượng tín chỉ sinh viên đăng kí trong học kì (student_semester)
+    
     const course = await this.courseService.findOne(
       courseSection.course.course_id,
     );
-    await this.studentSemesterRepository.save({
-      ...studentSemester,
-      registration_credits:
-        studentSemester.registration_credits + course.course_credits,
-    });
+
+    // cập nhật số lượng tín chỉ sinh viên đăng kí trong học kì (student_semester)
+    studentSemester.registration_credits += course.course_credits;
+    await this.studentSemesterRepository.save(studentSemester);
 
     return studentEnrollmented;
   }

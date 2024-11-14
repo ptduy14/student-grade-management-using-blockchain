@@ -7,9 +7,10 @@ import { StudentSemesterModule } from 'src/student-semester/student-semester.mod
 import { CourseSectionModule } from 'src/course-section/course-section.module';
 import { StudentSemester } from 'src/student-semester/entities/student-semester.entity';
 import { CoursesModule } from 'src/courses/courses.module';
+import { SemestersModule } from 'src/semesters/semesters.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([StudentEnrollment, StudentSemester]), StudentSemesterModule, CourseSectionModule, CoursesModule],
+  imports: [TypeOrmModule.forFeature([StudentEnrollment, StudentSemester]), StudentSemesterModule, CourseSectionModule, CoursesModule, SemestersModule],
   controllers: [StudentEnrollmentController],
   providers: [StudentEnrollmentService],
 })
