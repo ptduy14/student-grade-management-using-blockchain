@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, Query } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
@@ -29,6 +29,22 @@ export class TeachersController {
   @ApiOperation({ summary: 'Lấy danh sách giảng viên/admin hiện có' })
   findAll() {
     return this.teachersService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @Get('/search-by-name')
+  @ApiOperation({ summary: 'Tìm kiếm giảng viên theo tên' })
+  searchByName(@Query('teacher_name', ValidationPipe) teacher_name: string,) {
+    return this.teachersService.searchByName(teacher_name);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @Get('/search-by-wallet-address')
+  @ApiOperation({ summary: 'Tìm kiếm giảng viên theo địa chỉ ví' })
+  searchByWalletAdrress(@Query('wallet_address', ValidationPipe) wallet_address: string,) {
+    return this.teachersService.searchByWalletAdrress(wallet_address);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -9,6 +9,7 @@ import { classToPlain, plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { TeacherUtil } from 'common/utils/teacher.util';
 import { ppid } from 'process';
+import { UserRoleEnum } from 'common/enums/user-role.enum';
 
 @Injectable()
 export class TeachersService {
@@ -19,7 +20,10 @@ export class TeachersService {
 
   async create(createTeacherDto: CreateTeacherDto) {
     const teacherCount = await this.teacherRepository.count();
-    const teacherEmail = TeacherUtil.generateTeacherEmail(createTeacherDto.teacher_name, teacherCount)
+    const teacherEmail = TeacherUtil.generateTeacherEmail(
+      createTeacherDto.teacher_name,
+      teacherCount,
+    );
 
     const hashedPassword = await bcrypt.hash(
       createTeacherDto.teacher_password,
@@ -27,13 +31,22 @@ export class TeachersService {
     );
     createTeacherDto.teacher_password = hashedPassword;
 
-    const teacherCreated = await this.teacherRepository.save({...createTeacherDto, teacher_email: teacherEmail});
+    const teacherCreated = await this.teacherRepository.save({
+      ...createTeacherDto,
+      teacher_email: teacherEmail,
+    });
     return plainToClass(TeacherDto, teacherCreated);
   }
 
   async findAll() {
     const teachers = await this.teacherRepository.find({
-      select: ['teacher_id', 'teacher_name', 'teacher_email', 'teacher_role', 'teacher_wallet_address'],
+      select: [
+        'teacher_id',
+        'teacher_name',
+        'teacher_email',
+        'teacher_role',
+        'teacher_wallet_address',
+      ],
     });
 
     return teachers;
@@ -78,11 +91,14 @@ export class TeachersService {
 
     if (teacherFound.teacher_name !== updateTeacherDto.teacher_name) {
       const teacherCount = await this.teacherRepository.count();
-      const teacherEmail = TeacherUtil.generateTeacherEmail(updateTeacherDto.teacher_name, teacherCount);
+      const teacherEmail = TeacherUtil.generateTeacherEmail(
+        updateTeacherDto.teacher_name,
+        teacherCount,
+      );
 
       teacherFound.teacher_name = updateTeacherDto.teacher_name;
       teacherFound.teacher_email = teacherEmail;
-    } 
+    }
 
     if (!teacherFound) {
       throw new HttpException(
@@ -90,23 +106,25 @@ export class TeachersService {
         HttpStatus.NOT_FOUND,
       );
     }
-    
-    const teacherUpdated = await this.teacherRepository.save(teacherFound)
+
+    const teacherUpdated = await this.teacherRepository.save(teacherFound);
     return plainToClass(TeacherDto, teacherUpdated);
   }
 
   //check wallet address
   async checkWalletAddress(teacherId: number) {
-    const teacher = await this.teacherRepository.findOne({where: {teacher_id: teacherId}});
+    const teacher = await this.teacherRepository.findOne({
+      where: { teacher_id: teacherId },
+    });
 
     if (teacher.teacher_wallet_address) {
       return {
         isExisted: true,
-        walletAddress: teacher.teacher_wallet_address
-      }
+        walletAddress: teacher.teacher_wallet_address,
+      };
     }
 
-    return {isExisted: false}
+    return { isExisted: false };
   }
 
   // thêm address
@@ -114,13 +132,18 @@ export class TeachersService {
     const teachers = await this.teacherRepository.find();
     const walletAddressExisted = teachers.map((teacher: Teacher) => {
       return teacher.teacher_wallet_address;
-    })
+    });
 
     if (walletAddressExisted.includes(walletAddress)) {
-      throw new HttpException("Đã tồn tại wallet address, vui lòng hủy kết nối và chọn tài khoản khác", HttpStatus.CONFLICT);
+      throw new HttpException(
+        'Đã tồn tại wallet address, vui lòng hủy kết nối và chọn tài khoản khác',
+        HttpStatus.CONFLICT,
+      );
     }
-    
-    const teacher = await this.teacherRepository.findOne({where: {teacher_id: teacherId}});
+
+    const teacher = await this.teacherRepository.findOne({
+      where: { teacher_id: teacherId },
+    });
     teacher.teacher_wallet_address = walletAddress;
 
     await this.teacherRepository.save(teacher);
@@ -134,5 +157,29 @@ export class TeachersService {
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async searchByName(teacher_name: string) {
+    const teachers = await this.teacherRepository
+      .createQueryBuilder('teacher')
+      .where('teacher.teacher_name LIKE :teacher_name', {
+        teacher_name: `%${teacher_name}%`,
+      })
+      .andWhere('teacher.teacher_role != :role', { role: UserRoleEnum.ADMIN })
+      .getMany();
+
+    return teachers;
+  }
+
+  async searchByWalletAdrress(teacher_wallet_address: string) {
+    const teachers = await this.teacherRepository
+      .createQueryBuilder('teacher')
+      .where('teacher.teacher_wallet_address LIKE :teacher_wallet_address', {
+        teacher_wallet_address: `%${teacher_wallet_address}%`,
+      })
+      .andWhere('teacher.teacher_role != :role', { role: UserRoleEnum.ADMIN })
+      .getMany();
+
+    return teachers;
   }
 }
