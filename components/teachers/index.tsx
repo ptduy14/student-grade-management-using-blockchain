@@ -12,10 +12,14 @@ import { TableWrapper } from "./table/table";
 import { ITeacher } from "@/interfaces/Teacher";
 import { TeacherService } from "@/services/teacher-service";
 import { useSelector } from "react-redux";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export const Teachers = () => {
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchType, setSearchType] = useState<string>("name");
+  const debouncedSearchValue = useDebounce(searchValue, 500);
   const user = useSelector((state: any) => state.account.user);
 
   const getAllTeacher = async () => {
@@ -27,11 +31,30 @@ export const Teachers = () => {
     setIsFetching(false);
   };
 
-  useEffect(() => {
-    getAllTeacher();
-  }, []);
+  const handleSearchTeacher = async (value: string, type: string) => {
+    if (type === "name") {
+      const res = await TeacherService.searchByName(value);
+      setTeachers(res.data);
+    } else {
+      const res = await TeacherService.searchByWalletAdrress(value);
+      setTeachers(res.data);
+    }
+  };
 
-  if (isFetching) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
+  useEffect(() => {
+    if (debouncedSearchValue) {
+      handleSearchTeacher(debouncedSearchValue, searchType);
+    } else {
+      getAllTeacher();
+    }
+  }, [debouncedSearchValue]);
+
+  if (isFetching)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        Waiting...
+      </div>
+    );
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -57,7 +80,26 @@ export const Teachers = () => {
               input: "w-full",
               mainWrapper: "w-full",
             }}
-            placeholder="Search users"
+            endContent={
+              <div className="flex items-center">
+                <label className="sr-only" htmlFor="type">
+                  Type
+                </label>
+                <select
+                  className="outline-none border-0 bg-transparent text-default-400 text-small"
+                  id="type"
+                  name="type"
+                  value={searchType}
+                  onChange={(e) => setSearchType(e.target.value)}
+                >
+                  <option value="name">Họ tên</option>
+                  <option value="address">Address</option>
+                </select>
+              </div>
+            }
+            placeholder="Tìm kiếm"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
           />
           <SettingsIcon />
           <TrashIcon />
