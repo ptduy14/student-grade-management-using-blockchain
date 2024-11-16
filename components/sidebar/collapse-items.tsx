@@ -5,6 +5,7 @@ import { Accordion, AccordionItem } from "@nextui-org/react";
 import clsx from "clsx";
 import { IAcademicYear } from "@/interfaces/AcademicYear";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 interface Props {
   icon: React.ReactNode;
@@ -39,13 +40,13 @@ export const CollapseItems = ({ icon, items, title }: Props) => {
         >
           <div className="pl-12">
             {items.map((item, index) => (
-              <a
+              <Link
                 key={index}
                 className="w-full flex  text-default-500 hover:text-default-900 transition-colors"
                 href={`/${user?.role}/academic-years/${item.academic_year_id}`}
               >
                 {item.academic_year_start .toString() + " - " + item.academic_year_end.toString()}
-              </a>
+              </Link>
             ))}
           </div>
         </AccordionItem>
