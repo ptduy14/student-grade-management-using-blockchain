@@ -48,15 +48,29 @@ export const courseSectionService = {
     );
   },
 
-  searchCourseSectionInSemester: async(semesterId: string, course_section_name: string) => {
-    return await AxiosInstance.get(`/course-section/semesters/${semesterId}/search`, {
-      params: {
-        course_section_name: course_section_name
+  searchCourseSectionInSemester: async (
+    semesterId: string,
+    course_section_name: string
+  ) => {
+    return await AxiosInstance.get(
+      `/course-section/semesters/${semesterId}/search`,
+      {
+        params: {
+          course_section_name: course_section_name,
+        },
       }
-    })
+    );
   },
 
-  reopenCourseSection: async(courseSectionId: string) => {
+  openCourseSection: async (courseSectionId: string) => {
+    return await AxiosInstance.get(`/course-section/${courseSectionId}/open`);
+  },
+
+  reopenCourseSection: async (courseSectionId: string) => {
     return await AxiosInstance.get(`/course-section/${courseSectionId}/reopen`);
+  },
+
+  createCourseSection: async(payload: any) => {
+    return await AxiosInstance.post("/course-section", payload);
   }
 };

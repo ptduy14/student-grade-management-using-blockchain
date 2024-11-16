@@ -61,11 +61,11 @@ export default function TransactionHistory({ scoreId }: { scoreId: number }) {
                 {isFetching || transactionHistories.length === 0 ? (
                   <p>Không có lịch sử giao dịch.</p>
                 ) : (
-                  <ul className="list-disc list-inside space-y-2">
+                  <ul className="list-none list-inside space-y-8">
                     {transactionHistories.map((history) => (
                       <li key={history.id}>
                         <p>
-                          <strong>Hash:</strong> {history.transaction_hash}
+                          <strong>Hash:</strong> <a className="underline text-blue-500" href={`https://app.tryethernal.com/transaction/${history.transaction_hash}`}>{history.transaction_hash}</a>
                         </p>
                         <p>
                           <strong>Loại giao dịch:</strong>{" "}

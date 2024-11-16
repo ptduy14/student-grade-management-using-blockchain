@@ -10,7 +10,7 @@ export enum CourseSectionStatusEnum {
   
   export const CourseSectionStatusNames: CourseSectionStatusNamesType = {
     [CourseSectionStatusEnum.NOT_STARTED]: "Chưa bắt đầu",
-    [CourseSectionStatusEnum.IN_PROGRESS]: "Đang diễn ra",
-    [CourseSectionStatusEnum.COMPLETED]: "Đã hoàn thành",
+    [CourseSectionStatusEnum.IN_PROGRESS]: "Đang dạy",
+    [CourseSectionStatusEnum.COMPLETED]: "Hoàn thành",
   }
   

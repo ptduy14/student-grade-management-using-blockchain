@@ -53,7 +53,7 @@ export const Courses = () => {
               input: "w-full",
               mainWrapper: "w-full",
             }}
-            placeholder="Search users"
+            placeholder="Tìm kiếm môn học"
           />
           <SettingsIcon />
           <TrashIcon />

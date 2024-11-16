@@ -27,6 +27,9 @@ export const RenderCell = ({ studentEnrollment, columnKey }: Props) => {
     case "final_score":
       return studentEnrollment.score.final_score ?? "-";
 
+    case "total_score":
+      return studentEnrollment.score.total_score ?? "-";
+
     case "pass_status":
       return studentEnrollment.pass_status === "Pass" ? (
         <Chip className="capitalize" color="success" size="sm" variant="flat">

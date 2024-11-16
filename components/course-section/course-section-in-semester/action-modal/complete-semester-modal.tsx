@@ -57,7 +57,7 @@ export default function CompleteSemesterModal({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Modal Title
+                Xác nhận hoàn tất học kỳ
               </ModalHeader>
               <ModalBody>
                 <p>

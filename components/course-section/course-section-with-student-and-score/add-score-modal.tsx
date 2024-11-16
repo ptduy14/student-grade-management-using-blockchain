@@ -103,7 +103,7 @@ export const AddScoreModal = ({
         signer!
       );
 
-      const scoreAddToBlockchain = score * 100;
+      const scoreAddToBlockchain = Math.round(score * 100);
       const scoreTypeAddToBlockchain =
         scoreType === ScoreTypeEnum.MIDTERM ? 0 : 1;
 
@@ -209,6 +209,7 @@ export const AddScoreModal = ({
   };
 
   const handleClose = () => {
+    setIsHandling(false);
     onClose();
     setError("");
   };

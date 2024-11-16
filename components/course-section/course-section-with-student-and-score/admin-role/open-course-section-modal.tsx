@@ -13,7 +13,7 @@ import { isAxiosError } from "axios";
 import React, { SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function ReopenCourseSectionModal({
+export default function OpenCourseSectionModal({
   courseSectionId,
   setRefreshKey,
 }: {
@@ -23,12 +23,12 @@ export default function ReopenCourseSectionModal({
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isHandling, setIsHandling] = useState<boolean>(false);
 
-  const handleReopenCourseSection = async () => {
+  const handleOpenCourseSection = async () => {
     try {
       setIsHandling(true);
-      await courseSectionService.reopenCourseSection(courseSectionId);
+      await courseSectionService.openCourseSection(courseSectionId);
       setRefreshKey((prev) => prev + 1);
-      toast.success("Mở khóa lớp học phần thành công");
+      toast.success("Bắt đầu học phần thành công");
       onClose();
     } catch (error) {
       if (isAxiosError(error)) {
@@ -41,8 +41,8 @@ export default function ReopenCourseSectionModal({
 
   return (
     <>
-      <Button color="warning" onPress={onOpen}>
-        Mở khóa lớp học phần
+      <Button color="success" onPress={onOpen}>
+        Bắt đầu Học Phần
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
@@ -52,11 +52,10 @@ export default function ReopenCourseSectionModal({
                 Xác nhận thay đổi trạng thái
               </ModalHeader>
               <ModalBody>
+                <p>Bạn có chắc chắn muốn bắt đầu học phần này không?</p>
                 <p>
-                  Bạn có chắc chắn muốn mở lại lớp học phần để chỉnh sửa điểm?
-                  Điều này sẽ cho phép giảng viên{" "}
-                  <span className="font-bold">cập nhật điểm</span> của sinh
-                  viên.
+                  Trạng thái sẽ được chuyển sang "Đang dạy (In Progress)" và
+                  không thể quay lại trạng thái trước.
                 </p>
               </ModalBody>
               <ModalFooter>
@@ -70,7 +69,7 @@ export default function ReopenCourseSectionModal({
                 </Button>
                 <Button
                   color="primary"
-                  onClick={handleReopenCourseSection}
+                  onClick={handleOpenCourseSection}
                   isDisabled={isHandling}
                 >
                   {isHandling ? <LoaderBtn /> : "Xác nhận"}

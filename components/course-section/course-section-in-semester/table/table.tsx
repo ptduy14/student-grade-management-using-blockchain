@@ -33,7 +33,7 @@ export const TableWrapper = ({courseSections}: {courseSections: ICourseSection[]
           {(item: ICourseSection) => (
             <TableRow key={item.course_section_id}>
               {(columnKey) => (
-                <TableCell>
+                <TableCell className={columnKey === "course_section_status" ? "min-w-32" : ""}>
                   {RenderCell({ courseSection: item, columnKey: columnKey, user })}
                 </TableCell>
               )}

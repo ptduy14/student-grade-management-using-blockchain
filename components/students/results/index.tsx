@@ -52,13 +52,6 @@ export const StudentResults = () => {
       <h3 className="text-xl font-semibold">Kết quả học tập</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-          <Input
-            classNames={{
-              input: "w-full",
-              mainWrapper: "w-full",
-            }}
-            placeholder="Search users"
-          />
           <SettingsIcon />
           <TrashIcon />
           <InfoIcon />
@@ -70,7 +63,7 @@ export const StudentResults = () => {
           </Button>
         </div>
       </div>
-      <div className="max-w-[95rem] mx-auto w-full">
+      <div className="max-w-[95rem] mx-auto w-full space-y-6">
         {studentResults.map((studentResult: IStudentResult) => (
           <div key={studentResult.id} className="space-y-2">
             <div>

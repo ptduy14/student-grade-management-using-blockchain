@@ -16,8 +16,10 @@ import { FlagIcon } from "@/components/icons/flag-icon";
 import { CompleteCourseSectionModal } from "./complete-course-section-modal";
 import { CourseSectionStatusEnum } from "./enum/course-section-status-enum";
 import { useSelector } from "react-redux";
-import ReopenCourseSection from "./admin-role/reopen-course-section-modal";
+import ReopenCourseSectionModal from "./admin-role/reopen-course-section-modal";
 import { SemesterStatusEnum } from "@/common/enum/semester-status-enum";
+import OpenCourseSectionModal from "./admin-role/open-course-section-modal";
+import EnrollStudentModal from "./admin-role/enroll-student-modal";
 
 export const CourseSectionWithStudentAndScore = ({
   courseSectionId,
@@ -32,7 +34,7 @@ export const CourseSectionWithStudentAndScore = ({
   const [isScoreEditable, setIsScoreEditable] = useState<boolean>(false);
   const debouncedSearchValue = useDebounce(searchValue, 500); // Debounce sau 500ms
   // this state use to trigger rerender of parent component when admin completed reopen course section
-  const [isReopenCompleted, setIsReopenCompleted] = useState<boolean>(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const getCourseSectionWithStudentAndScore = async () => {
     const res = await courseSectionService.getCourseSectionWithStudentAndScore(
@@ -67,10 +69,50 @@ export const CourseSectionWithStudentAndScore = ({
     } else {
       getCourseSectionWithStudentAndScore();
     }
-  }, [debouncedSearchValue, isScoreEditable, isReopenCompleted]);
+  }, [debouncedSearchValue, isScoreEditable, refreshKey]);
 
   const handleClearInputSearch = () => {
     setSearchValue("");
+  };
+
+  const handleRenderModalAction = () => {
+    if (user?.role === "teacher") {
+      return (
+        <CompleteCourseSectionModal
+          courseSectionId={courseSectionId}
+          isScoreEditable={isScoreEditable}
+          setIsScoreEditable={setIsScoreEditable}
+        />
+      );
+    }
+
+    if (
+      courseSections?.courseSection.course_section_status ===
+        CourseSectionStatusEnum.COMPLETED &&
+      courseSections?.semester.semester_status !== SemesterStatusEnum.COMPLETED
+    ) {
+      return (
+        <ReopenCourseSectionModal
+          courseSectionId={courseSectionId}
+          setRefreshKey={setRefreshKey}
+        />
+      );
+    }
+
+    if (
+      courseSections?.courseSection.course_section_status ===
+      CourseSectionStatusEnum.NOT_STARTED
+    ) {
+      return (
+        <>
+          <OpenCourseSectionModal
+            courseSectionId={courseSectionId}
+            setRefreshKey={setRefreshKey}
+          />
+          <EnrollStudentModal courseSectionId={courseSectionId} setRefreshKey={setRefreshKey}/>
+        </>
+      );
+    }
   };
 
   if (isFetching)
@@ -128,24 +170,7 @@ export const CourseSectionWithStudentAndScore = ({
           <DotsIcon />
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          {user?.role === "teacher" ? (
-            <CompleteCourseSectionModal
-              courseSectionId={courseSectionId}
-              isScoreEditable={isScoreEditable}
-              setIsScoreEditable={setIsScoreEditable}
-            />
-          ) : courseSections?.courseSection.course_section_status ===
-              CourseSectionStatusEnum.COMPLETED &&
-            courseSections?.semester.semester_status !==
-              SemesterStatusEnum.COMPLETED ? (
-            <ReopenCourseSection
-              courseSectionId={courseSectionId}
-              setIsReopenCompleted={setIsReopenCompleted}
-            />
-          ) : (
-            <></>
-          )}
-
+          {handleRenderModalAction()}
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
