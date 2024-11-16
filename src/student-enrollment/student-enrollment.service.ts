@@ -11,6 +11,7 @@ import { StudentSemester } from 'src/student-semester/entities/student-semester.
 import { CoursesService } from 'src/courses/courses.service';
 import { PassStatusEnum } from 'common/enums/pass-status.enum';
 import { SemestersService } from 'src/semesters/semesters.service';
+import { CourseSectionStatusEnum } from 'common/enums/course-section-status.enum';
 
 @Injectable()
 export class StudentEnrollmentService {
@@ -26,26 +27,52 @@ export class StudentEnrollmentService {
   ) {}
 
   async enroll(createStudentEnrollmentDto: CreateStudentEnrollmentDto) {
+    const courseSection = await this.courseSectionService.findOne(
+      createStudentEnrollmentDto.course_section_id,
+    );
+
     const isStudentEnrollmetExisted =
       await this.studentEnrollmentRepository.findOne({
         where: {
           student_id: createStudentEnrollmentDto.student_id,
-          semester_id: createStudentEnrollmentDto.semester_id,
+          semester_id: courseSection.semester.semester_id,
           course_section_id: createStudentEnrollmentDto.course_section_id,
         },
       });
 
-    const semester = await this.semesterService.findOne(createStudentEnrollmentDto.semester_id);
-
-    if (semester.semester_status === SemesterStatusEnum.COMPLETED) {
-      throw new HttpException("Không thể đăng kí học phần này cho sinh viên vì học kỳ đã hoàn thành", HttpStatus.CONFLICT);
+    if (
+      courseSection.semester.semester_status === SemesterStatusEnum.COMPLETED
+    ) {
+      throw new HttpException(
+        'Không thể đăng kí học phần này cho sinh viên vì học kỳ đã hoàn thành',
+        HttpStatus.CONFLICT,
+      );
     }
-    
+
+    if (
+      courseSection.semester.semester_status === SemesterStatusEnum.NOT_STARTED
+    ) {
+      throw new HttpException(
+        'Không thể đăng kí học phần này cho sinh viên vì học kỳ chưa được mở',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     // cần thiết thì check thêm học phần đang ở trạng thái nào
+    if (
+      courseSection.course_section_status ===
+        CourseSectionStatusEnum.IN_PROGRESS ||
+      courseSection.course_section_status === CourseSectionStatusEnum.COMPLETED
+    ) {
+      throw new HttpException(
+        'Không thể đăng kí học phần này cho sinh viên',
+        HttpStatus.CONFLICT,
+      );
+    }
 
     if (isStudentEnrollmetExisted) {
       throw new HttpException(
-        'Học phần này đã được đăng kí',
+        'Sinh viên đã ghi danh học phần này',
         HttpStatus.CONFLICT,
       );
     }
@@ -53,16 +80,13 @@ export class StudentEnrollmentService {
     const studentSemester =
       await this.studentSemesterSevice.getStudentSemesterByStudentIdAndSemesterId(
         createStudentEnrollmentDto.student_id,
-        createStudentEnrollmentDto.semester_id,
+        courseSection.semester.semester_id,
       );
-
-    const courseSection = await this.courseSectionService.findOne(
-      createStudentEnrollmentDto.course_section_id,
-    );
 
     // lưu đăng ký học phần và tạo điểm cho học phần
     const studentEnrollmented = await this.studentEnrollmentRepository.save({
       ...createStudentEnrollmentDto,
+      semester_id: courseSection.semester.semester_id,
       pass_status: PassStatusEnum.UNDETERMINED,
       studentSemester: studentSemester,
       courseSection: courseSection,
@@ -78,7 +102,7 @@ export class StudentEnrollmentService {
       ...courseSection,
       current_students: courseSection.current_students + 1,
     });
-    
+
     const course = await this.courseService.findOne(
       courseSection.course.course_id,
     );

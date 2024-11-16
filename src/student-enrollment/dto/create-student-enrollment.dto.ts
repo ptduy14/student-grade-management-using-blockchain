@@ -12,11 +12,5 @@ export class CreateStudentEnrollmentDto {
     @IsNotEmpty()
     @IsNumber()
     @Min(1)
-    semester_id: number;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(1)
     course_section_id: number;
 }

@@ -2,17 +2,6 @@ export const abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_courseSectionAddress",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "uint16",
 				"name": "_semesterId",
 				"type": "uint16"
@@ -48,6 +37,17 @@ export const abi = [
 		],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_courseSectionAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -232,11 +232,6 @@ export const abi = [
 			{
 				"internalType": "uint16",
 				"name": "semesterId",
-				"type": "uint16"
-			},
-			{
-				"internalType": "uint16",
-				"name": "gpa",
 				"type": "uint16"
 			},
 			{

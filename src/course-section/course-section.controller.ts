@@ -151,6 +151,15 @@ export class CourseSectionController {
     );
   }
 
+  // Mở học phần bắt đầu giảng dạy từ admin
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @ApiOperation({ summary: 'Mở học phần bắt đầu giảng dạy từ admin' })
+  @Get(':id/open')
+  async openCourseSection(@Auth() auth: any, @Param('id', ParseIntPipe) id: number) {
+    return await this.courseSectionService.openCourseSection(id, auth);
+  }
+
   // Xác nhận hoàn thành học phần từ giảng viên
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.TEACHER)
@@ -160,7 +169,7 @@ export class CourseSectionController {
     return await this.courseSectionService.completeCourseSection(id, auth);
   }
 
-  // Xác nhận hoàn thành học phần từ giảng viên
+  // Mở khóa học phần từ admin
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({ summary: 'Mở khóa học phần từ admin' })

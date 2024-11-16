@@ -28,16 +28,17 @@ export class CourseSectionService {
     const semester = await this.semesterService.findOne(
       createCourseSectionDto.semester_id,
     );
+
     const course = await this.courseService.findOne(
       createCourseSectionDto.course_id,
     );
+
     const teacher = await this.teacherService.findOne(
       createCourseSectionDto.teacher_id,
     );
 
-    if (semester.semester_status === SemesterStatusEnum.NOT_STARTED) {
-      throw new HttpException('Học kì này hiện chưa mở', HttpStatus.CONFLICT);
-      // await this.semesterService.openSemester(semester.semester_id);
+    if (semester.semester_status === SemesterStatusEnum.IN_PROGRESS || semester.semester_status === SemesterStatusEnum.COMPLETED) {
+      throw new HttpException('Không thể tạo học phần vào lúc này', HttpStatus.CONFLICT);
     }
 
     if (teacher.teacher_role === UserRoleEnum.ADMIN) {
@@ -204,13 +205,6 @@ export class CourseSectionService {
       ])
       .getRawMany();
 
-    if (students.length == 0) {
-      throw new HttpException(
-        'Tạm thời chưa có lớp học phần hoặc sinh viên',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     const courseSection = await this.courseSectionRepository.findOne({
       where: { course_section_id: courseSectionId },
       relations: { semester: true },
@@ -331,16 +325,16 @@ export class CourseSectionService {
     if (!courseSection) {
       throw new HttpException("Không tìm thấy học phần", HttpStatus.NOT_FOUND);
     }
-    
+
+    if (courseSection.course_section_status === CourseSectionStatusEnum.COMPLETED) {
+      throw new HttpException("Học phần đã hoàn thành cập nhật", HttpStatus.CONFLICT);
+    }
+
     const isNotEligibleForComplete = courseSection.student_enrollments.some((item: any) => {
       return item.score.total_score === null;
     });
     
-    if (courseSection.course_section_status === CourseSectionStatusEnum.COMPLETED) {
-      throw new HttpException("Học phần đã hoàn thành cập nhật", HttpStatus.CONFLICT);
-    }
-    
-    if (isNotEligibleForComplete) {
+    if (isNotEligibleForComplete || courseSection.course_section_status === CourseSectionStatusEnum.NOT_STARTED) {
       throw new HttpException("Không đủ điều kiện xác nhận hoàn thành học phần", HttpStatus.CONFLICT);
     }
 
@@ -378,6 +372,33 @@ export class CourseSectionService {
 
     if (courseSection.semester.semester_status === SemesterStatusEnum.COMPLETED) {
       throw new HttpException("Không thể mở khóa lớp học phần", HttpStatus.CONFLICT);
+    }
+
+    courseSection.course_section_status = CourseSectionStatusEnum.IN_PROGRESS;
+
+    await this.courseSectionRepository.save(courseSection);
+
+    return "success";
+  }
+
+  // điều chỉnh lại kiểm tra số lượng sinh viên trước khi mở
+  async openCourseSection(courseSectionId: number, auth: any) {
+    const courseSection = await this.courseSectionRepository.findOne({where: {course_section_id: courseSectionId}, relations: {semester: true, student_enrollments: true}});
+
+    if (!courseSection) {
+      throw new HttpException("Không tìm thấy lớp học phần", HttpStatus.NOT_FOUND);
+    }
+
+    if (courseSection.course_section_status === CourseSectionStatusEnum.IN_PROGRESS) {
+      throw new HttpException("Lớp học phần hiện đang không khóa", HttpStatus.CONFLICT);
+    }
+
+    if (courseSection.semester.semester_status === SemesterStatusEnum.NOT_STARTED) {
+      throw new HttpException("Không thể mở khóa lớp học phần này do học kì chưa được mở", HttpStatus.CONFLICT);
+    }
+
+    if (courseSection.student_enrollments.length === 0) {
+      throw new HttpException("Không thể mở khóa lớp học phần này do chưa đủ số lượng sinh viên", HttpStatus.CONFLICT);
     }
 
     courseSection.course_section_status = CourseSectionStatusEnum.IN_PROGRESS;

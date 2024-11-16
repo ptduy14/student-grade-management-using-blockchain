@@ -41,6 +41,7 @@ export class SemestersService {
     const isCurrentSemesterIsOpen = await this.semesterRepository.findOne({
       where: { semester_status: SemesterStatusEnum.IN_PROGRESS },
     });
+
     if (isCurrentSemesterIsOpen) {
       throw new HttpException(
         'Không thể mở thêm học kì hiện tại',
@@ -50,11 +51,24 @@ export class SemestersService {
 
     const semester = await this.semesterRepository.findOne({
       where: { semester_id: semester_id },
+      relations: { courseSections: true },
     });
-    return await this.semesterRepository.save({
-      ...semester,
-      semester_status: SemesterStatusEnum.IN_PROGRESS,
-    });
+
+    // kiểm tra nếu không có học phần nào thì cũng không được mở
+    const isHaveAnyCourseSections = semester.courseSections.length > 0;
+
+    if (!isHaveAnyCourseSections) {
+      throw new HttpException(
+        'Không thể mở học kì do chưa có học phần nào được đăng ký',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    semester.semester_status = SemesterStatusEnum.IN_PROGRESS;
+
+    await this.semesterRepository.save(semester);
+
+    return "success"
   }
 
   async findCurrentOpenSemester() {
@@ -73,27 +87,39 @@ export class SemestersService {
   }
 
   async completeSemester(semesterId: number) {
-    const semester = await this.semesterRepository.findOne({where: {semester_id: semesterId}, relations: {courseSections: true}});
-  
+    const semester = await this.semesterRepository.findOne({
+      where: { semester_id: semesterId },
+      relations: { courseSections: true },
+    });
+
     if (!semester) {
-      throw new HttpException("Không tìm thấy học kỳ", HttpStatus.NOT_FOUND);
+      throw new HttpException('Không tìm thấy học kỳ', HttpStatus.NOT_FOUND);
     }
 
     if (semester.semester_status === SemesterStatusEnum.COMPLETED) {
-      throw new HttpException("Học kỳ đã hoàn tất", HttpStatus.CONFLICT);
+      throw new HttpException('Học kỳ đã hoàn tất', HttpStatus.CONFLICT);
     }
 
-    const isNotEligibleForComplete = semester.courseSections.some((CourseSection: any) => CourseSection.course_section_status === CourseSectionStatusEnum.IN_PROGRESS);
+    const isNotEligibleForComplete = semester.courseSections.some(
+      (CourseSection: any) =>
+        CourseSection.course_section_status ===
+          CourseSectionStatusEnum.IN_PROGRESS ||
+        CourseSection.course_section_status ===
+          CourseSectionStatusEnum.NOT_STARTED,
+    );
 
-    if (isNotEligibleForComplete) {
-      throw new HttpException("Không đủ điều kiện hoàn thành học kỳ", HttpStatus.CONFLICT);
+    if (isNotEligibleForComplete || semester.courseSections.length === 0) {
+      throw new HttpException(
+        'Không đủ điều kiện hoàn thành học kỳ',
+        HttpStatus.CONFLICT,
+      );
     }
 
-    semester.semester_status = SemesterStatusEnum.COMPLETED
+    semester.semester_status = SemesterStatusEnum.COMPLETED;
 
     await this.semesterRepository.save(semester);
 
     await this.studentSemesterService.calculateStudentsGPA(semesterId);
-    return "success";
+    return 'success';
   }
 }

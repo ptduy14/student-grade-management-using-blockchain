@@ -39,7 +39,7 @@ export class SemestersController {
   @UseGuards(JwtAuthGuard)
   @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({summary: 'Mở trạng thái học kì' })
-  @Patch(':id/open')
+  @Get(':id/open')
   async openSemester(@Param('id', ParseIntPipe) id: number) {
     return await this.semestersService.openSemester(id);
   }
