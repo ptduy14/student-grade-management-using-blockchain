@@ -12,18 +12,28 @@ import { IStudentResult } from "@/interfaces/StudentResult";
 import { studentEnrollmentService } from "@/services/student-enrollment-service";
 import { TableWrapper } from "./table/table";
 
-export const StudentResults = () => {
+export const StudentResults = ({ studentId }: { studentId?: string }) => {
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [studentResults, setStudentResults] = useState<IStudentResult[]>([]);
 
-  const getAllStudentEnrollments = async () => {
-    const res = await studentEnrollmentService.getAllStudentEnrollments();
+  const getAllAcademicResults = async () => {
+    const res = await studentEnrollmentService.getAllAcademicResults();
     setStudentResults(res.data);
     setIsFetching(false);
   };
 
+  const getAllAcademicResultsByStudentId = async(id: string) => {
+    const res = await studentEnrollmentService.getAllAcademicResultsByStudentId(id);
+    setStudentResults(res.data);
+    setIsFetching(false);
+  }
+
   useEffect(() => {
-    getAllStudentEnrollments();
+    if (studentId) {
+      getAllAcademicResultsByStudentId(studentId);
+      return;
+    }
+    getAllAcademicResults();
   }, []);
 
   if (isFetching)
@@ -80,7 +90,9 @@ export const StudentResults = () => {
             </div>
             <div className="pl-2">
               <span className="font-medium">Điểm GPA:</span>{" "}
-              {studentResult.gpa ? studentResult.gpa.toFixed(2) : "Chưa cập nhật"}
+              {studentResult.gpa
+                ? studentResult.gpa.toFixed(2)
+                : "Chưa cập nhật"}
             </div>
           </div>
         ))}
