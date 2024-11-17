@@ -12,7 +12,7 @@ This intruction using geth 1.13.14-stable for PoA consensus
 - -**addr :30305**: Xác định địa chỉ mà bootnode lắng nghe các kết nối. 30305 là cổng mà bootnode sẽ mở để các nút khác kết nối. Ở đây, địa chỉ : chỉ ra rằng bootnode sẽ chấp nhận kết nối từ bất kỳ địa chỉ IP nào (bạn có thể thay đổi thành địa chỉ IP cụ thể nếu cần).
 
 ## Run node1:
-`geth --datadir ./node1 --networkid 12345 --port 30306 --http --http.addr "127.0.0.1" --http.port 8545 --http.api "personal,eth,net,web3,txpool,miner,admin" --http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com" --allow-insecure-unlock --authrpc.port 8551 --bootnodes enode://283c7444a679a81b39d6727f2cfd09d4b54a9f86b21bbf6bf46ecebb02883e400f2b51088c0f56d1c9602667aae9dec4fcc928543894c3f4b644259d28ae45ed@127.0.0.1:0?discport=30305 --unlock 0xD91E59effa1757393191dA2Ba3582dE1d92D90ce --password node1/password.txt --miner.etherbase 0xD91E59effa1757393191dA2Ba3582dE1d92D90ce --mine --ipcpath ./node1/geth.ipc
+`geth --datadir ./node1 --networkid 12345 --port 30306 --http --http.addr "127.0.0.1" --http.port 8545 --http.api "personal,eth,net,web3,txpool,miner,admin" --http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com" --allow-insecure-unlock --authrpc.port 8551 --bootnodes enode://5fa15114a279b4f01740533f5cc9efa47cca00bbf7865320cb2dcf1f04fac0ac33c1c0764d33092eadf09c8d78c96d2645e2e85ab5c82d6387722ef42e1b5b8d@127.0.0.1:0?discport=30305 --unlock 0x1daBe396c9e15a1EEF9B053F231888cBC8B85341 --password node1/password.txt --miner.etherbase 0x1daBe396c9e15a1EEF9B053F231888cBC8B85341 --mine --ipcpath ./node1/geth.ipc
 `
 
 geth: Đây là client chính của Ethereum (Go Ethereum), chịu trách nhiệm chạy một node của blockchain.
@@ -58,7 +58,7 @@ geth: Đây là client chính của Ethereum (Go Ethereum), chịu trách nhiệ
 - **--ipcpath ./node1/geth.ipc:** Đường dẫn tệp IPC (Inter-process communication) của node. Tệp này được sử dụng để giao tiếp với các công cụ như geth console hoặc các ứng dụng khác chạy trên cùng hệ thống.
 
 ## Run node2:
-`geth --datadir ./node2 --networkid 12345 --port 30307 --http --http.addr "127.0.0.1" --http.port 8546 --http.api "personal,eth,net,web3,txpool,miner,admin" --allow-insecure-unlock --authrpc.port 8552 --bootnodes enode://283c7444a679a81b39d6727f2cfd09d4b54a9f86b21bbf6bf46ecebb02883e400f2b51088c0f56d1c9602667aae9dec4fcc928543894c3f4b644259d28ae45ed@127.0.0.1:0?discport=30305 --unlock 0x6A8BfbB0fA3CC059815fEAF433B905772274C652 --password node2/password.txt --ipcpath ./node2/geth.ipc
+`geth --datadir ./node2 --networkid 12345 --port 30307 --http --http.addr "127.0.0.1" --http.port 8546 --http.api "personal,eth,net,web3,txpool,miner,admin" --allow-insecure-unlock --authrpc.port 8552 --bootnodes enode://5fa15114a279b4f01740533f5cc9efa47cca00bbf7865320cb2dcf1f04fac0ac33c1c0764d33092eadf09c8d78c96d2645e2e85ab5c82d6387722ef42e1b5b8d@127.0.0.1:0?discport=30305 --unlock 0xB66fE323603f392028040738326d32aDefAe3Dd3 --password node2/password.txt --ipcpath ./node2/geth.ipc
 `
 Lệnh này tương tự như node1, chỉ có một số điểm khác biệt:
 
@@ -86,3 +86,7 @@ Go Ethereum Documentation : End-to-end example
 * [Go Ethereum Documentation : End-to-end example](https://geth.ethereum.org/docs/fundamentals/private-network#end-to-end-example)
 
 * [Go Ethereum - Github Developers Community](https://github.com/ethereum/go-ethereum/issues/27850) for helping me in resolving the issues in performing the mining on Private Ethereum Network setup using Geth.
+
+
+`PS D:\thesis\private-ethereum-setup-using-geth> $env:ETHERNAL_API_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJlYmFzZVVzZXJJZCI6InEwYUZUQlowMmZYdzRqMHRYR2tPQ2xjVmJwczIiLCJhcGlLZXkiOiJXWFBEMEhULTlKME1RQUotTVI0R0JIOC1HM1dXTTJWXHUwMDAxIiwiaWF0IjoxNzMwOTA4OTQ2fQ.Nz9EWGlYRSnKmsA3KdfJE5BgPGfod81ulISXdnxaCjM"
+PS D:\thesis\private-ethereum-setup-using-geth> ethernal listen -w "Grade Managment"`
