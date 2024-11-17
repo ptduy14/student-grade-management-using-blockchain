@@ -83,7 +83,7 @@ export class StudentsService {
       student_email: studentEmail,
       class: classStudentToAdded,
       student_password: hashedPassword,
-      student_role: UserRoleEnum.STUDENT
+      student_role: UserRoleEnum.STUDENT,
     });
 
     const academicYears = await this.academicYearsService.findAll();
@@ -181,5 +181,26 @@ export class StudentsService {
 
   async updatePassword(teacher: any) {
     return await this.studentRepository.save(teacher);
+  }
+
+  async searchByName(studentName: string) {
+    const students = await this.studentRepository
+      .createQueryBuilder('students')
+      .innerJoinAndSelect("students.class", "class")
+      .where('students.student_name LIKE :studentName', {
+        studentName: `%${studentName}%`,
+      })
+      .select([
+        'students.student_id',
+        'students.student_code',
+        'students.student_name',
+        'students.student_email',
+        'students.student_phone',
+        'students.student_address',
+        'class'
+      ])
+      .getMany();
+
+    return students;
   }
 }

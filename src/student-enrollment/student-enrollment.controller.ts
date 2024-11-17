@@ -19,26 +19,35 @@ export class StudentEnrollmentController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({ summary: 'Admin đăng ký học phần cho sinh viên' })
-  @Post('admin/enroll')
-  async adminEnroll(@Body(ValidationPipe) createStudentEnrollmentDto: CreateStudentEnrollmentDto) {
+  @Post('admin/register')
+  async registerStudent(@Body(ValidationPipe) createStudentEnrollmentDto: CreateStudentEnrollmentDto) {
     return await this.studentEnrollmentService.enroll(createStudentEnrollmentDto);
   }
 
   // chỉ dành cho role sinh viên
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.STUDENT)
-  @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí trong các học kì (AUTH)' })
-  @Get('student/semesters')
-  findAll(@Auth() auth: any) {
-    return this.studentEnrollmentService.findAll(auth);
+  @ApiOperation({ summary: 'Sinh viên lấy tất kết quả học tập của các học phần trong các học kỳ' })
+  @Get('student/results')
+  getAllAcademicResults(@Auth() auth: any) {
+    return this.studentEnrollmentService.findAll(auth, null);
+  }
+
+  // chỉ dành cho role sinh viên
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @ApiOperation({ summary: 'Admin lấy tất cả kết quả học tập của các học phần trong các học kỳ của sinh viên' })
+  @Get('admin/students/:studentId/results')
+  getAllAcademicResultsByStudentId(@Param('studentId', ParseIntPipe) studentId: number) {
+    return this.studentEnrollmentService.findAll(null, studentId);
   }
 
   // chỉ dành cho role sinh viên
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.STUDENT)
-  @ApiOperation({ summary: 'Sinh viên lấy tất cả lớp học phần đã đăng kí theo học kì cụ thể (Chưa cần thiết sử dụng) (AUTH)' })
-  @Get('student/semesters/:semesterId')
-  findBySemesterId(@Auth() auth: any, @Param('semesterId', ParseIntPipe) semesterId: number) {
+  @ApiOperation({ summary: 'Sinh viên lấy tất kết quả học tập của các học phần trong các học kỳ cụ thể' })
+  @Get('student/results/semesters/:semesterId')
+  getAcademicResultsBySemester(@Auth() auth: any, @Param('semesterId', ParseIntPipe) semesterId: number) {
     return this.studentEnrollmentService.findBySemesterId(auth, semesterId);
   }
 }

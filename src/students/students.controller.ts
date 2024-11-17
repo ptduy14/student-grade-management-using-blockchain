@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe, ParseIntPipe, Query } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
@@ -28,6 +28,14 @@ export class StudentsController {
   @Get()
   async findAll() {
     return await this.studentsService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @ApiOperation({summary: "Tìm kiếm sinh viên theo tên"})
+  @Get('/search-by-name')
+  async searchByName(@Query('student_name', ValidationPipe) student_name: string) {
+    return await this.studentsService.searchByName(student_name);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

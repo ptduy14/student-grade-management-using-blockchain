@@ -114,7 +114,9 @@ export class StudentEnrollmentService {
     return studentEnrollmented;
   }
 
-  async findAll(auth: any) {
+  async findAll(auth?: any | null, studentId?: string | number) {
+    const id = studentId !== null ? studentId : auth.id;
+
     const studentEnrollmentFindBySemesters =
       await this.studentSemesterRepository
         .createQueryBuilder('student_semester')
@@ -137,7 +139,7 @@ export class StudentEnrollmentService {
             statusCompleted: SemesterStatusEnum.COMPLETED,
           },
         )
-        .andWhere('student_semester.student.student_id = :id', { id: auth.id })
+        .andWhere('student_semester.student.student_id = :id', { id })
         .getMany();
 
     return studentEnrollmentFindBySemesters;
