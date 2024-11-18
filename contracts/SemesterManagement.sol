@@ -8,7 +8,6 @@ contract SemesterManagement {
     struct Semester {
         uint16 semesterId;
         uint16[] courseSectionIds;
-        uint16 gpa;
         bool semesterExisted;
     }
 
@@ -68,7 +67,6 @@ contract SemesterManagement {
             // Nếu học kỳ chưa tồn tại, khởi tạo học kỳ mới
             semester.semesterId = _semesterId;
             semester.courseSectionIds.push(_courseSectionId);
-            semester.gpa = 0;
             semester.semesterExisted = true;
 
             studentSemester[_studentId][_semesterId] = semester;
