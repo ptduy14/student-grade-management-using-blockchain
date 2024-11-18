@@ -1,18 +1,34 @@
-import { Input, Link, Navbar, NavbarContent } from "@nextui-org/react";
+import { Input, Navbar, NavbarContent } from "@nextui-org/react";
 import React from "react";
-import { FeedbackIcon } from "../icons/navbar/feedback-icon";
-import { GithubIcon } from "../icons/navbar/github-icon";
-import { SupportIcon } from "../icons/navbar/support-icon";
 import { SearchIcon } from "../icons/searchicon";
 import { BurguerButton } from "./burguer-button";
 import { NotificationsDropdown } from "./notifications-dropdown";
 import { UserDropdown } from "./user-dropdown";
+import { Button } from "@nextui-org/react";
+import { useWeb3 } from "@/context/web3-conext";
+import { LoaderBtn } from "../loaders/loader-btn";
+import { useSelector } from "react-redux";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export const NavbarWrapper = ({ children }: Props) => {
+  const user = useSelector((state: any) => state.account.user);
+  const { isConnected, connectWallet, isCheckingConnected } = useWeb3();
+
+  const connectToMetaMask = async () => {
+    connectWallet();
+  };
+
+  const buttonContent = isCheckingConnected ? (
+    <LoaderBtn />
+  ) : isConnected ? (
+    "Đã kết nối ví Meta Mask"
+  ) : (
+    "Kết nối ví Meta Mask"
+  );
+
   return (
     <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
       <Navbar
@@ -41,23 +57,17 @@ export const NavbarWrapper = ({ children }: Props) => {
           justify="end"
           className="w-fit data-[justify=end]:flex-grow-0"
         >
-          <div className="flex items-center gap-2 max-md:hidden">
-            <FeedbackIcon />
-            <span>Feedback?</span>
-          </div>
-
           <NotificationsDropdown />
 
-          <div className="max-md:hidden">
-            <SupportIcon />
-          </div>
-
-          <Link
-            href="https://github.com/Siumauricio/nextui-dashboard-template"
-            target={"_blank"}
-          >
-            <GithubIcon />
-          </Link>
+          {user?.role === "student" ? null : (
+            <Button
+              color="primary"
+              onClick={connectToMetaMask}
+              isDisabled={isConnected}
+            >
+              {buttonContent}
+            </Button>
+          )}
           <NavbarContent>
             <UserDropdown />
           </NavbarContent>

@@ -1,24 +1,37 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+// Các route cần kiểm tra
+const protectedRoutes = {
+  student: "/student",
+  teacher: "/teacher",
+  admin: "/admin",
+};
+
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const userJSON = request.cookies.get("user")?.value;
+
+  if (!userJSON) {
+    return NextResponse.redirect(new URL("/auth/signin", request.url));
+  }
+
+  const user = JSON.parse(userJSON);
 
   if (
-    (pathname === "/login" || pathname === "/register") &&
-    request.cookies.has("userAuth")
-  )
-    return NextResponse.redirect(new URL("/", request.url));
+    (user.role === "teacher" &&
+      request.nextUrl.pathname.startsWith(protectedRoutes.teacher)) ||
+    (user.role === "student" &&
+      request.nextUrl.pathname.startsWith(protectedRoutes.student)) ||
+    (user.role === "admin" &&
+      request.nextUrl.pathname.startsWith(protectedRoutes.admin))
+  ) {
+    return NextResponse.next();
+  }
 
-  if (
-    (pathname === "/" || pathname === "/accounts") &&
-    !request.cookies.has("userAuth")
-  )
-    return NextResponse.redirect(new URL("/login", request.url));
-
-  return NextResponse.next();
+  return NextResponse.redirect(new URL(`/${user.role}`, request.url));
 }
 
+// Xác định các route cần áp dụng middleware
 export const config = {
-  matcher: ["/", "/accounts", "/login", "/register"],
+  matcher: ["/", "/student/:path*", "/teacher/:path*"],
 };

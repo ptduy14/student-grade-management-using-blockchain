@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Sidebar } from "./sidebar.styles";
 import { Avatar, Tooltip } from "@nextui-org/react";
-import { CompaniesDropdown } from "./companies-dropdown";
 import { HomeIcon } from "../icons/sidebar/home-icon";
 import { PaymentsIcon } from "../icons/sidebar/payments-icon";
 import { BalanceIcon } from "../icons/sidebar/balance-icon";
@@ -19,10 +18,28 @@ import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { useSidebarContext } from "../layout/layout-context";
 import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import { acdemicYearService } from "@/services/academic-year-service";
+import { IAcademicYear } from "@/interfaces/AcademicYear";
+import { CourseIcon } from "../icons/course-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
+  const user = useSelector((state: any) => state.account.user);
+
+  const [academicYears, setAcademicYears] = useState<IAcademicYear[]>([]);
+
+  const getAllAcademicYear = async () => {
+    const res = await acdemicYearService.getAllAcademicYear();
+    setAcademicYears(res.data);
+  };
+
+  useEffect(() => {
+    if (user?.role === "teacher" || user?.role === "admin") {
+      getAllAcademicYear();
+    }
+  }, []);
 
   return (
     <aside className="h-screen z-[20] sticky top-0">
@@ -35,50 +52,76 @@ export const SidebarWrapper = () => {
         })}
       >
         <div className={Sidebar.Header()}>
-          <CompaniesDropdown />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Logo_ctuet.png"
+            className="w-20 mx-auto"
+          />
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
             <SidebarItem
-              title="Home"
+              title="Trang chủ"
               icon={<HomeIcon />}
-              isActive={pathname === "/"}
-              href="/"
+              isActive={pathname === `/${user?.role}`}
+              href={`/${user?.role}`}
             />
             <SidebarMenu title="Main Menu">
-              <SidebarItem
-                isActive={pathname === "/accounts"}
-                title="Accounts"
-                icon={<AccountsIcon />}
-                href="accounts"
-              />
-              <SidebarItem
-                isActive={pathname === "/payments"}
-                title="Payments"
-                icon={<PaymentsIcon />}
-              />
-              <CollapseItems
-                icon={<BalanceIcon />}
-                items={["Banks Accounts", "Credit Cards", "Loans"]}
-                title="Balances"
-              />
-              <SidebarItem
-                isActive={pathname === "/customers"}
-                title="Customers"
-                icon={<CustomersIcon />}
-              />
-              <SidebarItem
-                isActive={pathname === "/products"}
-                title="Products"
-                icon={<ProductsIcon />}
-              />
-              <SidebarItem
-                isActive={pathname === "/reports"}
-                title="Reports"
-                icon={<ReportsIcon />}
-              />
-            </SidebarMenu>
+              {user?.role === "teacher" && (
+                <>
+                  <CollapseItems
+                    icon={<BalanceIcon />}
+                    items={academicYears}
+                    title="Năm học"
+                  />
+                  <SidebarItem
+                    isActive={
+                      pathname ===
+                      "/teacher/course-section/current-open-semester"
+                    }
+                    title="Lớp học phần"
+                    icon={<CourseIcon />}
+                    href={`/${user?.role}/course-section/current-open-semester`}
+                  />
+                </>
+              )}
+              {user?.role === "admin" && (
+                <>
+                  <CollapseItems
+                    icon={<BalanceIcon />}
+                    items={academicYears}
+                    title="Năm học"
+                  />
+                  <SidebarItem
+                    isActive={pathname === "/admin/teachers"}
+                    title="Quản lí giảng viên"
+                    icon={<CustomersIcon />}
+                    href={`/${user?.role}/teachers`}
+                  />
 
+                  <SidebarItem
+                    isActive={pathname === "/admin/students"}
+                    title="Quản lí sinh viên"
+                    icon={<CustomersIcon />}
+                    href={`/${user?.role}/students`}
+                  />
+
+                  <SidebarItem
+                    isActive={pathname === "/admin/courses"}
+                    title="Quản lí môn học"
+                    icon={<CourseIcon />}
+                    href={`/${user?.role}/courses`}
+                  />
+                </>
+              )}
+              {user?.role === "student" && (
+                <SidebarItem
+                  isActive={pathname === "/students/results"}
+                  title="Kết quả học tập"
+                  icon={<ReportsIcon />}
+                  href={`/${user?.role}/results`}
+                />
+              )}
+            </SidebarMenu>
             <SidebarMenu title="General">
               <SidebarItem
                 isActive={pathname === "/developers"}

@@ -3,6 +3,7 @@ import React from "react";
 export const CustomersIcon = () => {
   return (
     <svg
+      className="w-6 h-6 text-gray-800 dark:text-white"
       width="24"
       height="24"
       viewBox="0 0 24 24"
