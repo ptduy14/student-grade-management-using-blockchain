@@ -25,6 +25,14 @@ export class TransactionHistoryController {
   ) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @Get('')
+  @ApiOperation({ summary: 'Lấy tất cả danh sách lịch sử transaction trên điểm' })
+  async getAllTransactionHistories() {
+    return await this.transactionHistoryService.getAllTransactionHistories();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.TEACHER, UserRoleEnum.STUDENT)
   @Get('/scores/:scoreId')
   @ApiOperation({ summary: 'Lấy danh sách lịch sử transaction trên điểm' })

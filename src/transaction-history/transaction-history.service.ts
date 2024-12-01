@@ -23,10 +23,20 @@ export class TransactionHistoryService {
     transaction.block_number = blockNumber;
     transaction.score = score; // Thiết lập quan hệ với Score
 
-    return this.transactionHistoryRepository.save(transaction);
+    return await this.transactionHistoryRepository.save(transaction);
   }
 
   async getTransactionHistoriesByScoreId(scoreId: number) {
-    return this.transactionHistoryRepository.find({where: {score: {score_id: scoreId}}});
+    return await this.transactionHistoryRepository.find({
+      where: { score: { score_id: scoreId } },
+    });
+  }
+
+  async getAllTransactionHistories() {
+    return await this.transactionHistoryRepository
+      .createQueryBuilder('transaction_history')
+      .orderBy('transaction_history.id', 'DESC')
+      .take(5)
+      .getMany();
   }
 }
