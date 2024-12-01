@@ -68,7 +68,7 @@ export const Teachers = () => {
         </li>
 
         <li className="flex gap-2">
-          <span>Quản lí giảng viên</span>
+          <span>Danh sách giảng viên</span>
         </li>
       </ul>
 

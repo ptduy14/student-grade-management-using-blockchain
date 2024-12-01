@@ -138,7 +138,7 @@ export const CourseSectionWithStudentAndScore = ({
           <span> / </span>{" "}
         </li>
         <li className="flex gap-2">
-          <span>Danh sách học phần</span>
+          <span>Danh sách sinh viên</span>
         </li>
       </ul>
 

@@ -38,7 +38,7 @@ export const UserDropdown = () => {
             as="button"
             color="secondary"
             size="md"
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            src="https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg"
           />
         </DropdownTrigger>
       </NavbarItem>
