@@ -20,6 +20,7 @@ import ReopenCourseSectionModal from "./admin-role/reopen-course-section-modal";
 import { SemesterStatusEnum } from "@/common/enum/semester-status-enum";
 import OpenCourseSectionModal from "./admin-role/open-course-section-modal";
 import EnrollStudentModal from "./admin-role/enroll-student-modal";
+import { ExportScoreToCSV } from "./export-score-to-csv";
 
 export const CourseSectionWithStudentAndScore = ({
   courseSectionId,
@@ -171,9 +172,7 @@ export const CourseSectionWithStudentAndScore = ({
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           {handleRenderModalAction()}
-          <Button color="primary" startContent={<ExportIcon />}>
-            Export to CSV
-          </Button>
+          <ExportScoreToCSV studentsScore={courseSections!.students}/>
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">

@@ -9,9 +9,9 @@ export interface CourseSectionStudentDetail {
   student_student_email: string;
   semester_semester_id: number;
   score_score_id: number;
-  score_midterm_score: number | null;
-  score_final_score: number | null;
-  score_total_score: number | null;
+  score_midterm_score: number | null | string;
+  score_final_score: number | null | string;
+  score_total_score: number | null | string;
 }
 
 export interface CourseSectionStudent {
