@@ -88,5 +88,12 @@ Go Ethereum Documentation : End-to-end example
 * [Go Ethereum - Github Developers Community](https://github.com/ethereum/go-ethereum/issues/27850) for helping me in resolving the issues in performing the mining on Private Ethereum Network setup using Geth.
 
 
-`PS D:\thesis\private-ethereum-setup-using-geth> $env:ETHERNAL_API_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJlYmFzZVVzZXJJZCI6InEwYUZUQlowMmZYdzRqMHRYR2tPQ2xjVmJwczIiLCJhcGlLZXkiOiJXWFBEMEhULTlKME1RQUotTVI0R0JIOC1HM1dXTTJWXHUwMDAxIiwiaWF0IjoxNzMwOTA4OTQ2fQ.Nz9EWGlYRSnKmsA3KdfJE5BgPGfod81ulISXdnxaCjM"
-PS D:\thesis\private-ethereum-setup-using-geth> ethernal listen -w "Grade Managment"`
+`$env:ETHERNAL_API_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJlYmFzZVVzZXJJZCI6InEwYUZUQlowMmZYdzRqMHRYR2tPQ2xjVmJwczIiLCJhcGlLZXkiOiJXWFBEMEhULTlKME1RQUotTVI0R0JIOC1HM1dXTTJWXHUwMDAxIiwiaWF0IjoxNzMwOTA4OTQ2fQ.Nz9EWGlYRSnKmsA3KdfJE5BgPGfod81ulISXdnxaCjM"
+`
+`ethernal listen -w "Grade Management"
+`
+
+Kết nối node1 thông qua HTTP RPC: `geth attach http://127.0.0.1:8545`
+Chuyển ETH từ address node1 đến tài khoản bất kì:
+`eth.sendTransaction({from: "0x1daBe396c9e15a1EEF9B053F231888cBC8B85341", to: "0xAafbd4555a3E9FeB5fd16825D83Cd708A12d4244", value: web3.toWei(2, "ether")})
+`
