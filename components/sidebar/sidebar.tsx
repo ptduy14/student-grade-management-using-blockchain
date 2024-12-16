@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { acdemicYearService } from "@/services/academic-year-service";
 import { IAcademicYear } from "@/interfaces/AcademicYear";
 import { CourseIcon } from "../icons/course-icon";
+import { DocumentIcon } from "../icons/sidebar/document-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -53,7 +54,7 @@ export const SidebarWrapper = () => {
       >
         <div className={Sidebar.Header()}>
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Logo_ctuet.png"
+            src="https://cdn.haitrieu.com/wp-content/uploads/2022/12/Artboard-2.png"
             className="w-20 mx-auto"
           />
         </div>
@@ -82,6 +83,12 @@ export const SidebarWrapper = () => {
                     icon={<CourseIcon />}
                     href={`/${user?.role}/course-section/current-open-semester`}
                   />
+                  <SidebarItem
+                    isActive={pathname === "/teacher/documents"}
+                    title="Tài liệu"
+                    icon={<DocumentIcon />}
+                    href={`/${user?.role}/documents`}
+                  />
                 </>
               )}
               {user?.role === "admin" && (
@@ -93,23 +100,29 @@ export const SidebarWrapper = () => {
                   />
                   <SidebarItem
                     isActive={pathname === "/admin/teachers"}
-                    title="Quản lí giảng viên"
+                    title="Giảng viên"
                     icon={<CustomersIcon />}
                     href={`/${user?.role}/teachers`}
                   />
 
                   <SidebarItem
                     isActive={pathname === "/admin/students"}
-                    title="Quản lí sinh viên"
+                    title="Sinh viên"
                     icon={<CustomersIcon />}
                     href={`/${user?.role}/students`}
                   />
 
                   <SidebarItem
                     isActive={pathname === "/admin/courses"}
-                    title="Quản lí môn học"
+                    title="Môn học"
                     icon={<CourseIcon />}
                     href={`/${user?.role}/courses`}
+                  />
+                  <SidebarItem
+                    isActive={pathname === "admin/classes"}
+                    title="Lớp học"
+                    icon={<ViewIcon />}
+                    href={`/${user?.role}/classes`}
                   />
                 </>
               )}
@@ -124,47 +137,16 @@ export const SidebarWrapper = () => {
             </SidebarMenu>
             <SidebarMenu title="General">
               <SidebarItem
-                isActive={pathname === "/developers"}
-                title="Developers"
-                icon={<DevIcon />}
-              />
-              <SidebarItem
-                isActive={pathname === "/view"}
-                title="View Test Data"
-                icon={<ViewIcon />}
+                isActive={pathname === "/supports"}
+                title="Hỗ trợ"
+                icon={<ChangeLogIcon />}
               />
               <SidebarItem
                 isActive={pathname === "/settings"}
-                title="Settings"
+                title="Cài đặt"
                 icon={<SettingsIcon />}
               />
             </SidebarMenu>
-
-            <SidebarMenu title="Updates">
-              <SidebarItem
-                isActive={pathname === "/changelog"}
-                title="Changelog"
-                icon={<ChangeLogIcon />}
-              />
-            </SidebarMenu>
-          </div>
-          <div className={Sidebar.Footer()}>
-            <Tooltip content={"Settings"} color="primary">
-              <div className="max-w-fit">
-                <SettingsIcon />
-              </div>
-            </Tooltip>
-            <Tooltip content={"Adjustments"} color="primary">
-              <div className="max-w-fit">
-                <FilterIcon />
-              </div>
-            </Tooltip>
-            <Tooltip content={"Profile"} color="primary">
-              <Avatar
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                size="sm"
-              />
-            </Tooltip>
           </div>
         </div>
       </div>

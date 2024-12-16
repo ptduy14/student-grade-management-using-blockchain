@@ -1,7 +1,11 @@
-import { AxiosInstance } from "@/config/axios-instance"
+import { AxiosInstance } from "@/config/axios-instance";
 
 export const transactionHistoryService = {
-    getTransactionHistoriesByScoreId: async(scoreId: number) => {
-        return AxiosInstance.get(`transaction-history/scores/${scoreId}`);
-    }
-}
+  getLatesTranstractionHistory: async () => {
+    return AxiosInstance.get("/transaction-history");
+  },
+
+  getTransactionHistoriesByScoreId: async (scoreId: number) => {
+    return AxiosInstance.get(`/transaction-history/scores/${scoreId}`);
+  },
+};

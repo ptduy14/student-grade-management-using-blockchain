@@ -8,7 +8,7 @@ import {
   Button,
   Input,
 } from "@nextui-org/react";
-import { useState, SetStateAction } from "react";
+import { useState, SetStateAction, useEffect } from "react";
 import {
   CourseSectionStudent,
   CourseSectionStudentDetail,
@@ -200,6 +200,18 @@ export const UpdateScoreModal = ({
     }
   };
 
+  const handleClose = () => {
+    setIsHandling(false);
+    onClose();
+    setError("");
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      handleClose();
+    }
+  }, [isOpen])
+
   return (
     <>
       <div className="flex flex-wrap gap-4 items-center">
@@ -251,7 +263,7 @@ export const UpdateScoreModal = ({
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={onClose}
+                  onClick={handleClose}
                   isDisabled={isHandling}
                 >
                   Thoát

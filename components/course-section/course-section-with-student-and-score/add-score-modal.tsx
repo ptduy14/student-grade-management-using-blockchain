@@ -14,7 +14,7 @@ import {
   CourseSectionStudentDetail,
 } from "@/interfaces/CourseSectionStudent";
 import { ScoreTypeEnum, ScoreTypeNames } from "./enum/score-type-enum";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { ScoreService } from "@/services/score-service";
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
@@ -213,6 +213,12 @@ export const AddScoreModal = ({
     onClose();
     setError("");
   };
+
+  useEffect(() => {
+    if (!isOpen) {
+      handleClose();
+    }
+  }, [isOpen])
 
   return (
     <>

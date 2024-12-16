@@ -1,5 +1,8 @@
+import { ITransactionHistory } from "@/interfaces/TransactionHistory";
+import { transactionHistoryService } from "@/services/transaction-history-service";
 import { Avatar, Card, CardBody } from "@nextui-org/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { TransactionTypeNames } from "../course-section/course-section-with-student-and-score/enum/transaction-type-enum";
 
 const items = [
   {
@@ -40,37 +43,32 @@ const items = [
 ];
 
 export const CardTransactions = () => {
+  const [latestTransactions, setLatestTransactions] = useState<ITransactionHistory[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+
+  const getLatestTransactionHistory = async() => {
+    const res = await transactionHistoryService.getLatesTranstractionHistory();
+    setLatestTransactions(res.data);
+    setIsFetching(false);
+  }
+
+  useEffect(() => {
+    getLatestTransactionHistory();
+  }, [])
+
+  if (isFetching) return <div className="w-full h-full flex justify-center items-center" >Waiting...</div>;
+
   return (
     <Card className=" bg-default-50 rounded-xl shadow-md px-3">
       <CardBody className="py-5 gap-4">
-        <div className="flex gap-2.5 justify-center">
-          <div className="flex flex-col border-dashed border-2 border-divider py-2 px-6 rounded-xl">
-            <span className="text-default-900 text-xl font-semibold">
-              Latest Transactions
-            </span>
-          </div>
-        </div>
-
         <div className="flex flex-col gap-6 ">
-          {items.map((item) => (
-            <div key={item.id} className="grid grid-cols-4 w-full">
-              <div className="w-full">
-                <Avatar
-                  isBordered
-                  color="secondary"
-                  src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-                />
-              </div>
-
-              <span className="text-default-900  font-semibold">
-                {item.name}
-              </span>
-              <div>
-                <span className="text-success text-xs">{item.amount}</span>
-              </div>
-              <div>
-                <span className="text-default-500 text-xs">{item.date}</span>
-              </div>
+          {latestTransactions.map((item: ITransactionHistory) => (
+            <div key={item.id} className="w-full gap-x-4 flex items-center align-middle">
+              <a className="text-sky-500 underline block w-2/3" href={`https://app.tryethernal.com/transaction/${item.transaction_hash}`}>
+                {item.transaction_hash}
+              </a>
+              <span className="block">{TransactionTypeNames[item.transaction_type]}</span>
+              <span className="block">{item.block_number}</span>
             </div>
           ))}
         </div>

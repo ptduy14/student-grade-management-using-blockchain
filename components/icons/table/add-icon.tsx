@@ -8,7 +8,7 @@ interface Props {
  export const AddIcon = ({ fill = "currentColor", size, height, width, ...props }: Props) => {
     return (
        <svg
-          className="w-6 h-6 text-gray-800 dark:text-white"
+          className="w-6 h-6 light:text-white dark:text-white"
           width={size || width || 24}
           height={size || height || 24}
           viewBox="0 0 24 24"
