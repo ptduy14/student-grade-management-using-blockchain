@@ -14,5 +14,8 @@ The project serves research purposes and the practice of knowledge related to bl
 </div>
 <div height="75"></div>
 
+# The design model of a private blockchain
+![alt text](image.png)
+
 # Data Flow
 ![alt text](data-flow.png)
