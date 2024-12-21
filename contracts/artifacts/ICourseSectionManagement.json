@@ -1,0 +1,247 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"gasEstimates": null,
+		"methodIdentifiers": {
+			"addCourseSectionScore(bytes32,uint16,uint16,uint8)": "260a5355",
+			"getCourseSectionScore(bytes32,uint16)": "0c5f8f02",
+			"getStudentCourseSections(bytes32)": "30c17ac0",
+			"updateStudentCourseScore(bytes32,uint16,uint16,uint8)": "218e703d"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_studentSemesterKey",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "uint16",
+					"name": "_courseSectionId",
+					"type": "uint16"
+				},
+				{
+					"internalType": "uint16",
+					"name": "_score",
+					"type": "uint16"
+				},
+				{
+					"internalType": "enum ScoreType",
+					"name": "_scoreType",
+					"type": "uint8"
+				}
+			],
+			"name": "addCourseSectionScore",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_studentSemesterKey",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "uint16",
+					"name": "_courseSectionId",
+					"type": "uint16"
+				}
+			],
+			"name": "getCourseSectionScore",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "uint16",
+							"name": "courseSectionId",
+							"type": "uint16"
+						},
+						{
+							"internalType": "bool",
+							"name": "isCourseSectionExisted",
+							"type": "bool"
+						},
+						{
+							"components": [
+								{
+									"internalType": "uint16",
+									"name": "midterm",
+									"type": "uint16"
+								},
+								{
+									"internalType": "uint16",
+									"name": "finalExam",
+									"type": "uint16"
+								},
+								{
+									"internalType": "uint16",
+									"name": "average",
+									"type": "uint16"
+								},
+								{
+									"internalType": "bool",
+									"name": "isMidtermSet",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "isFinalExamSet",
+									"type": "bool"
+								}
+							],
+							"internalType": "struct Score",
+							"name": "score",
+							"type": "tuple"
+						}
+					],
+					"internalType": "struct CourseSection",
+					"name": "",
+					"type": "tuple"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_studentSemesterKey",
+					"type": "bytes32"
+				}
+			],
+			"name": "getStudentCourseSections",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "uint16",
+							"name": "courseSectionId",
+							"type": "uint16"
+						},
+						{
+							"internalType": "bool",
+							"name": "isCourseSectionExisted",
+							"type": "bool"
+						},
+						{
+							"components": [
+								{
+									"internalType": "uint16",
+									"name": "midterm",
+									"type": "uint16"
+								},
+								{
+									"internalType": "uint16",
+									"name": "finalExam",
+									"type": "uint16"
+								},
+								{
+									"internalType": "uint16",
+									"name": "average",
+									"type": "uint16"
+								},
+								{
+									"internalType": "bool",
+									"name": "isMidtermSet",
+									"type": "bool"
+								},
+								{
+									"internalType": "bool",
+									"name": "isFinalExamSet",
+									"type": "bool"
+								}
+							],
+							"internalType": "struct Score",
+							"name": "score",
+							"type": "tuple"
+						}
+					],
+					"internalType": "struct CourseSection[]",
+					"name": "",
+					"type": "tuple[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_studentSemesterKey",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "uint16",
+					"name": "_courseSectionId",
+					"type": "uint16"
+				},
+				{
+					"internalType": "uint16",
+					"name": "_score",
+					"type": "uint16"
+				},
+				{
+					"internalType": "enum ScoreType",
+					"name": "_scoreType",
+					"type": "uint8"
+				}
+			],
+			"name": "updateStudentCourseScore",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+}

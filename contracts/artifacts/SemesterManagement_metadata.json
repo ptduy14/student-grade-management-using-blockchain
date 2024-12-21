@@ -1,0 +1,311 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_courseSectionAddress",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint16",
+						"name": "_semesterId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_studentId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_courseSectionId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_score",
+						"type": "uint16"
+					},
+					{
+						"internalType": "enum ScoreType",
+						"name": "_scoreType",
+						"type": "uint8"
+					}
+				],
+				"name": "addOrUpdateCourseSection",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint16",
+						"name": "studentId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "semesterId",
+						"type": "uint16"
+					}
+				],
+				"name": "generateStudentSemesterKey",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint16",
+						"name": "_semesterId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_studentId",
+						"type": "uint16"
+					}
+				],
+				"name": "getAllCourseSectionInSemester",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint16",
+								"name": "courseSectionId",
+								"type": "uint16"
+							},
+							{
+								"internalType": "bool",
+								"name": "isCourseSectionExisted",
+								"type": "bool"
+							},
+							{
+								"components": [
+									{
+										"internalType": "uint16",
+										"name": "midterm",
+										"type": "uint16"
+									},
+									{
+										"internalType": "uint16",
+										"name": "finalExam",
+										"type": "uint16"
+									},
+									{
+										"internalType": "uint16",
+										"name": "average",
+										"type": "uint16"
+									},
+									{
+										"internalType": "bool",
+										"name": "isMidtermSet",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "isFinalExamSet",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct Score",
+								"name": "score",
+								"type": "tuple"
+							}
+						],
+						"internalType": "struct CourseSection[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint16",
+						"name": "_semesterId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_studentId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_courseSectionId",
+						"type": "uint16"
+					}
+				],
+				"name": "getCourseSectionInSemester",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint16",
+								"name": "courseSectionId",
+								"type": "uint16"
+							},
+							{
+								"internalType": "bool",
+								"name": "isCourseSectionExisted",
+								"type": "bool"
+							},
+							{
+								"components": [
+									{
+										"internalType": "uint16",
+										"name": "midterm",
+										"type": "uint16"
+									},
+									{
+										"internalType": "uint16",
+										"name": "finalExam",
+										"type": "uint16"
+									},
+									{
+										"internalType": "uint16",
+										"name": "average",
+										"type": "uint16"
+									},
+									{
+										"internalType": "bool",
+										"name": "isMidtermSet",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "isFinalExamSet",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct Score",
+								"name": "score",
+								"type": "tuple"
+							}
+						],
+						"internalType": "struct CourseSection",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint16",
+						"name": "",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "",
+						"type": "uint16"
+					}
+				],
+				"name": "studentSemester",
+				"outputs": [
+					{
+						"internalType": "uint16",
+						"name": "semesterId",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "gpa",
+						"type": "uint16"
+					},
+					{
+						"internalType": "bool",
+						"name": "semesterExisted",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/SemesterManagement.sol": "SemesterManagement"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/ICourseSectionManagement.sol": {
+			"keccak256": "0x0e8821dc00c36c6c88e4c8f6762087c34452acd538054b6abfae6284af0bee4e",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://8e6afb8b3b9675a73dc2b68026c446e4f60c79f804618190f641371fcaeb1dfd",
+				"dweb:/ipfs/QmYrzFwK9JDgBwL1DwK1UQEe5CtUBUNUR6bNNq7CVksmMX"
+			]
+		},
+		"contracts/SemesterManagement.sol": {
+			"keccak256": "0x73c5b4624349e48916d2f3c27c350fe4ac224695d93c066d212183323dd15c3c",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://e026222063c7e5cecfb476978f30c3ef5b9a4193525d7bf2d389b4194fb8697e",
+				"dweb:/ipfs/QmPJS4iJzcWgmMquG1tJRi8HxifAYTDmuQ8KrEevpu45YD"
+			]
+		},
+		"contracts/Types.sol": {
+			"keccak256": "0x02bfade65988fd1366c1d2cb2a96646f758ff6dd69bd269e02c1ec8b4ddfb8e8",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://b9f91171bde28069051e0563cdfc605d1aa7ffdde21958faa96bd19946bd8e93",
+				"dweb:/ipfs/QmdVxt62dRmjp6JW4V81WVdHxkZGmAjQG5KituAsy9bEAE"
+			]
+		}
+	},
+	"version": 1
+}
