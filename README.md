@@ -1,99 +1,100 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+This intruction using geth 1.13.14-stable for PoA consensus
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Run bootnode:
+`bootnode -nodekey boot.key -verbosity 9 -addr :30305`
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- **bootnode**: Đây là công cụ khởi tạo một bootnode, chịu trách nhiệm quản lý và duy trì danh sách các nút tham gia mạng. Bootnode không thực hiện bất kỳ chức năng đào hoặc chạy smart contract nào mà chỉ đóng vai trò làm điểm khởi đầu để các nút khác kết nối.
 
-## Description
+- -**nodekey boot.key**: Chỉ định tệp khóa riêng tư (boot.key) của bootnode. Khóa này được sử dụng để xác định duy nhất bootnode trong mạng.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- -**verbosity 9**: Thiết lập mức độ chi tiết của các thông báo log từ bootnode. Mức 9 là mức cao nhất, ghi lại tất cả các sự kiện chi tiết từ hoạt động của bootnode.
 
-## Project setup
+- -**addr :30305**: Xác định địa chỉ mà bootnode lắng nghe các kết nối. 30305 là cổng mà bootnode sẽ mở để các nút khác kết nối. Ở đây, địa chỉ : chỉ ra rằng bootnode sẽ chấp nhận kết nối từ bất kỳ địa chỉ IP nào (bạn có thể thay đổi thành địa chỉ IP cụ thể nếu cần).
 
-```bash
-$ npm install
-```
+## Run node1:
+`geth --datadir ./node1 --networkid 12345 --port 30306 --http --http.addr "127.0.0.1" --http.port 8545 --http.api "personal,eth,net,web3,txpool,miner,admin" --http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com" --allow-insecure-unlock --authrpc.port 8551 --bootnodes enode://5fa15114a279b4f01740533f5cc9efa47cca00bbf7865320cb2dcf1f04fac0ac33c1c0764d33092eadf09c8d78c96d2645e2e85ab5c82d6387722ef42e1b5b8d@127.0.0.1:0?discport=30305 --unlock 0x1daBe396c9e15a1EEF9B053F231888cBC8B85341 --password node1/password.txt --miner.etherbase 0x1daBe396c9e15a1EEF9B053F231888cBC8B85341 --mine --ipcpath ./node1/geth.ipc
+`
 
-## Compile and run the project
+geth: Đây là client chính của Ethereum (Go Ethereum), chịu trách nhiệm chạy một node của blockchain.
 
-```bash
-# development
-$ npm run start
+- **--datadir ./node1**: Chỉ định thư mục dữ liệu của node 1. Đây là nơi lưu trữ tất cả các dữ liệu của blockchain và tài khoản của node 1.
 
-# watch mode
-$ npm run start:dev
+- **--networkid 12345:** Chỉ định ID của mạng riêng (private network). Mỗi mạng Ethereum có một networkid riêng, và 12345 chỉ định mạng của bạn là một mạng tùy chỉnh, không xung đột với mạng chính của Ethereum.
 
-# production mode
-$ npm run start:prod
-```
+- **--port 30306:** Cổng P2P mà node 1 sử dụng để kết nối với các nút khác. Cổng này được sử dụng cho giao tiếp giữa các node Ethereum.
 
-## Run tests
+- **--http:** Kích hoạt HTTP-RPC API cho phép tương tác với node thông qua HTTP.
 
-```bash
-# unit tests
-$ npm run test
+- **--http.addr "127.0.0.1":** Địa chỉ IP mà node sẽ lắng nghe yêu cầu HTTP. Ở đây, chỉ có máy local (127.0.0.1) mới có thể kết nối với node này qua HTTP.
 
-# e2e tests
-$ npm run test:e2e
+- **--http.port 8545:** Cổng HTTP mà node sử dụng để lắng nghe các yêu cầu từ client (như web3.js).
 
-# test coverage
-$ npm run test:cov
-```
+- **--http.api "personal,eth,net,web3,txpool,miner,admin"**: Chỉ định các API mà HTTP-RPC cung cấp, bao gồm:
 
-## Deployment
+    - personal: Quản lý tài khoản cá nhân.
+    - eth: Các thao tác liên quan đến blockchain và giao dịch Ethereum.
+    - net: Thông tin về mạng.
+    - web3: Thông tin về kết nối Web3.
+    - txpool: Quản lý pool giao dịch.
+    - miner: Các chức năng đào.
+    - admin: Các chức năng quản trị node.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- **--http.corsdomain "http://localhost:8000, https://remix.ethereum.org, https://app.tryethernal.com"**: Các miền được phép truy cập vào RPC server, bao gồm địa chỉ localhost để run local Block Explorer và Remix IDE và cả Ethernal (dịch vụ block explorer khá xịn).
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- **--allow-insecure-unlock**: Cho phép mở khóa tài khoản thông qua RPC (không khuyến nghị cho các mạng công khai, nhưng được sử dụng trong môi trường private).
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+- **--authrpc.port 8551:** Chỉ định cổng cho các yêu cầu RPC có xác thực. Thường được dùng để quản lý các giao dịch và giao tiếp an toàn hơn.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- **--bootnodes enode://283c...ed@127.0.0.1:0?discport=30305:** Chỉ định địa chỉ của bootnode mà node 1 sẽ kết nối để tìm các nút khác trong mạng. Địa chỉ enode là mã nhận dạng của bootnode và discport=30305 chỉ định cổng discovery mà bootnode đang lắng nghe.
 
-## Resources
+- **--unlock 0xD91E59...90ce:** Mở khóa tài khoản có địa chỉ 0xD91E59...90ce để có thể thực hiện các giao dịch mà không cần yêu cầu mật khẩu mỗi lần.
 
-Check out a few resources that may come in handy when working with NestJS:
+- **--password node1/password.txt:** Tệp chứa mật khẩu để mở khóa tài khoản.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **--miner.etherbase 0xD91E59...90ce:** Chỉ định tài khoản nhận phần thưởng khi node thực hiện quá trình mining (đào).
 
-## Support
+- **--mine:** Bật chế độ mining trên node này. Node sẽ bắt đầu khai thác các block.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- **--ipcpath ./node1/geth.ipc:** Đường dẫn tệp IPC (Inter-process communication) của node. Tệp này được sử dụng để giao tiếp với các công cụ như geth console hoặc các ứng dụng khác chạy trên cùng hệ thống.
 
-## Stay in touch
+## Run node2:
+`geth --datadir ./node2 --networkid 12345 --port 30307 --http --http.addr "127.0.0.1" --http.port 8546 --http.api "personal,eth,net,web3,txpool,miner,admin" --allow-insecure-unlock --authrpc.port 8552 --bootnodes enode://5fa15114a279b4f01740533f5cc9efa47cca00bbf7865320cb2dcf1f04fac0ac33c1c0764d33092eadf09c8d78c96d2645e2e85ab5c82d6387722ef42e1b5b8d@127.0.0.1:0?discport=30305 --unlock 0xB66fE323603f392028040738326d32aDefAe3Dd3 --password node2/password.txt --ipcpath ./node2/geth.ipc
+`
+Lệnh này tương tự như node1, chỉ có một số điểm khác biệt:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **--datadir ./node2:** Dữ liệu của node 2 được lưu trong thư mục ./node2.
 
-## License
+- **--port 30307:** Node 2 sử dụng cổng P2P khác là 30307 để kết nối với các nút khác.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **--http.port 8546:** Cổng HTTP của node 2 là 8546 (khác với 8545 của node 1).
+
+- **--authrpc.port 8552:** Cổng RPC có xác thực của node 2 là 8552.
+
+- **--unlock 0x6A8BfbB...772274C652:** Địa chỉ tài khoản mở khóa của node 2 khác với node 1.
+
+- **--password node2/password.txt:** Tệp mật khẩu của node 2.
+
+- **--ipcpath ./node2/geth.ipc:** Đường dẫn IPC của node 2.
+
+# Tham khảo
+
+
+Go Ethereum Documentation : End-to-end example
+
+* https://github.com/LifnaJos/Private-Ethereum-Blockchain-setup-using-Geth
+
+* [Go Ethereum Documentation : End-to-end example](https://geth.ethereum.org/docs/fundamentals/private-network#end-to-end-example)
+
+* [Go Ethereum - Github Developers Community](https://github.com/ethereum/go-ethereum/issues/27850) for helping me in resolving the issues in performing the mining on Private Ethereum Network setup using Geth.
+
+
+`$env:ETHERNAL_API_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJlYmFzZVVzZXJJZCI6InEwYUZUQlowMmZYdzRqMHRYR2tPQ2xjVmJwczIiLCJhcGlLZXkiOiJXWFBEMEhULTlKME1RQUotTVI0R0JIOC1HM1dXTTJWXHUwMDAxIiwiaWF0IjoxNzMwOTA4OTQ2fQ.Nz9EWGlYRSnKmsA3KdfJE5BgPGfod81ulISXdnxaCjM"
+`
+`ethernal listen -w "Grade Management"
+`
+
+Kết nối node1 thông qua HTTP RPC: `geth attach http://127.0.0.1:8545`
+Chuyển ETH từ address node1 đến tài khoản bất kì:
+`eth.sendTransaction({from: "0x1daBe396c9e15a1EEF9B053F231888cBC8B85341", to: "0xAafbd4555a3E9FeB5fd16825D83Cd708A12d4244", value: web3.toWei(2, "ether")})
+`
+>>>>>>> private-chain/main
