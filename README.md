@@ -16,7 +16,7 @@ If you have any ideas to contribute, feel free to connet me 😊.
 ![Private Chain Design](assets/readme/private-chain-design.png)
 
 # Data Execution Flow for Adding/Updating Grades
-![alt text](assets\readme\data-flow.png)
+![alt text](assets/readme/data-flow.png)
 
 # Example Execution: Adding Score
 
